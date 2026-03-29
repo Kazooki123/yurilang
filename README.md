@@ -1,0 +1,2 @@
+# yurilang
+Esoteric language 🩷
