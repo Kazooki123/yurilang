@@ -20,8 +20,10 @@ Also going to be written in **Python** with other programming languages aside :p
 
 Defines where the program begins.
 
+```
 @wlw
     @confess "Hello, world 💖"
+```
 
 ---
 
@@ -29,8 +31,10 @@ Defines where the program begins.
 
 Creates and assigns a variable.
 
+```
 @bond x = 10
 @bond name = "Aki"
+```
 
 ---
 
@@ -38,8 +42,10 @@ Creates and assigns a variable.
 
 Prints values or text.
 
+```
 @confess "Hello 💖"
 @confess "Value is" x
+```
 
 ---
 
@@ -50,7 +56,9 @@ Checks a condition.
 > [!WARNING]
 > ⚠️ Current version only evaluates simple conditions and prints a result.
 
+```
 @jealous x == 10
+```
 
 ---
 
@@ -58,8 +66,10 @@ Checks a condition.
 
 Repeats an action a number of times.
 
+```
 @cling 3
 @cling "yay!" 5
+```
 
 ---
 
@@ -67,7 +77,10 @@ Repeats an action a number of times.
 
 **Reserved** for importing modules.
 
+```
 @yuri math
+@yuri json
+```
 
 > [!WARNING]
 > «⚠️ Not fully implemented yet.»
@@ -76,6 +89,7 @@ Repeats an action a number of times.
 
 ### Example Program
 
+```
 @wlw
 
 @bond x = 10
@@ -87,6 +101,7 @@ Repeats an action a number of times.
 @jealous x == 10
 
 @cling 2
+```
 
 ---
 
