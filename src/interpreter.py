@@ -1,19 +1,23 @@
+import re
 from src.parser import parse
 
 variables = {}
 functions = {}
 
-def evaluate(value):
-    if isinstance(value, tuple):
-        value = value[1]
+def evaluate(expr):
+    if isinstance(expr, list):
+        expr = " ".join(expr)
 
-    if isinstance(value, list):
-        value = value[0]
+    expr = str(expr)
 
-    if str(value).isdigit():
-        return int(value)
+    # Replace variables with values
+    for var in variables:
+        expr = re.sub(rf"\b{var}\b", str(variables[var]), expr)
 
-    return variables.get(value, str(value).strip('"'))
+    try:
+        return eval(expr, {"__builtins__": {}})
+    except:
+        return expr.strip('"')
 
 
 def run_node(node):
@@ -84,3 +88,4 @@ def run(code):
 
     for node in tree.children:
         run_node(node)
+
