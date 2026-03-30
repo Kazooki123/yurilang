@@ -46,7 +46,7 @@ def evaluate(expr):
         expr = re.sub(rf"\b{var}\b", str(variables[var]), expr)
 
     try:
-        return eval(expr, {"__builtins__": {}}, loaded_modules)
+        return eval(expr, {"__builtins__": {}})
     except:
         return expr.strip('"')
 
