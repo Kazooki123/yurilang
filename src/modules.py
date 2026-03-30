@@ -6,6 +6,10 @@ loaded_modules = set()
 STORE_PATH = "../store"
 
 
+def normalize(name):
+    return name.replace("_", "").lower()
+
+
 def extract_functions(node, functions):
     if node.type == "function":
         functions[node.value] = node.children
@@ -15,7 +19,11 @@ def extract_functions(node, functions):
 
 
 def load_module(name, functions):
-    filename = os.path.join(STORE_PATH, f"{name}.yuri")
+    normalized = normalize(name)
+    filename = os.path.join(STORE_PATH, f"{normalized}.yuri")
+
+    if normalized in loaded_modules:
+        return
 
     if name in loaded_modules:
         return
@@ -30,4 +38,4 @@ def load_module(name, functions):
 
     extract_functions(tree, functions)
 
-    loaded_modules.add(name)
+    loaded_modules.add(normalized)
