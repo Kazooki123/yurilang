@@ -37,6 +37,9 @@ def parse_line(line):
     elif keyword == "@ship":
         return Node("function", tokens[1])  # function name
 
+    elif keyword == "@reject":
+        return Node("reject", tokens[1:])
+   
     elif keyword == "@promise":
         return Node("return", tokens[1:])
 
