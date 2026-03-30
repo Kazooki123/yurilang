@@ -95,14 +95,15 @@ def run_node(node):
     elif node.type == "call":
         func_name = node.value
 
-        if func_name in functions:
-            for child in functions[func_name]:
-                result = run_node(child)
+        if func_name not in functions:
+            print(f"Undefined function: {func_name}")
+            return
+
+        for child in functions[func_name]:
+            result = run_node(child)
 
         if isinstance(result, ReturnSignal):
-               return result.value
-        else:
-               print(f"Undefined function: {func_name}")
+            return result.value
 
     # RETURN
     elif node.type == "return":
