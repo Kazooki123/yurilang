@@ -19,4 +19,4 @@ jobs:
 
       - name: Run and Test YuriLang
         run: |
-          python main.py
+          python main.py test.yuri
