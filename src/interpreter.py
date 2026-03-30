@@ -14,6 +14,10 @@ YURI_OPS = {
 }
 
 
+class YuriRuntimeError(Exception):
+    pass
+
+
 class ReturnSignal:
     def __init__(self, value):
         self.value = value
@@ -70,6 +74,11 @@ def run_node(node):
         for v in node.value:
             output.append(str(evaluate(v)))
         print(" ".join(output))
+
+    # REJECT / THROW ERR
+    elif node.type == "reject":
+        message = evaluate(node.value)
+        raise YuriRuntimeError(message)
 
     # IF
     elif node.type == "if":
