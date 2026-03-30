@@ -4,11 +4,24 @@ from src.parser import parse
 variables = {}
 functions = {}
 
+YURI_OPS = {
+    "plus": "+",
+    "with": "+",
+    "minus": "-",
+    "times": "*",
+    "over": "/"
+}
+
+def translate_expr(expr):
+    for word, sym in YURI_OPS.items():
+        expr = expr.replace(word, sym)
+    return expr
+
 def evaluate(expr):
     if isinstance(expr, list):
         expr = " ".join(expr)
 
-    expr = str(expr)
+    expr = translate_expr(expr)
 
     # Replace variables with values
     for var in variables:
