@@ -1,7 +1,10 @@
 import os
 from src.parser import parse
 
+
 loaded_modules = set()
+STORE_PATH = "../store"
+
 
 def extract_functions(node, functions):
     if node.type == "function":
@@ -12,13 +15,13 @@ def extract_functions(node, functions):
 
 
 def load_module(name, functions):
-    import os
-    from src.parser import parse
+    filename = os.path.join(STORE_PATH, f"{name}.yuri")
 
-    filename = f"{name}.yuri"
+    if name in loaded_modules:
+        return
 
     if not os.path.exists(filename):
-        raise Exception(f"Module '{name}' not found")
+        raise Exception(f"Module '{name}' not found in store/")
 
     with open(filename, "r") as f:
         code = f.read()
@@ -27,3 +30,4 @@ def load_module(name, functions):
 
     extract_functions(tree, functions)
 
+    loaded_modules.add(name)
