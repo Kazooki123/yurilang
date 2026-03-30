@@ -83,7 +83,7 @@ def run_node(node):
         if condition:
            for child in node.children:
               result = run_node(child)
-           if isinstance(result, ReturnSignal):
+              if isinstance(result, ReturnSignal):
               return result
 
 
