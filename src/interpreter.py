@@ -71,8 +71,11 @@ def run_node(node):
             condition = left == right
 
         if condition:
-            for child in node.children:
-                run_node(child)
+           for child in node.children:
+              result = run_node(child)
+           if isinstance(result, ReturnSignal):
+              return result
+
 
     # LOOP
     elif node.type == "loop":
@@ -94,10 +97,10 @@ def run_node(node):
             for child in functions[func_name]:
                 result = run_node(child)
 
-            if isinstance(result, ReturnSignal):
-                return result.value
-            else:
-                print(f"Undefined function: {func_name}")
+        if isinstance(result, ReturnSignal):
+               return result.value
+        else:
+               print(f"Undefined function: {func_name}")
 
     # RETURN
     elif node.type == "return":
