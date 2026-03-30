@@ -1,7 +1,13 @@
 # Parser for keywords, operators, and more
 # They'll be added slowly later on
 
-from src.lexer import tokenize
+from src.lexer import tokenize, get_indent_lvl
+
+class Node:
+    def __init__(self, type_, value=None):
+        self.type = type_
+        self.value = value
+        self.children = []
 
 def parse_line(line):
     tokens = tokenize(line)
@@ -11,21 +17,54 @@ def parse_line(line):
     keyword = tokens[0]
 
     if keyword == "@bond":
-        return ("assign", tokens[1], tokens[3])
+        return Node("assign", (tokens[1], tokens[3]))
 
     elif keyword == "@confess":
-        return ("print", tokens[1:])
+        return Node("print", tokens[1:])
 
     elif keyword == "@jealous":
-        return ("if", tokens[1:])
+        return Node("if", tokens[1:])
 
     elif keyword == "@cling":
-        return ("loop", tokens[1:])
+        return Node("loop", tokens[1:])
 
     elif keyword == "@yuri":
-        return ("import", tokens[1])
+        return Node("import", tokens[1])
 
     elif keyword == "@wlw":
-        return ("entry",)
+        return Node("entry")
 
-    return ("unknown", tokens)
+    elif keyword == "@ship":
+        return Node("function", tokens[1])  # function name
+
+    # function call: @name
+    elif keyword.startswith("@"):
+        return Node("call", keyword[1:])
+
+    return Node("unknown", tokens)
+
+
+def parse(code):
+    lines = code.split("\n")
+    root = Node("root")
+
+    stack = [(-1, root)]  # (indent_level, node)
+
+    for line in lines:
+        if not line.strip():
+            continue
+
+        indent = get_indent_lvl(line)
+        node = parse_line(line.strip())
+
+        if not node:
+            continue
+
+        # Fix indentation hierarchy
+        while stack and indent <= stack[-1][0]:
+            stack.pop()
+
+        stack[-1][1].children.append(node)
+        stack.append((indent, node))
+
+    return root
