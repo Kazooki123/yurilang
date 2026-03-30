@@ -85,7 +85,7 @@ def run_node(node):
            for child in node.children:
               result = run_node(child)
               if isinstance(result, ReturnSignal):
-              return result
+                   return result
 
 
     # LOOP
