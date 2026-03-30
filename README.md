@@ -1,4 +1,4 @@
-# YuriLang 🩷🧡🤍
+# YuriLang ❤️🧡🤍
 
 YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
 
