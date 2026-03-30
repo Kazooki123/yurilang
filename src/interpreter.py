@@ -38,7 +38,7 @@ def evaluate(expr):
                 result = run_node(child)
 
                 if isinstance(result, ReturnSignal):
-                return result.value
+                    return result.value
 
     expr = translate_expr(expr)
 
