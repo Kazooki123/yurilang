@@ -25,22 +25,23 @@ def translate_expr(expr):
     return expr
 
 
-if expr.startswith("@"):
-    func_name = expr[1:]
-    if func_name in functions:
-        for child in functions[func_name]:
-            result = run_node(child)
-
-            if isinstance(result, ReturnSignal):
-                return result.value
-
 def evaluate(expr):
     if isinstance(expr, list):
         expr = " ".join(expr)
 
+    expr = str(expr)
+
+    if expr.startswith("@"):
+        func_name = expr[1:]
+        if func_name in functions:
+            for child in functions[func_name]:
+                result = run_node(child)
+
+                if isinstance(result, ReturnSignal):
+                return result.value
+
     expr = translate_expr(expr)
 
-    # Replace variables with values
     for var in variables:
         expr = re.sub(rf"\b{var}\b", str(variables[var]), expr)
 
