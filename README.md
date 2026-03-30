@@ -1,8 +1,9 @@
 # YuriLang 🩷🧡🤍
 
-An upcoming esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc.
+YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
 
-Also going to be written in **Python** with other programming languages aside :p
+> [!IMPORTANT]
+> 💜 Still in development, new keywords and features will be added one by one, and the language isn't stabilize *yet*.
 
 ## Syntax
 
@@ -49,6 +50,17 @@ Prints values or text.
 
 ---
 
+"@ship" - Functions
+
+Declares a function (also supports parameters :p)
+
+```
+@ship YuuIsGoated:
+    @confess "Peak!"
+```
+
+---
+
 "@jealous" — Conditional (Basic)
 
 Checks a condition.
@@ -90,27 +102,17 @@ Repeats an action a number of times.
 ### Example Program
 
 ```
-@wlw
+@wlw:
+    @bond x = 10
+    @bond name = "Aki"
 
-@bond x = 10
-@bond name = "Aki"
+    @confess "Hello" name
+    @confess "Value of x is" x
 
-@confess "Hello" name
-@confess "Value of x is" x
+    @jealous x == 10
 
-@jealous x == 10
-
-@cling 2
+    @cling 2
 ```
-
----
-
-**Current Limitations**
-
-- No block indentation support yet
-- Conditionals do not control following lines
-- Loop bodies are not yet implemented
-- Expressions are limited (no arithmetic parsing yet)
 
 ---
 
