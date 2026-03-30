@@ -26,3 +26,4 @@ def load_module(name, functions):
     tree = parse(code)
 
     extract_functions(tree, functions)
+
