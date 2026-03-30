@@ -1,6 +1,6 @@
 import re
 from src.parser import parse
-from src.modules import load_module
+from src.modules import load_module, loaded_modules
 
 variables = {}
 functions = {}
@@ -23,6 +23,16 @@ def translate_expr(expr):
     for word, sym in YURI_OPS.items():
         expr = expr.replace(word, sym)
     return expr
+
+
+if expr.startswith("@"):
+    func_name = expr[1:]
+    if func_name in functions:
+        for child in functions[func_name]:
+            result = run_node(child)
+
+            if isinstance(result, ReturnSignal):
+                return result.value
 
 def evaluate(expr):
     if isinstance(expr, list):
