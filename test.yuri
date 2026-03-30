@@ -1,0 +1,7 @@
+@wlw:
+    @yuri math
+
+    @bond x = @add
+    @confess "Result:" x
+
+    @greet
