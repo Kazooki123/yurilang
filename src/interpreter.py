@@ -1,5 +1,6 @@
 import re
 from src.parser import parse
+from src.modules import load_module
 
 variables = {}
 functions = {}
@@ -11,6 +12,12 @@ YURI_OPS = {
     "times": "*",
     "over": "/"
 }
+
+
+class ReturnSignal:
+    def __init__(self, value):
+        self.value = value
+
 
 def translate_expr(expr):
     for word, sym in YURI_OPS.items():
@@ -28,7 +35,7 @@ def evaluate(expr):
         expr = re.sub(rf"\b{var}\b", str(variables[var]), expr)
 
     try:
-        return eval(expr, {"__builtins__": {}})
+        return eval(expr, {"__builtins__": {}}, loaded_modules)
     except:
         return expr.strip('"')
 
@@ -82,15 +89,24 @@ def run_node(node):
     # FUNCTION CALL
     elif node.type == "call":
         func_name = node.value
+
         if func_name in functions:
             for child in functions[func_name]:
-                run_node(child)
-        else:
-            print(f"Undefined function: {func_name}")
+                result = run_node(child)
 
-    # IMPORT (stub)
+            if isinstance(result, ReturnSignal):
+                return result.value
+            else:
+                print(f"Undefined function: {func_name}")
+
+    # RETURN
+    elif node.type == "return":
+        value = evaluate(node.value)
+        return ReturnSignal(value)
+
+    # IMPORT SYSTEM
     elif node.type == "import":
-        print(f"Importing {node.value} (not implemented)")
+        load_module(node.value, functions)
 
     else:
         print("Unknown node:", node.type)
