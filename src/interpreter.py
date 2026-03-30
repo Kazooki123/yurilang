@@ -82,7 +82,9 @@ def run_node(node):
         count = int(evaluate(node.value[0]))
         for _ in range(count):
             for child in node.children:
-                run_node(child)
+                result = run_node(child)
+                if isinstance(result, ReturnSignal):
+                   return result
 
     # FUNCTION DEFINE
     elif node.type == "function":
