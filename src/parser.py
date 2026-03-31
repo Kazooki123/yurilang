@@ -39,6 +39,12 @@ def parse_line(line):
         params = tokens[2:]
         return Node("function", (name, params))
 
+    elif keyword == "@sappho":
+        return Node("match", tokens[1])
+
+    elif keyword == "@poet":
+        return Node("case", tokens[1:])
+
     elif keyword == "@reject":
         return Node("reject", tokens[1:])
    
