@@ -33,7 +33,33 @@ def evaluate(expr):
     if isinstance(expr, list):
         expr = " ".join(expr)
 
-    expr = str(expr)
+    expr = str(expr).strip()
+
+    if expr.startswith("[[") and expr.endswith("]]"):
+    inner = expr[2:-2].strip()
+
+    if not inner:
+        return []
+
+    items = [x.strip() for x in inner.split(",")]
+    return [evaluate(item) for item in items]
+
+    if expr.startswith("#[[") and expr.endswith("]]"):
+    inner = expr[3:-2].strip()
+
+    if not inner:
+        return []
+
+    items = [x.strip() for x in inner.split(",")]
+    return [str(evaluate(item)) for item in items]
+
+    match = re.match(r"(\w+)\[(\d+)\]", expr)
+    if match:
+        name = match.group(1)
+        index = int(match.group(2))
+
+    if name in variables:
+        return variables[name][index]
 
     if expr.startswith("@"):
         parts = expr.split()
