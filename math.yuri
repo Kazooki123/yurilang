@@ -1,5 +1,0 @@
-@ship add:
-    @promise 5 plus 3
-
-@ship greet:
-    @confess "Hello from module 💖"
