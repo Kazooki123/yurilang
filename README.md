@@ -61,6 +61,36 @@ Declares a function (also supports parameters :p)
 
 ---
 
+@promise - Return
+
+Returns a value after exiting
+
+```
+@choose nums with x:
+    @promise x > 2
+```
+
+---
+
+@choose - Filtering
+
+Filters or choose a specific element from a list based on the conditions
+
+> [!WARNING]
+> This feature hasn't been implemented *yet*
+
+```
+@wlw:
+    @bond nums = [[1,2,3,4]]
+
+    @bond result = @choose nums with x:
+        @promise x > 2
+
+    @confess result
+```
+
+---
+
 "@jealous" — Conditional (Basic)
 
 Checks a condition.
@@ -120,6 +150,11 @@ Repeats an action a number of times.
 
 If you encounter a bug, error, or any issues, please immediately contact me or create a pull request (PR) and explain what's wrong or for making suggestions and feedbacks, Thank you!! 🧡 >.<
 
+## Contribution
+
+**Everyone is absolutely welcome!** If you're interested, you can freely fork the repository and refer to the [Code of Conduct](CODE_OF_CONDUCT.md) for contribution information and more 🩷
+
 ## LICENSE 
 
 Under the **GNU Public License** <3
+
