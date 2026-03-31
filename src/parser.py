@@ -35,7 +35,9 @@ def parse_line(line):
         return Node("entry")
 
     elif keyword == "@ship":
-        return Node("function", tokens[1])  # function name
+        name = tokens[1]
+        params = tokens[2:]
+        return Node("function", (name, params))
 
     elif keyword == "@reject":
         return Node("reject", tokens[1:])
