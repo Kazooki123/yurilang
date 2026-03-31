@@ -72,6 +72,21 @@ Returns a value after exiting
 
 ---
 
+@jam -> Break/Pass
+
+Alters the flow of a program.
+
+> [!WARNING]
+> Not fully implemented *yet.*
+
+```
+@cling 10:
+    @jealous x == 5:
+        @jam
+```
+
+---
+
 @choose - Filtering
 
 Filters or choose a specific element from a list based on the conditions
