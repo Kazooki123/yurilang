@@ -1,0 +1,11 @@
+@ship add a b:
+    @promise a plus b
+
+@ship sub a b:
+    @promise a minus b
+
+@ship mul a b:
+    @promise a times b
+
+@ship div a b:
+    @promise a over b
