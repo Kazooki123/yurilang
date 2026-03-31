@@ -108,22 +108,38 @@ def run_node(node):
 
     # FUNCTION DEFINE
     elif node.type == "function":
-        func_name = node.value
-        functions[func_name] = node.children
+        name, params = node.value
+        functions[name] = (params, node.children)
 
     # FUNCTION CALL
     elif node.type == "call":
-        func_name = node.value
+        func_name, args = node.value
 
         if func_name not in functions:
             print(f"Undefined function: {func_name}")
             return
 
-        for child in functions[func_name]:
-            result = run_node(child)
+        params, body = functions[func_name]
 
-        if isinstance(result, ReturnSignal):
-            return result.value
+        # backup variables (scope)
+        old_vars = variables.copy()
+
+        # assign arguments
+        for i, param in enumerate(params):
+            if i < len(args):
+                variables[param] = evaluate(args[i])
+
+        # execute function
+        for child in body:
+            result = run_node(child)
+            if isinstance(result, ReturnSignal):
+                variables.clear()
+                variables.update(old_vars)
+                return result.value
+
+        # restore variables
+        variables.clear()
+        variables.update(old_vars)
 
     # RETURN
     elif node.type == "return":
