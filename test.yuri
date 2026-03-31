@@ -1,7 +1,7 @@
 @wlw:
     @yuri math
 
-    @bond x = @add
+    @bond x = @add 5 3
     @confess "Result:" x
 
-    @greet
+    @confess "Hello, World!"
