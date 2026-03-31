@@ -3,7 +3,7 @@ from src.parser import parse
 
 
 loaded_modules = set()
-STORE_PATH = "../store"
+STORE_PATH = "store"
 
 
 def normalize(name):
