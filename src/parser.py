@@ -47,7 +47,7 @@ def parse_line(line):
 
     # function call: @name
     elif keyword.startswith("@"):
-        return Node("call", keyword[1:])
+        return Node("call", (keyword[1:], tokens[1:]))
 
     return Node("unknown", tokens)
 
