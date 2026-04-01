@@ -1,12 +1,10 @@
 import os
 from src.parser import parse
 
-
 loaded_modules = set()
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STORE_PATH = os.path.join(BASE_DIR, "..", "store")
-STORE_PATH = os.path.normpath(STORE_PATH)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+STORE_PATH = os.path.join(BASE_DIR, "store")
 
 
 def normalize(name):
@@ -24,19 +22,19 @@ def extract_functions(node, functions):
 
 def load_module(name, functions):
     normalized = normalize(name)
+
     filename = os.path.join(STORE_PATH, f"{normalized}.yuri")
 
     if normalized in loaded_modules:
         return
 
     if not os.path.exists(filename):
-        raise Exception(f"Module '{name}' not found in store/")
+        raise Exception(f"Module '{name}' not found at {filename}")
 
     with open(filename, "r") as f:
         code = f.read()
 
     tree = parse(code)
-
     extract_functions(tree, functions)
 
     loaded_modules.add(normalized)
