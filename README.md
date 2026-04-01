@@ -50,7 +50,7 @@ Prints values or text.
 
 ---
 
-"@ship" - Functions
+"@ship" — Functions
 
 Declares a function (also supports parameters :p)
 
@@ -61,7 +61,7 @@ Declares a function (also supports parameters :p)
 
 ---
 
-@promise - Return
+@promise — Return
 
 Returns a value after exiting
 
@@ -72,7 +72,7 @@ Returns a value after exiting
 
 ---
 
-@jam -> Break/Pass
+@jam — Break/Pass
 
 Alters the flow of a program.
 
@@ -87,7 +87,7 @@ Alters the flow of a program.
 
 ---
 
-@choose - Filtering
+@choose — Filtering
 
 Filters or choose a specific element from a list based on the conditions
 
