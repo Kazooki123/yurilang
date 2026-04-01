@@ -1,0 +1,32 @@
+@ship yuzu_arrives_at_school:
+    @confess "A new school. A new uniform. Same old me."
+    @confess "I didn't expect the student council president to be so cold."
+    @confess "I didn't expect her to be my stepsister either."
+    @promise "nothing will ever be the same"
+
+@ship mei_on_the_rooftop:
+    @confess "You talk too much."
+    @confess "You don't understand what this school means."
+    @confess "You don't understand what anything means."
+    @promise "Silence..."
+
+@ship the_kiss:
+    @confess "She didn't ask."
+    @confess "I didn't stop her."
+    @confess "It lasted only a second but I felt it for days."
+    @confess "Was it punishment? Was it something else?"
+    @promise "I still don't know.."
+
+@ship yuzu_alone_after:
+    @confess "My heart was pounding so loud I thought she could hear it."
+    @confess "She walked away like nothing happened."
+    @confess "Like I was nothing."
+    @confess "So why couldn't I stop thinking about her?"
+    @promise "Falling without knowing it..."
+
+@ship mei_alone_after:
+    @confess "I don't know why I did that."
+    @confess "I don't know what I was trying to prove."
+    @confess "She looked at me like I was the whole world."
+    @confess "Nobody has ever looked at me like that."
+    @promise "A crack in the wall.."
