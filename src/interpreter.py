@@ -30,89 +30,45 @@ def translate_expr(expr):
     return expr
 
 
-def evaluate(expr):
+def evaluate(expr, variables):
+    if isinstance(expr, (int, float, bool)):
+        return expr
+
+    if isinstance(expr, str):
+        expr = expr.strip()
+
+        if expr.startswith('"') and expr.endswith('"'):
+            return expr[1:-1]
+
+        if expr.isdigit():
+            return int(expr)
+
+        # Variable lookup (IMPORTANT FIX)
+        if expr in variables:
+            return variables[expr]
+
+        return expr
+
     if isinstance(expr, list):
-        expr = " ".join(expr)
+        if len(expr) == 1:
+            return evaluate(expr[0], variables)
 
-    expr = str(expr).strip()
+        if len(expr) == 3:
+            left = evaluate(expr[0], variables)
+            op = expr[1]
+            right = evaluate(expr[2], variables)
 
-    if expr in variables:
-        return variables[expr]
+            # Math operations
+            if op == "plus":
+                return left + right
+            if op == "minus":
+                return left - right
+            if op == "times":
+                return left * right
+            if op == "over":
+                return left / right
 
-    if re.fullmatch(r"\d+", expr):
-        return int(expr)
-
-    if expr.startswith('"') and expr.endswith('"'):
-        return expr.strip('"')
-
-    if expr.startswith("[[") and expr.endswith("]]"):
-        inner = expr[2:-2].strip()
-        if not inner:
-            return []
-        items = [x.strip() for x in inner.split(",")]
-        return [evaluate(item) for item in items]
-
-    if expr.startswith("#[[") and expr.endswith("]]"):
-        inner = expr[3:-2].strip()
-        if not inner:
-            return []
-        items = [x.strip() for x in inner.split(",")]
-        return [str(evaluate(item)) for item in items]
-
-    match = re.match(r"(\w+)\[(\d+)\]", expr)
-    if match:
-        name = match.group(1)
-        index = int(match.group(2))
-        if name in variables:
-            return variables[name][index]
-
-    if expr.startswith("@"):
-        parts = expr.split()
-        func_name = parts[0][1:]
-        args = parts[1:]
-
-        if func_name in functions:
-            params, body = functions[func_name]
-            old_vars = variables.copy()
-
-            for i, param in enumerate(params):
-                if i < len(args):
-                    variables[param] = evaluate(args[i])
-
-            for child in body:
-                result = run_node(child)
-                if isinstance(result, ReturnSignal):
-                    variables.clear()
-                    variables.update(old_vars)
-                    return result.value
-
-            variables.clear()
-            variables.update(old_vars)
-            return None
-
-    if expr in variables:
-        return variables[expr]
-
-    tokens = expr.split()
-
-    if len(tokens) == 3:
-        left = evaluate(tokens[0])
-        op = tokens[1]
-        right = evaluate(tokens[2])
-
-        if isinstance(left, str) and left.isdigit():
-            left = int(left)
-         if isinstance(right, str) and right.isdigit():
-            right = int(right)
-
-        if op in ("plus", "+"):
-            return left + right
-        elif op in ("minus", "-"):
-            return left - right
-        elif op in ("times", "*"):
-            return left * right
-        elif op in ("over", "/"):
-            return left / right
+        return [evaluate(e, variables) for e in expr]
 
     return expr
 
