@@ -36,50 +36,6 @@ def evaluate(expr):
     if isinstance(expr, (int, float, bool)):
         return expr
 
-    if isinstance(expr, str):
-        expr = expr.strip()
-
-        # FUNCTION CALL
-        if expr.startswith("@"):
-            parts = expr.split()
-            func_name = parts[0][1:]
-            args = parts[1:]
-
-            if func_name in functions:
-                params, body = functions[func_name]
-                old_vars = variables.copy()
-
-                for i, param in enumerate(params):
-                    if i < len(args):
-                        variables[param] = evaluate(args[i])
-
-                for child in body:
-                    result = run_node(child)
-                    if isinstance(result, ReturnSignal):
-                        variables.clear()
-                        variables.update(old_vars)
-                        return result.value
-
-                variables.clear()
-                variables.update(old_vars)
-                return None
-            else:
-                raise YuriRuntimeError(f"Undefined function: {func_name}")
-
-        # String literal
-        if expr.startswith('"') and expr.endswith('"'):
-            return expr[1:-1]
-
-        # Integer literal
-        if expr.isdigit():
-            return int(expr)
-
-        # Variable lookup
-        if expr in variables:
-            return variables[expr]
-
-        return expr
-
     if isinstance(expr, list):
         if len(expr) == 0:
             return None
@@ -89,13 +45,58 @@ def evaluate(expr):
 
         if len(expr) == 3:
             left = evaluate(expr[0])
-            op = expr[1]
+            op   = expr[1]
             right = evaluate(expr[2])
 
-        if op in YURI_OPS:
-            return YURI_OPS[op](left, right)
+            if op in YURI_OPS:
+                return YURI_OPS[op](left, right)
 
         return [evaluate(e) for e in expr]
+
+    if not isinstance(expr, str):
+        return expr
+
+    expr = expr.strip()
+
+    if expr.startswith('"') and expr.endswith('"'):
+        return expr[1:-1]
+
+    if expr.lstrip('-').isdigit():
+        return int(expr)
+
+    try:
+        return float(expr)
+    except ValueError:
+        pass
+
+    if expr.startswith("@"):
+        parts = expr.split()
+        func_name = parts[0][1:]
+        raw_args  = parts[1:]
+
+        if func_name not in functions:
+            raise YuriRuntimeError(f"Undefined function: @{func_name}")
+
+        params, body = functions[func_name]
+        old_vars = variables.copy()
+
+        for i, param in enumerate(params):
+            if i < len(raw_args):
+                variables[param] = evaluate(raw_args[i])
+
+        result = None
+        for child in body:
+            ret = run_node(child)
+            if isinstance(ret, ReturnSignal):
+                result = ret.value
+                break
+
+        variables.clear()
+        variables.update(old_vars)
+        return result
+
+    if expr in variables:
+        return variables[expr]
 
     return expr
 
