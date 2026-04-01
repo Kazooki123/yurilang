@@ -1,6 +1,7 @@
 @wlw:
     @yuri math
     @yuri citrus
+    @yuri bloomintoyou
     
     @bond x = @add 5 3
     @confess "Result:" x
@@ -36,5 +37,9 @@
 
     @yuzu_alone_after
     @mei_alone_after
+
+    @bond feelings = [["distant", "confused", "realizing", "confessing"]]
+    feelings @> @affect yuu_reacts
+
 
 
