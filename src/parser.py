@@ -17,7 +17,8 @@ def parse_line(line):
     keyword = tokens[0]
 
     if keyword == "@bond":
-        return Node("assign", (tokens[1], tokens[3]))
+        val = " ".join(tokens[3:])
+        return Node("assign", (tokens[1], val))
 
     elif keyword == "@confess":
         return Node("print", tokens[1:])
