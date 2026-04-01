@@ -146,6 +146,80 @@ def evaluate(expr):
     return expr
 
 
+def run_map(array, step):
+    if not isinstance(array, list):
+        raise YuriRuntimeError("@affect requires an array on the left side of @>")
+
+    step = step.strip()
+
+    parts = step.split()
+    if len(parts) < 2:
+        raise YuriRuntimeError("@affect requires a function name")
+
+    func_name = parts[1]
+
+    if func_name not in functions:
+        raise YuriRuntimeError(f"Undefined function: {func_name}")
+
+    results = []
+    for item in array:
+        params, body = functions[func_name]
+        old_vars = variables.copy()
+
+        if params:
+            variables[params[0]] = item
+
+        result = None
+        for child in body:
+            ret = run_node(child)
+            if isinstance(ret, ReturnSignal):
+                result = ret.value
+                break
+
+        variables.clear()
+        variables.update(old_vars)
+        results.append(result)
+
+    return results
+
+
+def run_filter(array, step):
+    if not isinstance(array, list):
+        raise YuriRuntimeError("@choose requires an array on the left side of @>")
+
+    parts = step.split()
+    if len(parts) < 2:
+        raise YuriRuntimeError("@choose requires a function name")
+
+    func_name = parts[1]
+
+    if func_name not in functions:
+        raise YuriRuntimeError(f"Undefined function: {func_name}")
+
+    results = []
+    for item in array:
+        params, body = functions[func_name]
+        old_vars = variables.copy()
+
+        if params:
+            variables[params[0]] = item
+
+        result = None
+        for child in body:
+            ret = run_node(child)
+            if isinstance(ret, ReturnSignal):
+                result = ret.value
+                break
+
+        variables.clear()
+        variables.update(old_vars)
+
+        if result:
+            results.append(item)
+
+    return results
+
+
 def run_node(node):
     global variables, functions
 
@@ -279,19 +353,17 @@ def run_node(node):
     # PIPELINES
     elif node.type == "pipeline":
         parts = node.value.split("@>")
-
         current = evaluate(parts[0].strip())
 
         for step in parts[1:]:
             step = step.strip()
 
-            if step.startswith("@affect"):
-                current = run_map(current, step)
+        if step.startswith("@affect"):
+            current = run_map(current, step)
+        elif step.startswith("@choose"):
+            current = run_filter(current, step)
 
-            elif step.startswith("@choose"):
-                current = run_filter(current, step)
-
-        return current
+    return current
 
     elif node.type == "persona":
         name = node.value
