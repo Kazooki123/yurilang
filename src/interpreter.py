@@ -45,33 +45,36 @@ def evaluate(expr):
             func_name = parts[0][1:]
             args = parts[1:]
 
-        if func_name in functions:
-            params, body = functions[func_name]
+            if func_name in functions:
+                params, body = functions[func_name]
+                old_vars = variables.copy()
 
-            old_vars = variables.copy()
+                for i, param in enumerate(params):
+                    if i < len(args):
+                        variables[param] = evaluate(args[i])
 
-            for i, param in enumerate(params):
-                if i < len(args):
-                    variables[param] = evaluate(args[i])
+                for child in body:
+                    result = run_node(child)
+                    if isinstance(result, ReturnSignal):
+                        variables.clear()
+                        variables.update(old_vars)
+                        return result.value
 
-            for child in body:
-                result = run_node(child)
-                if isinstance(result, ReturnSignal):
-                    variables.clear()
-                    variables.update(old_vars)
-                    return result.value
+                variables.clear()
+                variables.update(old_vars)
+                return None
+            else:
+                raise YuriRuntimeError(f"Undefined function: {func_name}")
 
-            variables.clear()
-            variables.update(old_vars)
-            return None
-
+        # String literal
         if expr.startswith('"') and expr.endswith('"'):
             return expr[1:-1]
 
+        # Integer literal
         if expr.isdigit():
             return int(expr)
 
-        # Variable lookup (IMPORTANT FIX)
+        # Variable lookup
         if expr in variables:
             return variables[expr]
 
@@ -79,24 +82,17 @@ def evaluate(expr):
 
     if isinstance(expr, list):
         if len(expr) == 1:
-            return evaluate(expr[0], variables)
+            return evaluate(expr[0])
 
         if len(expr) == 3:
-            left = evaluate(expr[0], variables)
+            left = evaluate(expr[0])
             op = expr[1]
-            right = evaluate(expr[2], variables)
+            right = evaluate(expr[2])
 
-            # Math operations
-            if op == "plus":
-                return left + right
-            if op == "minus":
-                return left - right
-            if op == "times":
-                return left * right
-            if op == "over":
-                return left / right
+            if op in YURI_OPS:
+                return YURI_OPS[op](left, right)
 
-        return [evaluate(e, variables) for e in expr]
+        return [evaluate(e) for e in expr]
 
     return expr
 
