@@ -105,6 +105,12 @@ def evaluate(expr):
     if (expr.startswith("[[") or expr.startswith("#[[")):
         return parse_array_literal(expr)
 
+    if "." in expr and not expr.startswith('"'):
+        parts = expr.split(".", 1)
+        obj = variables.get(parts[0])
+        if isinstance(obj, dict):
+            return obj.get(parts[1])
+
     if expr.startswith("@"):
         parts = expr.split()
         func_name = parts[0][1:]
@@ -152,6 +158,27 @@ def run_node(node):
     elif node.type == "assign":
         name, val = node.value
         variables[name] = evaluate(val)
+
+    # BOND @NEW
+    elif node.type == "bond_new":
+        var_name, type_name = node.value
+
+        if type_name not in personas:
+            raise YuriRuntimeError(f"Unknown persona: {type_name}")
+
+        template = personas[type_name]
+        instance = {}
+
+        for child in node.children:
+            if child.type == "assign":
+                field_name, field_val = child.value
+                instance[field_name] = evaluate(field_val)
+
+        for field in template:
+            if field not in instance:
+                instance[field] = None
+
+        variables[var_name] = instance
 
     # PRINT
     elif node.type == "print":
