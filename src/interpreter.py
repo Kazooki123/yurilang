@@ -81,6 +81,9 @@ def evaluate(expr):
         return expr
 
     if isinstance(expr, list):
+        if len(expr) == 0:
+            return None
+
         if len(expr) == 1:
             return evaluate(expr[0])
 
@@ -89,8 +92,8 @@ def evaluate(expr):
             op = expr[1]
             right = evaluate(expr[2])
 
-            if op in YURI_OPS:
-                return YURI_OPS[op](left, right)
+        if op in YURI_OPS:
+            return YURI_OPS[op](left, right)
 
         return [evaluate(e) for e in expr]
 
