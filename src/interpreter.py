@@ -34,7 +34,7 @@ def evaluate(expr):
 
     expr = str(expr).strip()
 
-    if expr.isdigit():
+    if re.fullmatch(r"\d+", expr):
         return int(expr)
 
     if expr.startswith('"') and expr.endswith('"'):
