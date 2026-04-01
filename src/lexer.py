@@ -1,7 +1,7 @@
 # YuriLangs main lexer
 import re
 
-T_REGEX = r'(@\w+)|("(?:[^"]*)")|(\d+)|([=:+\-*/><!]+)|(\w+)'
+T_REGEX = r'(#\[\[[^\]]*\]\])|(\[\[[^\]]*\]\])|(@\w+)|("(?:[^"]*)")|(\d+)|([=:+\-*/><!]+)|(\w+)'
 
 def get_indent_lvl(line):
     return len(line) - len(line.lstrip(" "))
