@@ -17,3 +17,19 @@
             @confess "two"
         @poet _:
             @confess "something else"
+
+    @persona Character:
+        name
+        age
+        hobby
+        crush
+
+    @bond aiko = @new Character:
+        name = "Aiko"
+        age = 17
+        hobby = "reading"
+        crush = "Rei"
+
+    @confess aiko.name
+    @confess aiko.crush
+
