@@ -1,8 +1,121 @@
-@ship yuu:
-    @confess "I don’t understand love yet..."
+@ship touko_voice:
+    @confess "I am whoever you need me to be."
+    @confess "Class president. Student council. Perfect daughter."
+    @confess "I have been performing so long I forgot there was a stage."
+    @promise "nobody home..."
 
-@ship touko:
-    @confess "I want to be special to someone 💖"
+@ship yuu_voice:
+    @confess "Everyone talks about love like it's obvious."
+    @confess "Like one day it just arrives and you know."
+    @confess "I have been waiting to know for so long."
+    @confess "What if I never feel it?"
+    @promise "still waiting"
 
-@ship confession:
-    @confess "This feeling... it's real."
+@ship touko_meets_yuu:
+    @confess "She said she had never fallen in love."
+    @confess "I felt something loosen in my chest."
+    @confess "Finally. Someone who won't expect anything from me."
+    @confess "Someone safe to be close to."
+    @promise "the most dangerous kind of safe"
+
+@ship yuu_meets_touko:
+    @confess "She was beautiful in the way that makes you nervous."
+    @confess "She chose me for student council and I didn't know why."
+    @confess "I still don't know why."
+    @confess "I'm not sure I mind."
+    @promise "curiosity not yet named"
+
+@ship touko_reacts state:
+    @sappho state:
+        @poet "confused":
+            @confess "Good. Stay that way."
+            @confess "Confused people are easier to keep close."
+            @promise "control"
+        @poet "certain":
+            @confess "No. You can't be certain."
+            @confess "I need you uncertain."
+            @promise "fear dressed as cruelty"
+        @poet "inlove":
+            @confess "Don't say that."
+            @confess "Don't you dare say that to me."
+            @confess "I am not her. I will never be her."
+            @promise "the wall is cracking"
+        @poet "leaving":
+            @confess "Then go."
+            @confess "Everyone does eventually."
+            @confess "..."
+            @confess "Please don't go."
+            @promise "the mask finally slips.."
+        @poet _:
+            @confess "..."
+            @promise "silence"
+
+@ship yuu_reacts state:
+    @sappho state:
+        @poet "distant":
+            @confess "She's doing it again."
+            @confess "Smiling at everyone like she means it."
+            @confess "Why does it bother me so much?"
+            @promise "something is shifting"
+        @poet "close":
+            @confess "She leaned in and I forgot how to breathe."
+            @confess "That's probably normal."
+            @confess "That's probably nothing."
+            @promise "it is not nothing"
+        @poet "realizing":
+            @confess "Oh."
+            @confess "Oh no."
+            @confess "It was me this whole time."
+            @confess "I was the one falling."
+            @promise "too late to unknow this"
+        @poet "confessing":
+            @confess "I like you Touko."
+            @confess "Not as a concept. Not as a performance."
+            @confess "You. The real one underneath all of it."
+            @confess "I like her too. Even if she scares you."
+            @promise "the truest thing ever said"
+        @poet _:
+            @confess "I don't know what I feel yet."
+            @promise "still figuring it out"
+
+@ship the_play state:
+    @sappho state:
+        @poet "rehearsal":
+            @confess "Say the lines Touko."
+            @confess "You have said them a hundred times."
+            @confess "Why do they feel different tonight?"
+            @promise "because Yuu is watching"
+        @poet "performance":
+            @confess "The lights are bright and the audience is quiet."
+            @confess "But I can only see one face."
+            @confess "I wrote this play to let go of her."
+            @confess "I think instead it set me free."
+            @promise "the beginning of becoming real"
+        @poet _:
+            @confess "The curtain rises."
+            @promise "everything changes"
+
+@ship nanami_watches:
+    @confess "I see it before either of them do."
+    @confess "The way Touko softens when Yuu speaks."
+    @confess "The way Yuu's eyes always find her in a crowd."
+    @confess "I lost her long before this moment."
+    @confess "But I think she is finally finding herself."
+    @promise "bittersweet and beautiful"
+
+@ship the_ending state:
+    @sappho state:
+        @poet "hopeful":
+            @confess "I don't need you to love me like a shoujo manga."
+            @confess "I just need you to stay."
+            @confess "And keep seeing me. The real me."
+            @promise "enough. more than enough."
+        @poet "uncertain":
+            @confess "I can't promise I know how to do this."
+            @confess "I have only ever been a performance."
+            @confess "But I want to try. With you."
+            @promise "the bravest words she ever spoke!"
+        @poet _:
+            @confess "Some things don't need an ending."
+            @confess "Some things just need to continue."
+            @promise "bloom"
