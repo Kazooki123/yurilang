@@ -363,7 +363,7 @@ def run_node(node):
         elif step.startswith("@choose"):
             current = run_filter(current, step)
 
-    return current
+        return current
 
     elif node.type == "persona":
         name = node.value
