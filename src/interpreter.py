@@ -45,7 +45,7 @@ def evaluate(expr):
     return [evaluate(item) for item in items]
 
     if expr.startswith("#[[") and expr.endswith("]]"):
-    inner = expr[3:-2].strip()
+        inner = expr[3:-2].strip()
 
     if not inner:
         return []
