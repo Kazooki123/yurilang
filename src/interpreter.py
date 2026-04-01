@@ -24,7 +24,9 @@ class ReturnSignal:
 
 def translate_expr(expr):
     for word, sym in YURI_OPS.items():
-        expr = expr.replace(word, sym)
+        if callable(sym):
+        continue
+
     return expr
 
 
@@ -95,6 +97,11 @@ def evaluate(expr):
         op = tokens[1]
         right = evaluate(tokens[2])
 
+        if isinstance(left, str) and left.isdigit():
+            left = int(left)
+         if isinstance(right, str) and right.isdigit():
+            right = int(right)
+
         if op in ("plus", "+"):
             return left + right
         elif op in ("minus", "-"):
@@ -104,11 +111,7 @@ def evaluate(expr):
         elif op in ("over", "/"):
             return left / right
 
-    try:
-        expr = translate_expr(expr)
-        return eval(expr, {"__builtins__": {}})
-    except:
-        return expr
+    return expr
 
 
 def run_node(node):
