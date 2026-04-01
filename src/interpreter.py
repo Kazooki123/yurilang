@@ -46,14 +46,16 @@ def parse_array_literal(expr):
         item = item.strip()
         if not item:
             continue
-        
-        if (item.startswith("'") and item.endswith("'")) or \
-           (item.startswith('"') and item.endswith('"')):
+
+        if item.startswith('"') and item.endswith('"'):
             items.append(item[1:-1])
-        # Integer
+        
+        elif item.startswith("'") and item.endswith("'"):
+            items.append(item[1:-1])
+        
         elif item.lstrip('-').isdigit():
             items.append(int(item))
-        # Float
+        # float
         else:
             try:
                 items.append(float(item))
