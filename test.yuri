@@ -1,6 +1,7 @@
 @wlw:
     @yuri math
-
+    @yuri citrus
+    
     @bond x = @add 5 3
     @confess "Result:" x
 
@@ -32,4 +33,8 @@
 
     @confess aiko.name
     @confess aiko.crush
+
+    @yuzu_alone_after
+    @mei_alone_after
+
 
