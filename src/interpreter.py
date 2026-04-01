@@ -30,7 +30,9 @@ def translate_expr(expr):
     return expr
 
 
-def evaluate(expr, variables):
+def evaluate(expr):
+    global variables
+
     if isinstance(expr, (int, float, bool)):
         return expr
 
