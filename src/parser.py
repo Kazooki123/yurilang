@@ -18,6 +18,9 @@ def parse_line(line):
     keyword = tokens[0]
 
     if keyword == "@bond":
+        if tokens[3] == "@new":
+            type_name = tokens[4]
+            return Node("bond_new", (tokens[1], type_name))
         val = " ".join(tokens[3:])
         return Node("assign", (tokens[1], val))
 
