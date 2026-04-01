@@ -12,7 +12,8 @@ def normalize(name):
 
 def extract_functions(node, functions):
     if node.type == "function":
-        functions[node.value] = node.children
+        name, params = node.value
+functions[name] = (params, node.children)
 
     for child in node.children:
         extract_functions(child, functions)
