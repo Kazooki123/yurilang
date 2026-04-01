@@ -44,7 +44,7 @@ def parse_line(line):
         return Node("match", tokens[1])
 
     elif keyword == "@poet":
-        return Node("case", tokens[1:])
+        return Node("case", tokens[1])
 
     elif keyword == "@reject":
         return Node("reject", tokens[1:])
