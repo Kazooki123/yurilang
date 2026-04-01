@@ -196,6 +196,23 @@ def run_node(node):
     elif node.type == "import":
         load_module(node.value, functions)
 
+    # PIPELINES
+    elif node.type == "pipeline":
+        parts = node.value.split("@>")
+
+        current = evaluate(parts[0].strip())
+
+        for step in parts[1:]:
+            step = step.strip()
+
+            if step.startswith("@affect"):
+                current = run_map(current, step)
+
+            elif step.startswith("@choose"):
+                current = run_filter(current, step)
+
+        return current
+
     else:
         print("Unknown node:", node.type)
 
