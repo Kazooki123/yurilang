@@ -144,17 +144,19 @@ Repeats an action a number of times.
 
 ---
 
-"@yuri" — Import (Planned)
+"@yuri" — Import
 
-**Reserved** for importing modules.
+For importing modules.
+
+> [!NOTE]
+> Modules in yurilang are still unstable and may break in future updates or changes.
 
 ```
 @yuri math
 @yuri json
-```
 
-> [!WARNING]
-> «⚠️ Not fully implemented yet.»
+@yuri bloomintoyou
+```
 
 ---
 
