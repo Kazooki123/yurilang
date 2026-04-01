@@ -74,6 +74,9 @@ def evaluate(expr):
         func_name = parts[0][1:]
         raw_args  = parts[1:]
 
+        # Debugging
+        print(f"DEBUG CALL: func={func_name}, raw_args={raw_args}")
+
         if func_name not in functions:
             raise YuriRuntimeError(f"Undefined function: @{func_name}")
 
