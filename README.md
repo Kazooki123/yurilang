@@ -1,5 +1,7 @@
 # YuriLang ❤️🧡🤍
 
+![Logo](https://github.com/Kazooki123/yurilang/blob/main/IMG_20260401_200938.png)
+
 YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
 
 > [!IMPORTANT]
