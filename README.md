@@ -87,6 +87,20 @@ Alters the flow of a program.
 
 ---
 
+@sappho / @poet - Pattern matching
+
+Used for pattern matching
+
+```
+@sappho x:
+    @poet 1:
+        @confess "one"
+    @poet 2:
+        @confess "two"
+```
+
+---
+
 @choose — Filtering
 
 Filters or choose a specific element from a list based on the conditions
