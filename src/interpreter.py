@@ -4,6 +4,7 @@ from src.modules import load_module
 
 variables = {}
 functions = {}
+personas = {}
 
 YURI_OPS = {
     "plus": lambda a, b: a + b,
@@ -264,6 +265,28 @@ def run_node(node):
                 current = run_filter(current, step)
 
         return current
+
+    elif node.type == "persona":
+        name = node.value
+        fields = [child.value for child in node.children if child.type == "field"]
+        personas[name] = fields
+
+    elif node.type == "new":
+        type_name, raw_fields = node.value
+
+        if type_name not in personas:
+            raise YuriRuntimeError(f"Unknown persona: {type_name}")
+
+        template = personas[type_name]
+        instance = {}
+
+        for field in template:
+            if field in raw_fields:
+                instance[field] = evaluate(raw_fields[field])
+            else:
+                instance[field] = None
+
+        return instance
 
     else:
         print("Unknown node:", node.type)
