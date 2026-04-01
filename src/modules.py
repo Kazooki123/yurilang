@@ -3,7 +3,10 @@ from src.parser import parse
 
 
 loaded_modules = set()
-STORE_PATH = "store"
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STORE_PATH = os.path.join(BASE_DIR, "..", "store")
+STORE_PATH = os.path.normpath(STORE_PATH)
 
 
 def normalize(name):
@@ -24,9 +27,6 @@ def load_module(name, functions):
     filename = os.path.join(STORE_PATH, f"{normalized}.yuri")
 
     if normalized in loaded_modules:
-        return
-
-    if name in loaded_modules:
         return
 
     if not os.path.exists(filename):
