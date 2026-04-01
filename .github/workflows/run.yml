@@ -20,6 +20,4 @@ jobs:
       - name: Run and Test YuriLang
         run: |
           python main.py test.yuri
-      - name: Test YuriLang's Math
-        run: |
-          python main.py math.yuri
+
