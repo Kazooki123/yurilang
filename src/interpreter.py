@@ -36,7 +36,7 @@ def evaluate(expr):
     expr = str(expr).strip()
 
     if expr.startswith("[[") and expr.endswith("]]"):
-    inner = expr[2:-2].strip()
+        inner = expr[2:-2].strip()
 
     if not inner:
         return []
