@@ -19,6 +19,10 @@
             @confess "two"
         @poet _:
             @confess "something else"
+    
+    @bond z = 5
+    @jealous z == 5:
+        @confess "Z is five"
 
     @persona Character:
         name
