@@ -5,3 +5,15 @@
     @confess "Result:" x
 
     @confess "Hello, World!"
+
+    @bond nums = [[1, 2, 3]]
+    @bond words = #[["hello", "world"]]
+
+    @bond y = 2
+    @sappho y:
+        @poet 1:
+            @confess "one"
+        @poet 2:
+            @confess "two"
+        @poet _:
+            @confess "something else"
