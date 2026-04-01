@@ -84,7 +84,7 @@ def parse_line(line):
         if len(tokens) == 1:
             return Node("field", tokens[0])
 
-   return Node("unknown", tokens)
+    return Node("unknown", tokens)
 
 
 def parse(code):
