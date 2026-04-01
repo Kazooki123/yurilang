@@ -76,9 +76,15 @@ def parse_line(line):
     elif "@>" in line:
         return Node("pipeline", line)
 
+    elif len(tokens) >= 3 and tokens[1] == "=":
+        val = " ".join(tokens[2:])
+        return Node("assign", (tokens[0], val))
+
     else:
         if len(tokens) == 1:
             return Node("field", tokens[0])
+
+   return Node("unknown", tokens)
 
 
 def parse(code):
