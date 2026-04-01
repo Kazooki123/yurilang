@@ -1,6 +1,7 @@
 # Parser for keywords, operators, and more
 # They'll be added slowly later on
 
+import re
 from src.lexer import tokenize, get_indent_lvl
 
 class Node:
@@ -48,6 +49,19 @@ def parse_line(line):
 
     elif keyword == "@reject":
         return Node("reject", tokens[1:])
+
+    elif keyword == "@persona":
+        name = tokens[1]
+        return Node("persona", name)
+
+    elif keyword == "@new":
+        type_name = tokens[1]
+        fields = {}
+        rest = " ".join(tokens[2:])
+        for match in re.finditer(r'(\w+)\s*=\s*(".*?"|\d+|\w+)', rest):
+            fields[match.group(1)] = match.group(2)
+
+        return Node("new", (type_name, fields))
    
     elif keyword == "@promise":
         return Node("return", tokens[1:])
@@ -59,7 +73,9 @@ def parse_line(line):
     elif "@>" in line:
         return Node("pipeline", line)
 
-    return Node("unknown", tokens)
+    else:
+        if len(tokens) == 1:
+            return Node("field", tokens[0])
 
 
 def parse(code):
@@ -86,3 +102,4 @@ def parse(code):
         stack.append((indent, node))
 
     return root
+
