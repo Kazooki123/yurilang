@@ -39,6 +39,32 @@ def evaluate(expr):
     if isinstance(expr, str):
         expr = expr.strip()
 
+        # FUNCTION CALL
+        if expr.startswith("@"):
+            parts = expr.split()
+            func_name = parts[0][1:]
+            args = parts[1:]
+
+        if func_name in functions:
+            params, body = functions[func_name]
+
+            old_vars = variables.copy()
+
+            for i, param in enumerate(params):
+                if i < len(args):
+                    variables[param] = evaluate(args[i])
+
+            for child in body:
+                result = run_node(child)
+                if isinstance(result, ReturnSignal):
+                    variables.clear()
+                    variables.update(old_vars)
+                    return result.value
+
+            variables.clear()
+            variables.update(old_vars)
+            return None
+
         if expr.startswith('"') and expr.endswith('"'):
             return expr[1:-1]
 
