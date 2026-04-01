@@ -89,7 +89,19 @@ Alters the flow of a program.
 
 ---
 
-@sappho / @poet - Pattern matching
+@affect — Mapping
+
+"Transforms a list of items into a new list of items by changing them uniformly (e.g., squaring every number in a list)" - Internet
+
+```
+@wlw:
+    @bond feelings = [["distant", "confused", "realizing", "confessing"]]
+    feelings @> @affect yuu_reacts
+```
+
+---
+
+@sappho / @poet — Pattern matching
 
 Used for pattern matching
 
