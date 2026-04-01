@@ -232,6 +232,7 @@ def run_node(node):
     elif node.type == "assign":
         name, val = node.value
         variables[name] = evaluate(val)
+        print(f"DEBUG assign: {name} = {variables[name]}")
 
     # BOND @NEW
     elif node.type == "bond_new":
@@ -353,6 +354,7 @@ def run_node(node):
     # PIPELINES
     elif node.type == "pipeline":
         parts = node.value.split("@>")
+        print(f"DEBUG pipeline parts: {[p.strip() for p in parts]}")
         current = evaluate(parts[0].strip())
 
         for step in parts[1:]:
