@@ -25,7 +25,7 @@ class ReturnSignal:
 def translate_expr(expr):
     for word, sym in YURI_OPS.items():
         if callable(sym):
-        continue
+            continue
 
     return expr
 
