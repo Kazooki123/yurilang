@@ -55,6 +55,9 @@ def parse_line(line):
     elif keyword.startswith("@"):
         return Node("call", (keyword[1:], tokens[1:]))
 
+    elif "@>" in line:
+        return Node("pipeline", line)
+
     return Node("unknown", tokens)
 
 
