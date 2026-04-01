@@ -30,6 +30,38 @@ def translate_expr(expr):
     return expr
 
 
+def parse_array_literal(expr):
+    expr = expr.strip()
+
+    if expr.startswith("#[[") and expr.endswith("]]"):
+        inner = expr[3:-2]
+    elif expr.startswith("[[") and expr.endswith("]]"):
+        inner = expr[2:-2]
+    else:
+        return None
+
+    items = []
+    for item in inner.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        
+        if (item.startswith("'") and item.endswith("'")) or \
+           (item.startswith('"') and item.endswith('"')):
+            items.append(item[1:-1])
+        # Integer
+        elif item.lstrip('-').isdigit():
+            items.append(int(item))
+        # Float
+        else:
+            try:
+                items.append(float(item))
+            except ValueError:
+                items.append(item)
+
+    return items
+
+
 def evaluate(expr):
     global variables
 
@@ -68,6 +100,9 @@ def evaluate(expr):
         return float(expr)
     except ValueError:
         pass
+
+    if (expr.startswith("[[") or expr.startswith("#[[")):
+        return parse_array_literal(expr)
 
     if expr.startswith("@"):
         parts = expr.split()
@@ -150,6 +185,30 @@ def run_node(node):
                 result = run_node(child)
                 if isinstance(result, ReturnSignal):
                     return result
+
+    # PATTERN MATCHING 
+    elif node.type == "match":
+        subject = evaluate(node.value)
+
+        for case in node.children:
+            if case.type != "case":
+                continue
+
+            if case.value == "_":
+                for child in case.children:
+                    result = run_node(child)
+                    if isinstance(result, ReturnSignal):
+                        return result
+                break
+
+            case_val = evaluate(case.value)
+
+            if subject == case_val:
+                for child in case.children:
+                    result = run_node(child)
+                    if isinstance(result, ReturnSignal):
+                        return result
+                break
 
     # FUNCTION DEFINE
     elif node.type == "function":
