@@ -22,7 +22,7 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 Defines where the program begins.
 
 ```
-@wlw
+@wlw:
     @confess "Hello, world 💖"
 ```
 
