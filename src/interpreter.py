@@ -36,6 +36,9 @@ def evaluate(expr):
 
     expr = str(expr).strip()
 
+    if expr in variables:
+        return variables[expr]
+
     if re.fullmatch(r"\d+", expr):
         return int(expr)
 
