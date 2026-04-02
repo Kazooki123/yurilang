@@ -28,6 +28,7 @@ def print_yuri():
 
 def repl():
     print_yuri()
+    print("Made with Love by StarloExoliz!")
     print("YuriLang REPL 💖 (type 'exit' to quit)\n")
 
     while True:
