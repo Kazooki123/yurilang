@@ -1,18 +1,21 @@
+import sys
 from src.interpreter import run
+from src.repl import repl
+
+
+def main():
+    if len(sys.argv) == 1:
+        repl()
+    else:
+        filename = sys.argv[1]
+
+        try:
+            with open(filename, "r") as f:
+                code = f.read()
+                run(code)
+        except FileNotFoundError:
+            print(f"File not found: {filename}")
+
 
 if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) < 2:
-        print("ERR!")
-        print("Usage: python main.py <file.yuri>")
-        exit()
-
-    # Testing
-    with open("test.yuri", "r") as f:
-        code = f.read()
-
-    with open(sys.argv[1], "r") as f:
-        code = f.read()
-
-    run(code)
+    main()
