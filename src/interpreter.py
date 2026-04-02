@@ -310,6 +310,10 @@ def run_node(node):
                 if isinstance(result, ReturnSignal):
                     return result
 
+    # ELSE
+    elif node.type == "else":
+        pass
+
     # LOOP
     elif node.type == "loop":
         count = int(evaluate(node.value[-1]))
