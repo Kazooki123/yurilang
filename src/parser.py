@@ -30,6 +30,9 @@ def parse_line(line):
     elif keyword == "@jealous":
         return Node("if", tokens[1:])
 
+    elif keyword == "@forgive":
+        return Node("else", None)
+
     elif keyword == "@cling":
         return Node("loop", tokens[1:])
 
