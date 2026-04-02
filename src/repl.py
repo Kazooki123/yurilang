@@ -2,12 +2,11 @@ from src.interpreter import run
 
 def print_yuri():
     COLORS = [
-        "\033[38;5;203m", # dark pink
-        "\033[38;5;210m", # pink
-        "\033[38;5;217m", # light pink
-        "\033[38;5;224m", # cream
-        "\033[38;5;181m", # light orange
-        "\033[38;5;173m", # orange
+        "\033[38;5;166m",  # dark orange
+        "\033[38;5;208m",  # orange
+        "\033[38;5;223m",  # cream
+        "\033[38;5;212m",  # pink
+        "\033[38;5;197m",  # dark pink
     ]
     RESET = "\033[0m"
 
