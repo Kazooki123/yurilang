@@ -96,8 +96,7 @@ def parse_line(line):
 def parse(code):
     lines = code.split("\n")
     root = Node("root")
-
-    stack = [(-1, root)]  # (indent_level, node)
+    stack = [(-1, root)]
 
     for line in lines:
         if not line.strip():
@@ -109,12 +108,20 @@ def parse(code):
         if not node:
             continue
 
-        # Fix indentation hierarchy
         while stack and indent <= stack[-1][0]:
             stack.pop()
 
-        stack[-1][1].children.append(node)
+        parent = stack[-1][1]
+
+        if node.type == "else":
+            for _, candidate in reversed(stack):
+                if candidate.type == "if":
+                    candidate.children.append(node)
+                    stack.append((indent, node))
+                    break
+            continue
+
+        parent.children.append(node)
         stack.append((indent, node))
 
     return root
-
