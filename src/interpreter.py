@@ -327,6 +327,26 @@ def run_node(node):
                 if isinstance(result, ReturnSignal):
                     return result
 
+    # NOT / APART
+    elif node.type == "not":
+        left = evaluate(node.value[0])
+        op = node.value[1]
+        right = evaluate(node.value[2])
+
+        condition = False
+        if op == "==":  condition = left == right
+        elif op == "!=": condition = left != right
+        elif op == ">":  condition = left > right
+        elif op == "<":  condition = left < right
+        elif op == ">=": condition = left >= right
+        elif op == "<=": condition = left <= right
+
+        if not condition:
+            for child in node.children:
+                result = run_node(child)
+                if isinstance(result, ReturnSignal):
+                    return result
+
     # WHILE LOOP
     elif node.type == "while":
         def check_condition():
