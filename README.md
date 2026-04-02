@@ -117,10 +117,7 @@ Used for pattern matching
 
 @choose — Filtering
 
-Filters or choose a specific element from a list based on the conditions
-
-> [!WARNING]
-> This feature hasn't been implemented *yet*
+Filters or choose a specific element from a list based on the conditions.
 
 ```
 @wlw:
@@ -137,9 +134,6 @@ Filters or choose a specific element from a list based on the conditions
 "@jealous" — Conditional (Basic)
 
 Checks a condition.
-
-> [!WARNING]
-> ⚠️ Current version only evaluates simple conditions and prints a result.
 
 ```
 @jealous x == 10
