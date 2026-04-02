@@ -1,6 +1,7 @@
 import re
 from src.parser import parse
 from src.modules import load_module
+from vm.memory import memory_set, memory_get, memory_forget
 
 variables = {}
 functions = {}
@@ -399,6 +400,23 @@ def run_node(node):
                     if isinstance(result, ReturnSignal):
                         return result
                 break
+
+    # MEMORY / RECALL / FORGET
+    elif node.type == "memory_set":
+        key, val = node.value
+        memory_set(evaluate(key), evaluate(val))
+
+    elif node.type == "memory_get":
+        key = evaluate(node.value)
+        result = memory_get(key)
+    
+        clean_key = key.strip('"')
+        variables[clean_key] = result
+        return result
+
+    elif node.type == "memory_forget":
+        key = evaluate(node.value)
+        memory_forget(key)
 
     # FUNCTION DEFINE
     elif node.type == "function":
