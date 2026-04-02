@@ -191,6 +191,14 @@ For importing modules.
 
 ---
 
+## Compiler
+
+[Coming Soon]
+
+## Packages / Libraries / Stores
+
+[Coming Soon]
+
 ## Issues and Bugs
 
 If you encounter a bug, error, or any issues, please immediately contact me or create a pull request (PR) and explain what's wrong or for making suggestions and feedbacks, Thank you!! 🧡 >.<
