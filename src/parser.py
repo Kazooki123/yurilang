@@ -50,6 +50,9 @@ def parse_line(line):
         params = tokens[2:]
         return Node("function", (name, params))
 
+    elif keyword == "@apart":
+        return Node("not", tokens[1:])
+
     elif keyword == "@sappho":
         return Node("match", tokens[1])
 
