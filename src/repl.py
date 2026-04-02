@@ -30,7 +30,7 @@ def shoutouts():
 
     names = [
         "@jamiw (1024ping)", "@gseppo", "@lunalapigeonne",
-        "@anormalwintrovert", "@hexagonos", "@theophilus_dev"
+        "@anormalwintrovert", "@hexagonos", "@theophilus_dev", "@iiiangel"
     ]
 
     for i in range(0, len(names), 2):
