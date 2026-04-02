@@ -312,8 +312,12 @@ def run_node(node):
 
     # LOOP
     elif node.type == "loop":
-        count = int(evaluate(node.value[0]))
+        count = int(evaluate(node.value[-1]))
+        label = evaluate(node.value[0]) if len(node.value) > 1 else None
+
         for _ in range(count):
+            if label:
+                print(label)
             for child in node.children:
                 result = run_node(child)
                 if isinstance(result, ReturnSignal):
