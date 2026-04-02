@@ -20,7 +20,7 @@ def print_yuri():
     ]
 
     for i, line in enumerate(text):
-        color = COLORS[i % len(COLORS)]
+        color = COLORS[int(i * len(COLORS) / len(text))]
         print(color + line + RESET)
 
     print("🧡 YuriLang REPL 🩷\n")
