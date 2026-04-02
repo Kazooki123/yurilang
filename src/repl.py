@@ -25,9 +25,26 @@ def print_yuri():
 
     print("🧡 YuriLang REPL 🩷\n")
 
+def shoutouts():
+    print("Shout Outs!!")
+
+    names = [
+        "@jamiw (1024ping)", "@gseppo", "@lunalapigeonne",
+        "@anormalwintrovert", "@hexagonos", "@theophilus_dev"
+    ]
+
+    for i in range(0, len(names), 2):
+        left = names[i]
+        right = names[i+1] if i+1 < len(names) else ""
+        print(f"   {left:<30} {right}")
+
+    print()
+
+
 def repl():
     print_yuri()
     print("Made with Love by StarloExoliz!")
+    shoutouts()
     print("YuriLang REPL 💖 (type 'exit' to quit)\n")
 
     while True:
