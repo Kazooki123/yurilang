@@ -1,0 +1,17 @@
+@ship max a b:
+    @jealous a > b:
+        @promise a
+    @forgive:
+        @promise b
+
+@ship min a b:
+    @jealous a < b:
+        @promise a
+    @forgive:
+        @promise b
+
+@ship abs x:
+    @jealous x < 0:
+        @promise 0 minus x
+    @forgive:
+        @promise x
