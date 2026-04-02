@@ -76,7 +76,7 @@ Returns a value after exiting
 
 @jam — Break/Pass
 
-Alters the flow of a program.
+Used to break out a loop.
 
 > [!WARNING]
 > Not fully implemented *yet.*
@@ -91,7 +91,7 @@ Alters the flow of a program.
 
 @affect — Mapping
 
-"Transforms a list of items into a new list of items by changing them uniformly (e.g., squaring every number in a list)" - Internet
+Returns the provided typed map unchanged.
 
 ```
 @wlw:
