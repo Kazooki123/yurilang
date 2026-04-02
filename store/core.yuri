@@ -1,17 +1,48 @@
-@ship max a b:
-    @jealous a > b:
-        @promise a
-    @forgive:
-        @promise b
+? (YuriLang Core Library)
+? (Pure utility ships written in YuriLang itself)
+? (Import with: @yuri core)
 
-@ship min a b:
-    @jealous a < b:
-        @promise a
-    @forgive:
-        @promise b
+? (--- String Utilities ---)
 
-@ship abs x:
-    @jealous x < 0:
-        @promise 0 minus x
-    @forgive:
-        @promise x
+@ship greet name:
+    @confess "Hello," name
+    @promise name
+
+@ship announce title message:
+    @confess "---" title "---"
+    @confess message
+
+? (--- Narrative Utilities ---)
+
+@ship whisper message:
+    @confess "..." message "..."
+    @promise message
+
+@ship shout message:
+    @confess "!!" message "!!"
+    @promise message
+
+@ship pause:
+    @confess ""
+    @promise "silence"
+
+@ship reflect feeling:
+    @sappho feeling:
+        @poet "joy":
+            @confess "She smiled and the whole room changed."
+            @promise "joy"
+        @poet "longing":
+            @confess "The space between them felt like years.."
+            @promise "longing"
+        @poet "fear":
+            @confess "Her hands wouldn't stop shaking!"
+            @promise "fear"
+        @poet "hope":
+            @confess "Maybe... Just maybe."
+            @promise "hope"
+        @poet "love":
+            @confess "There it was.. Undeniable and terrifying."
+            @promise "love"
+        @poet _:
+            @confess "She couldn't name it yet."
+            @promise "unnamed"
