@@ -36,6 +36,9 @@ def parse_line(line):
     elif keyword == "@cling":
         return Node("loop", tokens[1:])
 
+    elif keyword == "@fate":
+        return Node("while", tokens[1:])
+
     elif keyword == "@yuri":
         return Node("import", tokens[1])
 
