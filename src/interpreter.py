@@ -323,6 +323,35 @@ def run_node(node):
                 if isinstance(result, ReturnSignal):
                     return result
 
+    # WHILE LOOP
+    elif node.type == "while":
+        def check_condition():
+            left = evaluate(node.value[0])
+            op = node.value[1]
+            right = evaluate(node.value[2])
+
+            if op == "==": return left == right
+            if op == "!=": return left != right
+            if op == ">":  return left > right
+            if op == "<":  return left < right
+            if op == ">=": return left >= right
+            if op == "<=": return left <= right
+            return False
+
+        # To prevent infinite loops bs
+        max_iterations = 10000
+        count = 0
+
+        while check_condition():
+            if count >= max_iterations:
+                raise YuriRuntimeError("@fate loop exceeded 10000 iterations — infinite loop!?")
+            for child in node.children:
+                result = run_node(child)
+                if isinstance(result, ReturnSignal):
+                    return result
+
+            count += 1
+
     # PATTERN MATCHING 
     elif node.type == "match":
         subject = evaluate(node.value)
@@ -401,6 +430,7 @@ def run_node(node):
 
         return current
 
+    # STRUCTS
     elif node.type == "persona":
         name = node.value
         fields = [child.value for child in node.children if child.type == "field"]
