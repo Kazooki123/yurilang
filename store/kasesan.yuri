@@ -1,0 +1,118 @@
+? (Kase-san and Morning Glories)
+? (Import with: @yuri kasesangirl)
+
+@ship yamada_voice:
+    @confess "I've always loved the garden."
+    @confess "The morning glories. The quiet before school."
+    @confess "I never expected to find something more beautiful than flowers."
+    @promise "then kase-san ran past"
+
+@ship kase_voice:
+    @confess "Running is the only thing I've ever been sure of."
+    @confess "Finish lines. Personal bests. Clear goals."
+    @confess "She was tending the flowers when I noticed her."
+    @confess "I didn't know what a finish line looked like after that."
+    @promise "something changed in my chest"
+
+@ship yamada_notices:
+    @confess "She always waves at me."
+    @confess "Just a small wave. Nothing special."
+    @confess "But I water the same spot every morning hoping to see it."
+    @promise "it means everything"
+
+@ship kase_notices:
+    @confess "She's always there. Same time. Same gentle hands."
+    @confess "I started running that route on purpose."
+    @confess "I told myself it was for training."
+    @promise "it was not for training"
+
+@ship the_first_gift:
+    @confess "She left morning glories on my shoe locker."
+    @confess "No note. Just flowers."
+    @confess "I pressed one between the pages of my textbook."
+    @confess "I still have it."
+    @promise "the beginning of everything"
+
+@ship yamada_reacts state:
+    @sappho state:
+        @poet "nervous":
+            @confess "My hands always smell like soil."
+            @confess "I hope she doesn't mind."
+            @confess "I hope she notices."
+            @promise "please notice"
+        @poet "happy":
+            @confess "She remembered my favorite flower."
+            @confess "She actually remembered."
+            @confess "I had to turn away so she wouldn't see me crying."
+            @promise "overwhelming and soft"
+        @poet "scared":
+            @confess "What if she's going somewhere I can't follow?"
+            @confess "What if running takes her away from me?"
+            @confess "What if I'm not enough to make her stay?"
+            @promise "the fear beneath the love"
+        @poet "certain":
+            @confess "I don't know a lot of things."
+            @confess "I'm not fast or impressive or bold."
+            @confess "But I know I love her."
+            @confess "Like morning glories know the sun."
+            @promise "quietly. completely."
+        @poet _:
+            @confess "She smiled at me today."
+            @promise "that's enough"
+
+@ship kase_reacts state:
+    @sappho state:
+        @poet "running":
+            @confess "Every lap I think about her."
+            @confess "Is that normal?"
+            @confess "My times are getting worse."
+            @confess "I don't care."
+            @promise "worth it"
+        @poet "waiting":
+            @confess "She's late today."
+            @confess "The garden looks different without her in it."
+            @confess "I did an extra lap just to have somewhere to put the feeling."
+            @promise "i missed her"
+        @poet "confessing":
+            @confess "I practiced what I wanted to say a hundred times."
+            @confess "It all disappeared when she looked at me."
+            @confess "So I just said it."
+            @confess "I like you. I really like you."
+            @promise "simple and terrifying and true"
+        @poet "together":
+            @confess "She reached for my hand on the way home."
+            @confess "I almost tripped."
+            @confess "A track athlete. Almost tripped."
+            @confess "She laughed. I laughed."
+            @promise "home"
+        @poet _:
+            @confess "I'll run a little slower tomorrow."
+            @confess "So she can keep up."
+            @promise "for her"
+
+@ship morning_glories:
+    @confess "They bloom in the morning and close by afternoon."
+    @confess "Brief and tender and unrepeatable."
+    @confess "Yamada tends them every day without fail."
+    @confess "Kase thinks that says everything about who she is."
+    @promise "faithful. gentle. growing toward the light."
+
+@ship the_ending state:
+    @sappho state:
+        @poet "hopeful":
+            @confess "She got into the school near the university track."
+            @confess "I got into the horticulture program one station away."
+            @confess "We didn't plan it."
+            @confess "We didn't need to."
+            @promise "some things grow toward each other naturally"
+        @poet "bittersweet":
+            @confess "Distance is just another kind of waiting."
+            @confess "And I have always been patient."
+            @confess "Morning glories bloom whether or not you're watching."
+            @confess "I'll bloom too. And so will she."
+            @promise "we'll find our way back"
+        @poet _:
+            @confess "The morning glories are blooming again."
+            @confess "Same as always."
+            @confess "Except now someone is here to see them with me."
+            @promise "that changes everything"
