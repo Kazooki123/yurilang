@@ -9,3 +9,40 @@
 
 @ship div a b:
     @promise a over b
+
+@ship max a b:
+    @jealous a > b:
+        @promise a
+    @forgive:
+        @promise b
+
+@ship min a b:
+    @jealous a < b:
+        @promise a
+    @forgive:
+        @promise b
+
+@ship abs x:
+    @jealous x < 0:
+        @promise 0 minus x
+    @forgive:
+        @promise x
+
+@ship clamp val low high:
+    @jealous val < low:
+        @promise low
+    @forgive:
+        @jealous val > high:
+            @promise high
+        @forgive:
+            @promise val
+
+@ship between val low high:
+    @jealous val >= low:
+        @jealous val <= high:
+            @promise 1
+        @forgive:
+            @promise 0
+    @forgive:
+        @promise 0
+
