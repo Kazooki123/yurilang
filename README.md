@@ -118,6 +118,21 @@ Used for pattern matching. You can learn what pattern matchings are [here.](http
 
 ---
 
+@luna - Lambda function
+
+Anonymous functions used for inline.
+
+> [!WARNING]
+> This feature hasn't been fully implemented *yet*
+
+```
+@wlw:
+    @bond double = @luna x -> x times 2
+    @confess @double 5
+```
+
+---
+
 @choose — Filtering
 
 Filters or choose a specific element from a list based on the conditions.
