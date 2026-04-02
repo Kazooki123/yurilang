@@ -59,6 +59,9 @@ Declares a function (also supports parameters :p)
 ```
 @ship YuuIsGoated:
     @confess "Peak!"
+
+@ship bloom_into_you:
+    @confess "More Peak!"
 ```
 
 ---
@@ -103,7 +106,7 @@ Returns the provided typed map unchanged.
 
 @sappho / @poet — Pattern matching
 
-Used for pattern matching
+Used for pattern matching. You can learn what pattern matchings are [here.](https://en.wikipedia.org/wiki/Pattern_matching)
 
 ```
 @sappho x:
@@ -135,6 +138,9 @@ Filters or choose a specific element from a list based on the conditions.
 
 Checks a condition.
 
+`@jealous` -> if
+`@forgive` -> else
+
 ```
 @wlw:
     @jealous a > 5:
@@ -150,7 +156,7 @@ Checks a condition.
 Repeats an action a number of times.
 
 ```
-@cling 3
+@cling "Woosh!" 3
 @cling "yay!" 5
 ```
 
@@ -184,7 +190,7 @@ For importing modules.
 
     @jealous x == 10
 
-    @cling 2
+    @cling "yahoo!" 3
 ```
 
 ---
