@@ -78,6 +78,17 @@ def parse_line(line):
     elif keyword == "@promise":
         return Node("return", tokens[1:])
 
+    elif keyword == "@memory":
+        key = tokens[1]
+        val = tokens[3] if len(tokens) > 3 else None
+        return Node("memory_set", (key, val))
+
+    elif keyword == "@recall":
+        return Node("memory_get", tokens[1])
+
+    elif keyword == "@forget":
+        return Node("memory_forget", tokens[1])
+
     # function call: @name
     elif keyword.startswith("@"):
         return Node("call", (keyword[1:], tokens[1:]))
