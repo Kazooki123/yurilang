@@ -275,9 +275,37 @@ def run_node(node):
         condition = False
         if op == "==":
             condition = left == right
+        elif op == "!=":
+            condition = left != right
+        elif op == ">":
+            condition = left > right
+        elif op == "<":
+            condition = left < right
+        elif op == ">=":
+            condition = left >= right
+        elif op == "<=":
+            condition = left <= right
+
+        if_body = []
+        else_body = []
+        in_else = False
+
+        for child in node.children:
+            if child.type == "else":
+                in_else = True
+                continue
+            if in_else:
+                else_body.append(child)
+            else:
+                if_body.append(child)
 
         if condition:
-            for child in node.children:
+            for child in if_body:
+                result = run_node(child)
+                if isinstance(result, ReturnSignal):
+                    return result
+        else:
+            for child in else_body:
                 result = run_node(child)
                 if isinstance(result, ReturnSignal):
                     return result
