@@ -136,7 +136,11 @@ Filters or choose a specific element from a list based on the conditions.
 Checks a condition.
 
 ```
-@jealous x == 10
+@wlw:
+    @jealous a > 5:
+        @confess "Greater than five."
+    @forgive:
+        @confess "Five or less."
 ```
 
 ---
