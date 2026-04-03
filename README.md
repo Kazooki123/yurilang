@@ -42,7 +42,7 @@ Creates and assigns a variable.
 
 ---
 
-"@confess — Output
+@confess — Output
 
 Prints values or text.
 
