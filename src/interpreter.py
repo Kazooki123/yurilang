@@ -199,7 +199,7 @@ def evaluate(expr):
         elif func_name == "bshift":
             a = int(evaluate(raw_args[0]))
             b = int(evaluate(raw_args[1]))
-        return a << b if b >= 0 else a >> abs(b)
+            return a << b if b >= 0 else a >> abs(b)
 
         if func_name not in functions:
             raise YuriRuntimeError(f"Undefined function: @{func_name}")
