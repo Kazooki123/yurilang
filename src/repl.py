@@ -35,7 +35,7 @@ YuriLang REPL Help ☀️
 Commands:
   help        Show this help menu
   exit/quit   Exit REPL
-  amy         Easter egg 👀
+  amy         (Easter egg)
 
 Normal input:
   Any YuriLang code will be executed normally
@@ -47,6 +47,7 @@ def trigger_amy_easter_egg():
 
     # install chafa first so it can work
     os.system("chafa amy.png")
+    os.system("chafa amy2.png")
 
     # try:
     #    img = Image.open("amy.png")
