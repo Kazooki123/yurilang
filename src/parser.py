@@ -39,6 +39,11 @@ def parse_line(line):
     elif keyword == "@fate":
         return Node("while", tokens[1:])
 
+    elif keyword == "@rebond":
+        target = tokens[1]
+        val = " ".join(tokens[3:])
+        return Node("rebond", (target, val))
+
     elif keyword == "@yuri":
         return Node("import", tokens[1])
 
