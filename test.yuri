@@ -57,5 +57,12 @@
     @forgive:
         @confess "Five or less."
 
+    @bond name = "Aiko"
+    @bond feeling = "inlove"
+    @bond chapter = 6
+
+    @echo "Her name is {name}."
+    @echo "She is {feeling} and it's in chapter {chapter}."
+
 
 
