@@ -212,6 +212,35 @@ For importing modules.
 
 ---
 
+@spectrum - Enums
+
+A data type that lets you define a value as one of several possible variants.
+
+```
+@spectrum Feeling:
+    confused
+    curious
+    nervous
+    inlove
+    certain
+```
+
+---
+
+@persona - Structs
+
+A custom data type that lets you group related data together under one name
+
+```
+@persona Character
+    name
+    age
+    hobby
+    crush
+```
+
+---
+
 ### Example Program
 
 ```
