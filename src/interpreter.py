@@ -106,6 +106,26 @@ def evaluate(expr):
     except ValueError:
         pass
 
+    if "[[" in expr and not expr.startswith("[[") and not expr.startswith("#[["):
+        parts = expr.split("[[", 1)
+        obj_name = parts[0].strip()
+        rest = "[[" + parts[1]
+
+        import re
+        indices = re.findall(r'\[\[([^\]]+)\]\]', rest)
+
+        obj = evaluate(obj_name)
+        for idx in indices:
+            index = evaluate(idx.strip())
+            if not isinstance(obj, list):
+                raise YuriRuntimeError(f"Cannot index into non-array: {obj_name}")
+            if not isinstance(index, int):
+                raise YuriRuntimeError(f"Array index must be an integer, got: {index}")
+            if index < 0 or index >= len(obj):
+                raise YuriRuntimeError(f"Index {index} out of range for array of length {len(obj)}")
+            obj = obj[index]
+        return obj
+
     if (expr.startswith("[[") or expr.startswith("#[[")):
         return parse_array_literal(expr)
 
