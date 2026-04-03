@@ -6,6 +6,7 @@ from vm.memory import memory_set, memory_get, memory_forget
 variables = {}
 functions = {}
 personas = {}
+awakened = set()
 
 YURI_OPS = {
     "plus": lambda a, b: a + b,
@@ -234,6 +235,8 @@ def run_node(node):
     # ASSIGN
     elif node.type == "assign":
         name, val = node.value
+        if name in awakened:
+            raise YuriRuntimeError(f"'{name}' has already awakened. It is permanent.")
         variables[name] = evaluate(val)
         # print(f"DEBUG assign: {name} = {variables[name]}")
 
@@ -471,6 +474,13 @@ def run_node(node):
             current = run_filter(current, step)
 
         return current
+
+    # AWAKE / PERMANENT VAR
+    elif node.type == "awakening":
+        name = node.value
+        if name not in variables:
+            raise YuriRuntimeError(f"'{name}' cannot awaken!")
+        awakened.add(name)
 
     # STRUCTS
     elif node.type == "persona":
