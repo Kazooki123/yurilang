@@ -56,27 +56,43 @@ def parse_array_literal(expr):
         return None
 
     items = []
-    for item in inner.split(","):
-        item = item.strip()
-        if not item:
-            continue
+    depth = 0
+    current = ""
 
-        if item.startswith('"') and item.endswith('"'):
-            items.append(item[1:-1])
-        
-        elif item.startswith("'") and item.endswith("'"):
-            items.append(item[1:-1])
-        
-        elif item.lstrip('-').isdigit():
-            items.append(int(item))
-        # float
+    for char in inner:
+        if char == "[":
+            depth += 1
+            current += char
+        elif char == "]":
+            depth -= 1
+            current += char
+        elif char == "," and depth == 0:
+            item = current.strip()
+            if item:
+                items.append(_parse_item(item))
+            current = ""
         else:
-            try:
-                items.append(float(item))
-            except ValueError:
-                items.append(item)
+            current += char
+
+    if current.strip():
+        items.append(_parse_item(current.strip()))
 
     return items
+
+
+def _parse_item(item):
+    if item.startswith("[[") or item.startswith("#[["):
+        return parse_array_literal(item)
+    if item.startswith('"') and item.endswith('"'):
+        return item[1:-1]
+    if item.startswith("'") and item.endswith("'"):
+        return item[1:-1]
+    if item.lstrip('-').isdigit():
+        return int(item)
+    try:
+        return float(item)
+    except ValueError:
+        return item
 
 
 def evaluate(expr):
