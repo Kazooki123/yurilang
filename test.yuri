@@ -64,5 +64,35 @@
     @echo "Her name is {name}."
     @echo "She is {feeling} and it's in chapter {chapter}."
 
+    @try:
+        @confess "She reaches out..."
+        @reject "her hands are shaking"
+        @confess "This line never runs."
+    @catch err:
+        @echo "She got hurt: {err}"
+    @heal:
+        @confess "But she kept going."
+
+    @confess ""
+    @try:
+        @bond x = @add 5 3
+        @echo "Result: {x}"
+    @catch err:
+        @confess "This won't run."
+    @heal:
+        @confess "Healed regardless."
+
+    @confess ""
+    @bond attempts = 0
+    @fate attempts < 3:
+        @try:
+            @jealous attempts == 1:
+                @reject "second attempt always hurts"
+            @echo "Attempt {attempts} succeeded."
+        @catch err:
+            @echo "Attempt {attempts} failed: {err}"
+        @heal:
+            @rebond attempts = attempts plus 1
+
 
 
