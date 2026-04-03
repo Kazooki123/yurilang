@@ -81,18 +81,3 @@
         @confess "This won't run."
     @heal:
         @confess "Healed regardless."
-
-    @confess ""
-    @bond attempts = 0
-    @fate attempts < 3:
-        @try:
-            @jealous attempts == 1:
-                @reject "second attempt always hurts"
-            @echo "Attempt {attempts} succeeded."
-        @catch err:
-            @echo "Attempt {attempts} failed: {err}"
-        @heal:
-            @rebond attempts = attempts plus 1
-
-
-
