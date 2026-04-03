@@ -224,6 +224,16 @@ def run_filter(array, step):
     return results
 
 
+def interpolate(template, variables):
+    import re
+    def replacer(match):
+        key = match.group(1)
+        if key in variables:
+            return str(variables[key])
+        return f"{{{key}}}"
+    return re.sub(r'\{(\w+)\}', replacer, template)
+
+
 def run_node(node):
     global variables, functions
 
@@ -269,6 +279,12 @@ def run_node(node):
     # REJECT
     elif node.type == "reject":
         raise YuriRuntimeError(evaluate(node.value))
+
+    # ECHO
+    elif node.type == "echo":
+        template = evaluate(node.value)
+        result = interpolate(template, variables)
+        print(result)
 
     # IF
     elif node.type == "if":
