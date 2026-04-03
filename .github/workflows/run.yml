@@ -19,5 +19,5 @@ jobs:
 
       - name: Run and Test YuriLang
         run: |
-          python src/main.py test.yuri
+          python main.py test.yuri
 
