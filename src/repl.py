@@ -1,4 +1,5 @@
 from src.interpreter import run
+from PIL import Image
 
 def print_yuri():
     COLORS = [
@@ -25,6 +26,42 @@ def print_yuri():
 
     print("🧡 YuriLang REPL 🩷\n")
 
+
+def print_help():
+    print("""
+YuriLang REPL Help ☀️
+
+Commands:
+  help        Show this help menu
+  exit/quit   Exit REPL
+  amy         Easter egg 👀
+
+Normal input:
+  Any YuriLang code will be executed normally
+""")
+
+
+def trigger_amy_easter_egg():
+    print("\n🥞 Amy mode activated...\n")
+
+    try:
+        img = Image.open("amy.png")
+        img = img.resize((80, 40))
+        img = img.convert("L")
+
+        chars = " .:-=+*#%@"
+
+        for y in range(img.height):
+            line = ""
+            for x in range(img.width):
+                pixel = img.getpixel((x, y))
+                line += chars[pixel * len(chars) // 256]
+            print(line)
+
+    except Exception as e:
+        print("Couldn't load amy image:", e)
+
+
 def shoutouts():
     print("Shout Outs!!")
 
@@ -49,11 +86,19 @@ def repl():
 
     while True:
         try:
-            code = input(">>> ")
+            code = input(">>> ").strip()
 
-            if code.strip() in ("exit", "quit"):
+            if code in ("exit", "quit"):
                 print("bye bye! :<")
                 break
+
+            if code == "help":
+                print_help()
+                continue
+
+            if code == "amy":
+               trigger_amy_easter_egg()
+               continue
 
             run(code)
 
