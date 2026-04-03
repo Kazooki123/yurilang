@@ -62,6 +62,9 @@ def parse_line(line):
     elif keyword == "@reject":
         return Node("reject", tokens[1:])
 
+    elif keyword == "@echo":
+        return Node("echo", tokens[1])
+
     elif keyword == "@persona":
         name = tokens[1]
         return Node("persona", name)
