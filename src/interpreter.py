@@ -186,9 +186,9 @@ def evaluate(expr):
 
         elif func_name == "length":
             val = evaluate(raw_args[0]) if raw_args else None
-        if isinstance(val, (list, str)):
-            return len(val)
-        raise YuriRuntimeError("@length requires an array or string")
+            if isinstance(val, (list, str)):
+                return len(val)
+            raise YuriRuntimeError("@length requires an array or string")
 
         elif func_name == "band":
             return int(evaluate(raw_args[0])) & int(evaluate(raw_args[1]))
