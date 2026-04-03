@@ -232,6 +232,39 @@ def evaluate(expr):
     return expr
 
 
+def autoviv_set(obj_name, index_expr, value):
+    import re
+    raw_indices = re.findall(r'\[\[([^\]]+)\]\]', index_expr)
+    indices = [evaluate(i.strip()) for i in raw_indices]
+
+    if obj_name not in variables or variables[obj_name] == []:
+        variables[obj_name] = {}
+
+    obj = variables[obj_name]
+
+    for i, idx in enumerate(indices[:-1]):
+        if isinstance(obj, dict):
+            if idx not in obj:
+                next_idx = indices[i + 1]
+                obj[idx] = {} if isinstance(next_idx, str) else []
+            obj = obj[idx]
+        elif isinstance(obj, list):
+            while len(obj) <= idx:
+                obj.append(None)
+            if obj[idx] is None:
+                next_idx = indices[i + 1]
+                obj[idx] = {} if isinstance(next_idx, str) else []
+            obj = obj[idx]
+
+    final = indices[-1]
+    if isinstance(obj, dict):
+        obj[final] = value
+    elif isinstance(obj, list):
+        while len(obj) <= final:
+            obj.append(None)
+        obj[final] = value
+
+
 def run_map(array, step):
     if not isinstance(array, list):
         raise YuriRuntimeError("@affect requires an array on the left side of @>")
