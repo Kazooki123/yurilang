@@ -141,23 +141,30 @@ def evaluate(expr):
         pass
 
     if "[[" in expr and not expr.startswith("[[") and not expr.startswith("#[["):
-        parts = expr.split("[[", 1)
-        obj_name = parts[0].strip()
-        rest = "[[" + parts[1]
-
         import re
-        indices = re.findall(r'\[\[([^\]]+)\]\]', rest)
+        obj_name = expr.split("[[")[0].strip()
+        rest = expr[len(obj_name):]
+        raw_indices = re.findall(r'\[\[([^\]]+)\]\]', rest)
 
         obj = evaluate(obj_name)
-        for idx in indices:
-            index = evaluate(idx.strip())
-            if not isinstance(obj, list):
-                raise YuriRuntimeError(f"Cannot index into non-array: {obj_name}")
-            if not isinstance(index, int):
-                raise YuriRuntimeError(f"Array index must be an integer, got: {index}")
-            if index < 0 or index >= len(obj):
-                raise YuriRuntimeError(f"Index {index} out of range for array of length {len(obj)}")
-            obj = obj[index]
+        for raw_idx in raw_indices:
+            idx = evaluate(raw_idx.strip())
+            if isinstance(obj, dict):
+                if idx not in obj:
+                    raise YuriRuntimeError(
+                    f"Key '{idx}' doesn't exist yet — use @autoviv to create it."
+                    )
+                obj = obj[idx]
+            elif isinstance(obj, list):
+                if not isinstance(idx, int):
+                    raise YuriRuntimeError(f"List index must be integer, got: {idx}")
+                if idx < 0 or idx >= len(obj):
+                    raise YuriRuntimeError(
+                    f"Index {idx} out of range for array of length {len(obj)}"
+                    )
+                obj = obj[idx]
+            else:
+                raise YuriRuntimeError(f"Cannot index into: {type(obj).__name__}")
         return obj
 
     if (expr.startswith("[[") or expr.startswith("#[[")):
