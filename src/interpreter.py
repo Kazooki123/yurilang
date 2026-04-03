@@ -8,13 +8,19 @@ functions = {}
 personas = {}
 awakened = set()
 
+
 YURI_OPS = {
-    "plus": lambda a, b: a + b,
-    "with": lambda a, b: a + b,
-    "minus": lambda a, b: a - b,
-    "times": lambda a, b: a * b,
-    "over": lambda a, b: a / b,
+    "plus":   lambda a, b: a + b,
+    "with":   lambda a, b: a + b,
+    "minus":  lambda a, b: a - b,
+    "times":  lambda a, b: a * b,
+    "over":   lambda a, b: a / b,
+    "band":   lambda a, b: int(a) & int(b),
+    "bor":    lambda a, b: int(a) | int(b),
+    "bxor":   lambda a, b: int(a) ^ int(b),
+    "bshift": lambda a, b: int(a) << int(b) if int(b) >= 0 else int(a) >> abs(int(b)),
 }
+
 
 class YuriRuntimeError(Exception):
     pass
@@ -170,6 +176,30 @@ def evaluate(expr):
 
         # Debugging
         # print(f"DEBUG CALL: func={func_name}, raw_args={raw_args}")
+
+        if func_name == "join":
+            arr = evaluate(raw_args[0]) if raw_args else []
+            sep = evaluate(raw_args[1]) if len(raw_args) > 1 else ""
+            if not isinstance(arr, list):
+                raise YuriRuntimeError("@join requires an array")
+        return sep.join(str(i) for i in arr)
+
+        elif func_name == "length":
+            val = evaluate(raw_args[0]) if raw_args else None
+        if isinstance(val, (list, str)):
+            return len(val)
+        raise YuriRuntimeError("@length requires an array or string")
+
+        elif func_name == "band":
+            return int(evaluate(raw_args[0])) & int(evaluate(raw_args[1]))
+        elif func_name == "bor":
+            return int(evaluate(raw_args[0])) | int(evaluate(raw_args[1]))
+        elif func_name == "bxor":
+            return int(evaluate(raw_args[0])) ^ int(evaluate(raw_args[1]))
+        elif func_name == "bshift":
+            a = int(evaluate(raw_args[0]))
+            b = int(evaluate(raw_args[1]))
+        return a << b if b >= 0 else a >> abs(b)
 
         if func_name not in functions:
             raise YuriRuntimeError(f"Undefined function: @{func_name}")
