@@ -1,5 +1,6 @@
+import os
 from src.interpreter import run
-from PIL import Image
+# from PIL import Image
 
 def print_yuri():
     COLORS = [
@@ -44,22 +45,26 @@ Normal input:
 def trigger_amy_easter_egg():
     print("\n🥞 Amy mode activated...\n")
 
-    try:
-        img = Image.open("amy.png")
-        img = img.resize((80, 40))
-        img = img.convert("L")
+    # install chafa first so it can work
+    os.system("chafa amy.png")
 
-        chars = " .:-=+*#%@"
+    # try:
+    #    img = Image.open("amy.png")
+    #    img = img.resize((80, 40))
+    #    img = img.convert("L")
 
-        for y in range(img.height):
-            line = ""
-            for x in range(img.width):
-                pixel = img.getpixel((x, y))
-                line += chars[pixel * len(chars) // 256]
-            print(line)
+    #    chars = " .:-=+*#%@"
 
-    except Exception as e:
-        print("Couldn't load amy image:", e)
+    #    for y in range(img.height):
+    #        line = ""
+    #        for x in range(img.width):
+    #            pixel = img.getpixel((x, y))
+    #            line += chars[pixel * len(chars) // 256]
+    #        print(line)
+
+    # except Exception as e:
+    #    print("Couldn't load amy image:", e)
+
 
 
 def shoutouts():
