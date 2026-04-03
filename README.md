@@ -14,6 +14,7 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 - Every statement starts with "@"
 - Code executes only inside "@wlw" (entry point) :3
 - Strings must be wrapped in quotes ""...""
+- Variables are **mutable** by default, unless awakened.
 
 ---
 
@@ -129,6 +130,24 @@ Anonymous functions used for inline.
 @wlw:
     @bond double = @luna x -> x times 2
     @confess @double 5
+```
+
+---
+
+@awaken - Immutable
+
+In Yurilang, variables are mutable by default, so to make them permanent or unchangeable, use the `@awaken` keyword.
+
+```
+@wlw:
+    @bond x = 10
+    @awaken x
+```
+
+Trying to modify an already **awakened** variable throws an Runtime Error:
+
+```bash
+Error: 'x' has already awakened. It is permanent.
 ```
 
 ---
