@@ -9,4 +9,4 @@ readme = "README.md"
 requires-python = ">=3.13"
 
 [project.scripts]
-yuri = "main:main"
+yuri = "src.main:main"
