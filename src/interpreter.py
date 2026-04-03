@@ -182,7 +182,7 @@ def evaluate(expr):
             sep = evaluate(raw_args[1]) if len(raw_args) > 1 else ""
             if not isinstance(arr, list):
                 raise YuriRuntimeError("@join requires an array")
-        return sep.join(str(i) for i in arr)
+            return sep.join(str(i) for i in arr)
 
         elif func_name == "length":
             val = evaluate(raw_args[0]) if raw_args else None
