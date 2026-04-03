@@ -74,10 +74,10 @@ def parse_line(line):
         name = tokens[1]
         return Node("persona", name)
 
-    elif keyword == "@try":
+    elif keyword == "@attempt":
         return Node("try", None)
 
-    elif keyword == "@catch":
+    elif keyword == "@grab":
         var = tokens[1] if len(tokens) > 1 else "err"
         return Node("catch", var)
 
