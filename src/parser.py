@@ -70,6 +70,11 @@ def parse_line(line):
     elif keyword == "@echo":
         return Node("echo", tokens[1])
 
+    elif keyword == "@autoviv":
+        target = tokens[1]
+        val = " ".join(tokens[3:])
+        return Node("autoviv", (target, val))
+
     elif keyword == "@persona":
         name = tokens[1]
         return Node("persona", name)
