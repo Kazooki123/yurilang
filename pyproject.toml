@@ -1,0 +1,12 @@
+[project]
+name = "yurilang"
+version = "0.1.0"
+description = "A Yuri-themed esoteric programming language 🧡"
+authors = [
+    { name="starloexoliz11" }
+]
+readme = "README.md"
+requires-python = ">=3.13"
+
+[project.scripts]
+yuri = "main:main"
