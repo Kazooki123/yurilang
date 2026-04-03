@@ -1,10 +1,10 @@
 import sys
-from .interpreter import run
-from .repl import repl
-from .compiler import compile_yuri
-from ..vm.compiler import compile_to_bytecode
-from ..vm.bytecode import YuriVM
-from ..vm.serializer import save_yuric, load_yuric
+from src.interpreter import run
+from src.repl import repl
+from src.compiler import compile_yuri
+from vm.compiler import compile_to_bytecode
+from vm.bytecode import YuriVM
+from vm.serializer import save_yuric, load_yuric
 
 
 def main():
