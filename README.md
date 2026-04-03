@@ -20,7 +20,7 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 
 💖 Available Keywords (v0.1)
 
-"@wlw" — Entry Point
+@wlw — Entry Point
 
 Defines where the program begins.
 
@@ -31,7 +31,7 @@ Defines where the program begins.
 
 ---
 
-"@bond" — Variable Declaration
+@bond — Variable Declaration
 
 Creates and assigns a variable.
 
@@ -42,7 +42,7 @@ Creates and assigns a variable.
 
 ---
 
-"@confess" — Output
+"@confess — Output
 
 Prints values or text.
 
@@ -53,7 +53,7 @@ Prints values or text.
 
 ---
 
-"@ship" — Functions
+@ship — Functions
 
 Declares a function (also supports parameters :p)
 
@@ -83,7 +83,7 @@ Returns a value after exiting
 Used to break out a loop.
 
 > [!WARNING]
-> Not fully implemented *yet.*
+> This feature hasn't been fully implemented *yet*
 
 ```
 @cling 10:
@@ -168,7 +168,7 @@ Filters or choose a specific element from a list based on the conditions.
 
 ---
 
-"@jealous" — Conditional (Basic)
+@jealous — Conditional (Basic)
 
 Checks a condition.
 
@@ -185,7 +185,7 @@ Checks a condition.
 
 ---
 
-"@cling" — Loop (Basic)
+@cling — Loop (Basic)
 
 Repeats an action a number of times.
 
@@ -196,7 +196,7 @@ Repeats an action a number of times.
 
 ---
 
-"@yuri" — Import
+@yuri — Import
 
 For importing modules.
 
@@ -212,9 +212,12 @@ For importing modules.
 
 ---
 
-@spectrum - Enums
+@spectrum — Enums
 
 A data type that lets you define a value as one of several possible variants.
+
+> [!WARNING]
+> This feature hasn't been fully implemented *yet*
 
 ```
 @spectrum Feeling:
@@ -227,7 +230,7 @@ A data type that lets you define a value as one of several possible variants.
 
 ---
 
-@persona - Structs
+@persona — Structs
 
 A custom data type that lets you group related data together under one name
 
