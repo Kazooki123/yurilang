@@ -427,6 +427,51 @@ def run_node(node):
         result = interpolate(template, variables)
         print(result)
 
+    # TRY / CATCH / FINALLY
+    elif node.type == "try":
+        try_body  = []
+        catch_body = []
+        heal_body  = []
+        catch_var  = "err"
+
+        for child in node.children:
+            if child.type == "catch":
+                catch_var = child.value
+                catch_body = child.children
+            elif child.type == "heal":
+                heal_body = child.children
+            else:
+                try_body.append(child)
+
+        error_caught = None
+        try:
+            for child in try_body:
+                result = run_node(child)
+                if isinstance(result, ReturnSignal):
+                    for h in heal_body:
+                        run_node(h)
+                    return result
+
+        except YuriRuntimeError as e:
+            error_caught = str(e)
+
+        except Exception as e:
+            error_caught = str(e)
+
+        if error_caught is not None:
+            variables[catch_var] = error_caught
+            for child in catch_body:
+                result = run_node(child)
+                if isinstance(result, ReturnSignal):
+                    for h in heal_body:
+                        run_node(h)
+                    return result
+
+        for child in heal_body:
+            result = run_node(child)
+            if isinstance(result, ReturnSignal):
+                return result
+
     # IF
     elif node.type == "if":
         left = evaluate(node.value[0])
