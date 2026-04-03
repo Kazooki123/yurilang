@@ -33,6 +33,18 @@ def translate_expr(expr):
     return expr
 
 
+def set_indexed(obj_name, index_expr, value):
+    import re
+    indices = re.findall(r'\[\[([^\]]+)\]\]', index_expr)
+    indices = [evaluate(i.strip()) for i in indices]
+
+    obj = variables[obj_name]
+    for idx in indices[:-1]:
+        obj = obj[idx]
+   
+    obj[indices[-1]] = value
+
+
 def parse_array_literal(expr):
     expr = expr.strip()
 
@@ -332,6 +344,23 @@ def run_node(node):
                 instance[field] = None
 
         variables[var_name] = instance
+
+    # REBOND
+    elif node.type == "rebond":
+        target, val = node.value
+        value = evaluate(val)
+
+        if "[[" in target:
+            obj_name = target.split("[[")[0].strip()
+            if obj_name not in variables:
+                raise YuriRuntimeError(f"Undefined variable: {obj_name}")
+            if obj_name in awakened:
+                raise YuriRuntimeError(f"'{obj_name}' has already awakened. She knows who she is.")
+            set_indexed(obj_name, target, value)
+        else:
+            if target in awakened:
+                raise YuriRuntimeError(f"'{target}' has already awakened. She knows who she is.")
+            variables[target] = value
 
     # PRINT
     elif node.type == "print":
