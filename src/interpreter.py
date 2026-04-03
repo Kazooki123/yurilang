@@ -201,6 +201,10 @@ def evaluate(expr):
             b = int(evaluate(raw_args[1]))
             return a << b if b >= 0 else a >> abs(b)
 
+        elif func_name == "input":
+            prompt = evaluate(raw_args[0]) if raw_args else ""
+            return input(prompt)
+
         if func_name not in functions:
             raise YuriRuntimeError(f"Undefined function: @{func_name}")
 
