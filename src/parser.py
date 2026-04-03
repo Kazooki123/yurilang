@@ -66,6 +66,9 @@ def parse_line(line):
         name = tokens[1]
         return Node("persona", name)
 
+    elif keyword == "@awaken":
+        return Node("awakening", tokens[1])
+
     elif keyword == "@new":
         type_name = tokens[1]
         fields = {}
