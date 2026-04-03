@@ -187,6 +187,48 @@ def run_map(array, step):
     return results
 
 
+def run_reduce(array, step):
+    if not isinstance(array, list):
+        raise YuriRuntimeError("@melt requires an array on the left side of @>")
+
+    if len(array) == 0:
+        raise YuriRuntimeError("@melt cannot melt an empty array — nothing to feel.")
+
+    parts = step.split()
+    if len(parts) < 2:
+        raise YuriRuntimeError("@melt requires a function name")
+
+    func_name = parts[1]
+
+    if func_name not in functions:
+        raise YuriRuntimeError(f"Undefined function: @{func_name}")
+
+    accumulator = array[0]
+
+    for item in array[1:]:
+        params, body = functions[func_name]
+        old_vars = variables.copy()
+
+        if len(params) >= 2:
+            variables[params[0]] = accumulator
+            variables[params[1]] = item
+        elif len(params) == 1:
+            variables[params[0]] = item
+
+        result = None
+        for child in body:
+            ret = run_node(child)
+            if isinstance(ret, ReturnSignal):
+                result = ret.value
+                break
+
+        variables.clear()
+        variables.update(old_vars)
+        accumulator = result if result is not None else accumulator
+
+    return accumulator
+
+
 def run_filter(array, step):
     if not isinstance(array, list):
         raise YuriRuntimeError("@choose requires an array on the left side of @>")
@@ -478,16 +520,17 @@ def run_node(node):
     # PIPELINES
     elif node.type == "pipeline":
         parts = node.value.split("@>")
-        # print(f"DEBUG pipeline parts: {[p.strip() for p in parts]}")
         current = evaluate(parts[0].strip())
 
         for step in parts[1:]:
             step = step.strip()
 
-        if step.startswith("@affect"):
-            current = run_map(current, step)
-        elif step.startswith("@choose"):
-            current = run_filter(current, step)
+            if step.startswith("@affect"):
+                current = run_map(current, step)
+            elif step.startswith("@choose"):
+                current = run_filter(current, step)
+            elif step.startswith("@melt"):
+                current = run_reduce(current, step)
 
         return current
 
@@ -530,4 +573,3 @@ def run(code):
 
     for node in tree.children:
         run_node(node)
-
