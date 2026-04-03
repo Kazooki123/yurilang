@@ -566,6 +566,25 @@ def run_node(node):
                 if isinstance(result, ReturnSignal):
                     return result
 
+    # AUTOVIVIFICATION (PERL :3)
+    elif node.type == "autoviv":
+        target, val = node.value
+        value = evaluate(val)
+
+        if "[[" in target:
+            obj_name = target.split("[[")[0].strip()
+            if obj_name in awakened:
+                raise YuriRuntimeError(
+                    f"'{obj_name}' has already awakened. She knows who she is."
+                )
+            autoviv_set(obj_name, target, value)
+        else:
+            if target in awakened:
+                raise YuriRuntimeError(
+                    f"'{target}' has already awakened. She knows who she is."
+                )
+            variables[target] = value
+
     # NOT / APART
     elif node.type == "not":
         left = evaluate(node.value[0])
