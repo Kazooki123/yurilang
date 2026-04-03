@@ -156,6 +156,14 @@ def parse(code):
                     break
             continue
 
+        if node.type in ("catch", "heal"):
+            for _, candidate in reversed(stack):
+                if candidate.type == "try":
+                    candidate.children.append(node)
+                    stack.append((indent, node))
+                    break
+            continue
+
         parent.children.append(node)
         stack.append((indent, node))
 
