@@ -6,6 +6,7 @@ from vm.memory import memory_set, memory_get, memory_forget
 variables = {}
 functions = {}
 personas = {}
+spectrums = {}
 awakened = set()
 
 
