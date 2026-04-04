@@ -31,6 +31,14 @@ class ReturnSignal:
         self.value = value
 
 
+class BreakSignal:
+    pass
+
+
+class ContinueSignal:
+    pass
+
+
 def translate_expr(expr):
     for word, sym in YURI_OPS.items():
         if callable(sym):
@@ -461,6 +469,12 @@ def run_node(node):
     elif node.type == "reject":
         raise YuriRuntimeError(evaluate(node.value))
 
+    elif node.type == "break":
+        return BreakSignal()
+
+    elif node.type == "continue":
+        return ContinueSignal()
+
     # ECHO
     elif node.type == "echo":
         template = evaluate(node.value)
@@ -568,10 +582,18 @@ def run_node(node):
         for _ in range(count):
             if label:
                 print(label)
+            should_break = False
             for child in node.children:
                 result = run_node(child)
                 if isinstance(result, ReturnSignal):
                     return result
+                if isinstance(result, BreakSignal):
+                    should_break = True
+                    break
+                if isinstance(result, ContinueSignal):
+                    break
+            if should_break:
+                break
 
     # AUTOVIVIFICATION (PERL :3)
     elif node.type == "autoviv":
@@ -618,27 +640,32 @@ def run_node(node):
             left = evaluate(node.value[0])
             op = node.value[1]
             right = evaluate(node.value[2])
-
-            if op == "==": return left == right
-            if op == "!=": return left != right
-            if op == ">":  return left > right
-            if op == "<":  return left < right
-            if op == ">=": return left >= right
-            if op == "<=": return left <= right
+            if op == "==":  return left == right
+            if op == "!=":  return left != right
+            if op == ">":   return left > right
+            if op == "<":   return left < right
+            if op == ">=":  return left >= right
+            if op == "<=":  return left <= right
             return False
 
-        # To prevent infinite loops bs
         max_iterations = 10000
         count = 0
 
         while check_condition():
             if count >= max_iterations:
-                raise YuriRuntimeError("@fate loop exceeded 10000 iterations — infinite loop!?")
+                raise YuriRuntimeError("@fate loop exceeded 10000 iterations — infinite loop?")
+            should_break = False
             for child in node.children:
                 result = run_node(child)
                 if isinstance(result, ReturnSignal):
                     return result
-
+                if isinstance(result, BreakSignal):
+                    should_break = True
+                    break
+                if isinstance(result, ContinueSignal):
+                    break
+            if should_break:
+                break
             count += 1
 
     # PATTERN MATCHING 
