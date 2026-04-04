@@ -1,10 +1,12 @@
-import re
+import ctypes
+import os
 from src.parser import parse
 from src.modules import load_module
 from vm.memory import memory_set, memory_get, memory_forget
 
 variables = {}
 functions = {}
+c_functions = {}
 personas = {}
 spectrums = {}
 awakened = set()
@@ -123,6 +125,28 @@ def _parse_item(item):
         return float(item)
     except ValueError:
         return item
+    
+
+def _py_to_ctype(value):
+    
+    # detect types
+    if isinstance(value, float):
+        return ctypes.c_double(value)
+    
+    if isinstance(value, int):
+        return ctypes.c_long(value)
+    
+    if isinstance(value, str):
+        return ctypes.c_char_p(value.encode())
+    
+    return value
+
+def _call_c(name, raw_args):
+    # to not copy paste this block in run node and evaluate
+
+    evaluated = [evaluate(a) for a in raw_args]
+    c_args = [_py_to_ctype(a) for a in evaluated]
+    return c_functions[name](*c_args)
 
 
 def evaluate(expr):
@@ -253,6 +277,9 @@ def evaluate(expr):
             prompt = evaluate(raw_args[0]) if raw_args else ""
             return input(prompt)
 
+        if func_name in c_functions:
+            return _call_c(func_name, raw_args)
+
         if func_name not in functions:
             raise YuriRuntimeError(f"Undefined function: @{func_name}")
 
@@ -363,7 +390,7 @@ def run_reduce(array, step):
 
     func_name = parts[1]
 
-    if func_name not in functions:
+    if func_name not in functions and func_name not in c_functions:
         raise YuriRuntimeError(f"Undefined function: @{func_name}")
 
     accumulator = array[0]
@@ -786,6 +813,9 @@ def run_node(node):
     elif node.type == "call":
         name, args = node.value
 
+        if name in c_functions:
+            return _call_c(name, args)
+
         if name not in functions:
             print(f"Undefined function: {name}")
             return
@@ -814,6 +844,13 @@ def run_node(node):
     # IMPORT
     elif node.type == "import":
         load_module(node.value, functions)
+
+    # EXTERN
+    elif node.type == "extern":
+        path, name = node.value
+
+        lib = ctypes.CDLL(path)
+        c_functions[name] = getattr(lib, name)
 
     # PIPELINES
     elif node.type == "pipeline":
