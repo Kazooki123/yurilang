@@ -182,7 +182,10 @@ def evaluate(expr):
         parts = expr.split(".", 1)
         obj = variables.get(parts[0])
         if isinstance(obj, dict):
-            return obj.get(parts[1])
+            key = parts[1]
+            if key in obj:
+                return obj[key]
+            raise YuriRuntimeError(f"'{parts[1]}' is not a variant of '{parts[0]}'")
 
     if expr.startswith("@"):
         parts = expr.split()
@@ -793,6 +796,17 @@ def run_node(node):
                 instance[field] = None
 
         return instance
+
+    # ENUMS
+    elif node.type == "spectrum":
+        name = node.value
+        variants = {}
+        for child in node.children:
+            if child.type == "field":
+                variant_name = child.value
+                variants[variant_name] = f"{name}.{variant_name}"
+        spectrums[name] = variants
+        variables[name] = variants
 
     else:
         print("Unknown node:", node.type)
