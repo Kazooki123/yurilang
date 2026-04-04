@@ -21,6 +21,7 @@ YURI_OPS = {
     "bshift": lambda a, b: int(a) << int(b) if int(b) >= 0 else int(a) >> abs(int(b)),
 }
 
+
 def coerce(v):
     if isinstance(v, (int, float, bool)):
         return v
@@ -170,6 +171,19 @@ def evaluate(expr):
         return float(expr)
     except ValueError:
         pass
+
+    for op in YURI_OPS:
+        if f" {op} " in expr:
+            parts = expr.split(f" {op} ", 1)
+            left = evaluate(parts[0].strip())
+            right = evaluate(parts[1].strip())
+            left = coerce(left)
+            right = coerce(right)
+            if op in ("plus", "with"):
+                if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+                    return YURI_OPS[op](left, right)
+                return str(left) + str(right)
+            return YURI_OPS[op](left, right)
 
     if "[[" in expr and not expr.startswith("[[") and not expr.startswith("#[["):
         import re
@@ -681,6 +695,7 @@ def run_node(node):
             left = evaluate(node.value[0])
             op = node.value[1]
             right = evaluate(node.value[2])
+            print(f"DEBUG FATE: left={repr(left)} op={op} right={repr(right)}")
 
             def coerce(v):
                 if isinstance(v, (int, float)):
