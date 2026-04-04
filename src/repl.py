@@ -174,7 +174,7 @@ def repl():
                 break
 
             if detect_morse(code):
-                print("\n💖 Signal accepted...\n")
+                print("\n🍄 Signal accepted...\n")
 
                 import time
                 time.sleep(1)
