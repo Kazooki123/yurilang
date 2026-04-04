@@ -42,6 +42,7 @@ YuriLang REPL Help ☀️
 Commands:
   help        → show this message
   exit        → exit REPL
+  edit        → enters an editor
   amy         → ??? 👀
   morse       → try something mysterious...
 
