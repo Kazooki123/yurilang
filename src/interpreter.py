@@ -24,7 +24,6 @@ YURI_OPS = {
     "not":   lambda a: not a,
 }
 
-
 def coerce(v):
     if isinstance(v, (int, float, bool)):
         return v
@@ -128,36 +127,26 @@ def _parse_item(item):
 def evaluate(expr):
     global variables
 
-    if isinstance(expr, (int, float, bool)):
+    if isinstance(expr, (int, float, bool)) or expr is None:
         return expr
 
     if isinstance(expr, list):
+        if len(expr) == 0:
+            return None
+        if len(expr) == 1:
+            return evaluate(expr[0])
         if len(expr) == 3:
-            left = evaluate(expr[0])
-            op = expr[1]
-            right = evaluate(expr[2])
-
-            def coerce(v):
-                if isinstance(v, (int, float)):
-                    return v
-                if isinstance(v, str):
-                    if v.lstrip('-').isdigit():
-                        return int(v)
-                    try:
-                        return float(v)
-                    except ValueError:
-                        pass
-                return v
-
+            left  = coerce(evaluate(expr[0]))
+            op    = expr[1]
+            right = coerce(evaluate(expr[2]))
             if op in YURI_OPS:
                 if op in ("plus", "with"):
-                    l, r = coerce(left), coerce(right)
-                    if isinstance(l, (int, float)) and isinstance(r, (int, float)):
-                        return YURI_OPS[op](l, r)
-
+                    if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+                        return YURI_OPS[op](left, right)
                     return str(left) + str(right)
-                else:
-                    return YURI_OPS[op](coerce(left), coerce(right))
+                return YURI_OPS[op](left, right)
+                
+        return [evaluate(e) for e in expr]
 
     if not isinstance(expr, str):
         return expr
@@ -167,6 +156,10 @@ def evaluate(expr):
     if expr.startswith('"') and expr.endswith('"'):
         return expr[1:-1]
 
+    if expr == "love":      return True
+    if expr == "ache":      return False
+    if expr == "uncertain": return None
+
     if expr.lstrip('-').isdigit():
         return int(expr)
 
@@ -175,20 +168,11 @@ def evaluate(expr):
     except ValueError:
         pass
 
-    if expr == "love":
-        return True
-    if expr == "ache":
-        return False
-    if expr == "uncertain":
-        return None
-
-    for op in YURI_OPS:
+    for op in sorted(YURI_OPS.keys(), key=len, reverse=True):
         if f" {op} " in expr:
             parts = expr.split(f" {op} ", 1)
-            left = evaluate(parts[0].strip())
-            right = evaluate(parts[1].strip())
-            left = coerce(left)
-            right = coerce(right)
+            left  = coerce(evaluate(parts[0].strip()))
+            right = coerce(evaluate(parts[1].strip()))
             if op in ("plus", "with"):
                 if isinstance(left, (int, float)) and isinstance(right, (int, float)):
                     return YURI_OPS[op](left, right)
@@ -197,8 +181,8 @@ def evaluate(expr):
 
     if "[[" in expr and not expr.startswith("[[") and not expr.startswith("#[["):
         import re
-        obj_name = expr.split("[[")[0].strip()
-        rest = expr[len(obj_name):]
+        obj_name   = expr.split("[[")[0].strip()
+        rest       = expr[len(obj_name):]
         raw_indices = re.findall(r'\[\[([^\]]+)\]\]', rest)
 
         obj = evaluate(obj_name)
@@ -207,22 +191,23 @@ def evaluate(expr):
             if isinstance(obj, dict):
                 if idx not in obj:
                     raise YuriRuntimeError(
-                    f"Key '{idx}' doesn't exist yet — use @autoviv to create it."
+                        f"Key '{idx}' doesn't exist yet — use @autoviv to create it."
                     )
                 obj = obj[idx]
             elif isinstance(obj, list):
+                idx = coerce(idx)
                 if not isinstance(idx, int):
                     raise YuriRuntimeError(f"List index must be integer, got: {idx}")
                 if idx < 0 or idx >= len(obj):
                     raise YuriRuntimeError(
-                    f"Index {idx} out of range for array of length {len(obj)}"
+                        f"Index {idx} out of range for array of length {len(obj)}"
                     )
                 obj = obj[idx]
             else:
                 raise YuriRuntimeError(f"Cannot index into: {type(obj).__name__}")
         return obj
 
-    if (expr.startswith("[[") or expr.startswith("#[[")):
+    if expr.startswith("[[") or expr.startswith("#[["):
         return parse_array_literal(expr)
 
     if "." in expr and not expr.startswith('"'):
@@ -235,13 +220,11 @@ def evaluate(expr):
             raise YuriRuntimeError(f"'{parts[1]}' is not a variant of '{parts[0]}'")
 
     if expr.startswith("@"):
-        parts = expr.split()
+        parts     = expr.split()
         func_name = parts[0][1:]
         raw_args  = parts[1:]
 
-        # Debugging
-        # print(f"DEBUG CALL: func={func_name}, raw_args={raw_args}")
-
+        # built-in functions
         if func_name == "join":
             arr = evaluate(raw_args[0]) if raw_args else []
             sep = evaluate(raw_args[1]) if len(raw_args) > 1 else ""
@@ -265,7 +248,6 @@ def evaluate(expr):
             a = int(evaluate(raw_args[0]))
             b = int(evaluate(raw_args[1]))
             return a << b if b >= 0 else a >> abs(b)
-
         elif func_name == "input":
             prompt = evaluate(raw_args[0]) if raw_args else ""
             return input(prompt)
