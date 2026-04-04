@@ -60,6 +60,10 @@ def parse_line(line):
             return Node("continue", None)
         return Node("break", None)
 
+    elif keyword == "@spectrum":
+        name = tokens[1]
+        return Node("spectrum", name)
+
     elif keyword == "@apart":
         return Node("not", tokens[1:])
 
