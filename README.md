@@ -83,9 +83,6 @@ Returns a value after exiting
 
 Used to break out a loop.
 
-> [!WARNING]
-> This feature hasn't been fully implemented *yet*
-
 ```
 @cling 10:
     @jealous x == 5:
@@ -193,6 +190,19 @@ Repeats an action a number of times.
 ```
 @cling "Woosh!" 3
 @cling "yay!" 5
+```
+---
+
+@fate — While Loops
+
+Repeats a block of code over and over again as long as a specific condition remains true.
+
+```
+@fate y < 10:
+    @jealous y == 5:
+        @jam
+    @confess y
+    @rebond y = y plus 1
 ```
 
 ---
