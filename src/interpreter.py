@@ -116,21 +116,32 @@ def evaluate(expr):
         return expr
 
     if isinstance(expr, list):
-        if len(expr) == 0:
-            return None
-
-        if len(expr) == 1:
-            return evaluate(expr[0])
-
         if len(expr) == 3:
             left = evaluate(expr[0])
-            op   = expr[1]
+            op = expr[1]
             right = evaluate(expr[2])
 
-            if op in YURI_OPS:
-                return YURI_OPS[op](left, right)
+            def coerce(v):
+                if isinstance(v, (int, float)):
+                    return v
+                if isinstance(v, str):
+                    if v.lstrip('-').isdigit():
+                        return int(v)
+                    try:
+                        return float(v)
+                    except ValueError:
+                        pass
+                return v
 
-        return [evaluate(e) for e in expr]
+            if op in YURI_OPS:
+                if op in ("plus", "with"):
+                    l, r = coerce(left), coerce(right)
+                    if isinstance(l, (int, float)) and isinstance(r, (int, float)):
+                        return YURI_OPS[op](l, r)
+
+                    return str(left) + str(right)
+                else:
+                    return YURI_OPS[op](coerce(left), coerce(right))
 
     if not isinstance(expr, str):
         return expr
