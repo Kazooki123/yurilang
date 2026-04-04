@@ -19,6 +19,9 @@ YURI_OPS = {
     "bor":    lambda a, b: int(a) | int(b),
     "bxor":   lambda a, b: int(a) ^ int(b),
     "bshift": lambda a, b: int(a) << int(b) if int(b) >= 0 else int(a) >> abs(int(b)),
+    "and":   lambda a, b: a and b,
+    "or":    lambda a, b: a or b,
+    "not":   lambda a: not a,
 }
 
 
@@ -171,6 +174,13 @@ def evaluate(expr):
         return float(expr)
     except ValueError:
         pass
+
+    if expr == "love":
+        return True
+    if expr == "ache":
+        return False
+    if expr == "uncertain":
+        return None
 
     for op in YURI_OPS:
         if f" {op} " in expr:
@@ -449,6 +459,12 @@ def interpolate(template, variables):
 def run_node(node):
     global variables, functions
 
+    def yuri_repr(val):
+        if val is True:  return "love"
+        if val is False: return "ache"
+        if val is None:  return "uncertain"
+        return str(val)
+
     # ENTRY
     if node.type == "entry":
         for child in node.children:
@@ -502,7 +518,7 @@ def run_node(node):
 
     # PRINT
     elif node.type == "print":
-        output = [str(evaluate(v)) for v in node.value]
+        output = [yuri_repr(evaluate(v)) for v in node.value]
         print(" ".join(output))
 
     # REJECT
