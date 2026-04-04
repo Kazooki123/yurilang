@@ -4,6 +4,8 @@
 
 YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
 
+- **Docs:** `Coming Soon...`
+
 > [!IMPORTANT]
 > 💜 Still in development, new keywords and features will be added one by one, and the language isn't stabilize *yet*.
 
@@ -16,10 +18,11 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 - Strings must be wrapped in quotes ""...""
 - Variables are **mutable** by default, unless awakened.
 - You can do comments with `? (your comment)`
+- Logic / Data types exists using `love`, `ache`, and `uncertain`
 
 ---
 
-💖 Available Keywords (v0.1)
+### 🥞 Available Keywords
 
 @wlw — Entry Point
 
@@ -27,7 +30,7 @@ Defines where the program begins.
 
 ```
 @wlw:
-    @confess "Hello, world 💖"
+    @confess "Hello, world!"
 ```
 
 ---
