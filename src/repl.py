@@ -184,6 +184,7 @@ def repl():
 
                 print("https://pastebin.com/zzS2RQcH")
                 print("The password is: 8mgS5erYEL")
+                continue
 
             if code == "help":
                 print_help()
