@@ -141,12 +141,24 @@ def _py_to_ctype(value):
     
     return value
 
+def _ctype_to_py(value):
+    if isinstance(value, ctypes.c_long):
+        return value.value
+    
+    if isinstance(value, ctypes.c_double):
+        return value.value
+    
+    if isinstance(value, ctypes.c_char_p):
+        return value.value.decode() if value.value else None
+    
+    return value
+
 def _call_c(name, raw_args):
     # to not copy paste this block in run node and evaluate
 
     evaluated = [evaluate(a) for a in raw_args]
     c_args = [_py_to_ctype(a) for a in evaluated]
-    return c_functions[name](*c_args)
+    return _ctype_to_py(c_functions[name](*c_args))
 
 
 def evaluate(expr):
