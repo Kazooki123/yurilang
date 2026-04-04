@@ -5,6 +5,16 @@ import sys
 from src.interpreter import run
 # from PIL import Image
 
+def detect_morse(code):
+    TARGET = "-.-- ..- .-. .. -.-. --- .-. ."  # ???????
+
+    normalized = " ".join(code.strip().split())
+
+    if normalized == TARGET:
+        return True
+
+    return False
+
 COLORS = [
     "\033[38;5;166m",  # dark orange
     "\033[38;5;208m",  # orange
@@ -154,6 +164,20 @@ def repl():
     print("Made with Love by StarloExoliz!")
     shoutouts()
     print("YuriLang REPL 💖 (type 'exit' to quit)\n")
+
+    if detect_morse(code):
+        print("\n💖 Signal accepted...\n")
+
+        import time
+        time.sleep(1)
+
+        print("Decoding transmission...\n")
+        time.sleep(1)
+
+        print("https://pastebin.com/zzS2RQcH")
+        print("The password is: 8mgS5erYEL")
+
+        continue
 
     while True:
         try:
