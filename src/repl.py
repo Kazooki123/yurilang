@@ -165,20 +165,6 @@ def repl():
     shoutouts()
     print("YuriLang REPL 💖 (type 'exit' to quit)\n")
 
-    if detect_morse(code):
-        print("\n💖 Signal accepted...\n")
-
-        import time
-        time.sleep(1)
-
-        print("Decoding transmission...\n")
-        time.sleep(1)
-
-        print("https://pastebin.com/zzS2RQcH")
-        print("The password is: 8mgS5erYEL")
-
-        continue
-
     while True:
         try:
             code = input(yuri_prompt()).strip()
@@ -186,6 +172,18 @@ def repl():
             if code in ("exit", "quit"):
                 print("bye bye! :<")
                 break
+
+            if detect_morse(code):
+                print("\n💖 Signal accepted...\n")
+
+                import time
+                time.sleep(1)
+
+                print("Decoding transmission...\n")
+                time.sleep(1)
+
+                print("https://pastebin.com/zzS2RQcH")
+                print("The password is: 8mgS5erYEL")
 
             if code == "help":
                 print_help()
