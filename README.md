@@ -226,6 +226,21 @@ For importing modules.
 
 ---
 
+@sempai — Import C functions
+
+Loads and binds a function from a C shared library, callable like any other `@ship` function.
+
+```
+@sempai libm.so.6 sqrt double
+@bond result = @sqrt 144
+@confess result
+```
+
+Supported return types: `int`, `double`, `float`, `string`. If omitted, defaults to `int`.
+
+
+---
+
 @spectrum — Enums
 
 A data type that lets you define a value as one of several possible variants.
