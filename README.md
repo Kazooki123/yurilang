@@ -1,6 +1,6 @@
 # YuriLang ❤️🧡🤍
 
-![Logo](https://github.com/Kazooki123/yurilang/blob/main/IMG_20260401_200938.png)
+![Logo](https://github.com/Kazooki123/yurilang/blob/main/logo.png)
 
 YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
 
@@ -223,6 +223,21 @@ For importing modules.
 
 @yuri bloomintoyou
 ```
+
+---
+
+@sempai — Import C functions
+
+Loads and binds a function from a C shared library, callable like any other `@ship` function.
+
+```
+@sempai libm.so.6 sqrt double
+@bond result = @sqrt 144
+@confess result
+```
+
+Supported return types: `int`, `double`, `float`, `string`. If omitted, defaults to `int`.
+
 
 ---
 
