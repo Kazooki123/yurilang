@@ -5,14 +5,20 @@ import sys
 from src.interpreter import run
 # from PIL import Image
 
-def print_yuri():
+
+def color_line(text, i):
     COLORS = [
-        "\033[38;5;166m",  # dark orange
-        "\033[38;5;208m",  # orange
-        "\033[38;5;223m",  # cream
-        "\033[38;5;212m",  # pink
-        "\033[38;5;197m",  # dark pink
+        "\033[38;5;166m",
+        "\033[38;5;208m",
+        "\033[38;5;223m",
+        "\033[38;5;212m",
+        "\033[38;5;197m",
     ]
+    return COLORS[i % len(COLORS)] + text + "\033[0m"
+
+
+def print_yuri():
+    COLORS = color_line()
     RESET = "\033[0m"
 
     text = [
@@ -53,6 +59,27 @@ Tips:
 """)
 
 
+
+def yuri_editor():
+    print("🤍 Yuri Editor (type ':wq' to save & exit)\n")
+
+    lines = []
+
+    while True:
+        line = input(color_line("~ ", len(lines)))
+
+        if line == ":wq":
+            break
+
+        lines.append(line)
+
+    filename = input("Save as: ")
+
+    with open(filename, "w") as f:
+        f.write("\n".join(lines))
+
+    print(f"Saved to {filename}! 🫧🍮")
+
 def spin_globe():
     frames = [
         "🌍",
@@ -60,13 +87,7 @@ def spin_globe():
         "🌏",
     ]
 
-    colors = [
-        "\033[38;5;166m",  
-        "\033[38;5;208m",  
-        "\033[38;5;223m",  
-        "\033[38;5;212m",  
-        "\033[38;5;197m",  
-    ]
+    colors = color_line()
 
     for i in range(20):
         frame = frames[i % len(frames)]
@@ -80,13 +101,7 @@ def spin_globe():
 
 
 def yuri_prompt():
-    colors = [
-        "\033[38;5;166m",  
-        "\033[38;5;208m",  
-        "\033[38;5;223m", 
-        "\033[38;5;212m",  
-        "\033[38;5;197m",
-    ]
+    colors = color_line()
     text = ">>> "
     colored = ""
 
@@ -159,6 +174,10 @@ def repl():
 
             if code == "world":
                 spin_globe()
+                continue
+
+            if code == "edit":
+                yuri_editor()
                 continue
 
             if code == "amy":
