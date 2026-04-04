@@ -15,6 +15,7 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 - Code executes only inside "@wlw" (entry point) :3
 - Strings must be wrapped in quotes ""...""
 - Variables are **mutable** by default, unless awakened.
+- You can do comments with `? (your comment)`
 
 ---
 
