@@ -125,7 +125,10 @@ def parse_line(line):
         return Node("memory_forget", tokens[1])
     
     elif keyword == "@sempai":
-        return  Node("extern", (tokens[1], tokens[2]))
+        lib  = tokens[1]
+        func = tokens[2]
+        ret  = tokens[3] if len(tokens) > 3 else None
+        return Node("extern", (lib, func, ret))
 
     # function call: @name
     elif keyword.startswith("@"):

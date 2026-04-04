@@ -859,11 +859,29 @@ def run_node(node):
 
     # EXTERN
     elif node.type == "extern":
-        path, name = node.value
+        path, name, ret = node.value
 
         lib = ctypes.CDLL(path)
-        c_functions[name] = getattr(lib, name)
+        func = getattr(lib, name)
 
+        # assume args match return type
+        if ret == "double":
+            func.restype = ctypes.c_double
+            func.argtypes = [ctypes.c_double]   
+
+        elif ret == "float":
+            func.restype = ctypes.c_float
+            func.argtypes = [ctypes.c_float]
+
+        elif ret == "string":
+            func.restype = ctypes.c_char_p
+            
+        elif ret == "int":
+            func.restype = ctypes.c_long
+            func.argtypes = [ctypes.c_long]
+
+        c_functions[name] = func
+        
     # PIPELINES
     elif node.type == "pipeline":
         parts = node.value.split("@>")
