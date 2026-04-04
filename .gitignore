@@ -1,2 +1,13 @@
-*.yuric
-*.db
+# ignore everything
+*
+!/.gitignore
+
+# and then whitelist specific things
+!/**/
+!**/*.py
+!**/*.md
+!**/*.yuri
+!**/*.png
+
+!/.github/**
+!/LICENSE
