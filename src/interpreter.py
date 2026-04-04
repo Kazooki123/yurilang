@@ -21,6 +21,18 @@ YURI_OPS = {
     "bshift": lambda a, b: int(a) << int(b) if int(b) >= 0 else int(a) >> abs(int(b)),
 }
 
+def coerce(v):
+    if isinstance(v, (int, float, bool)):
+        return v
+    if isinstance(v, str):
+        if v.lstrip('-').isdigit():
+            return int(v)
+        try:
+            return float(v)
+        except ValueError:
+            pass
+    return v
+
 
 class YuriRuntimeError(Exception):
     pass
@@ -664,6 +676,34 @@ def run_node(node):
 
         max_iterations = 10000
         count = 0
+
+        def check_condition():
+            left = evaluate(node.value[0])
+            op = node.value[1]
+            right = evaluate(node.value[2])
+
+            def coerce(v):
+                if isinstance(v, (int, float)):
+                    return v
+                if isinstance(v, str):
+                    if v.lstrip('-').isdigit():
+                        return int(v)
+                    try:
+                        return float(v)
+                    except ValueError:
+                        pass
+                return v
+
+            left = coerce(left)
+            right = coerce(right)
+
+            if op == "==":  return left == right
+            if op == "!=":  return left != right
+            if op == ">":   return left > right
+            if op == "<":   return left < right
+            if op == ">=":  return left >= right
+            if op == "<=":  return left <= right
+            return False
 
         while check_condition():
             if count >= max_iterations:
