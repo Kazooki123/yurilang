@@ -55,6 +55,11 @@ def parse_line(line):
         params = tokens[2:]
         return Node("function", (name, params))
 
+    elif keyword == "@jam":
+        if len(tokens) > 1 and tokens[1] == "pass":
+            return Node("continue", None)
+        return Node("break", None)
+
     elif keyword == "@apart":
         return Node("not", tokens[1:])
 
