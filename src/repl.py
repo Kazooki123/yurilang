@@ -5,22 +5,21 @@ import sys
 from src.interpreter import run
 # from PIL import Image
 
+COLORS = [
+    "\033[38;5;166m",  # dark orange
+    "\033[38;5;208m",  # orange
+    "\033[38;5;223m",  # cream
+    "\033[38;5;212m",  # pink
+    "\033[38;5;197m",  # dark pink
+]
+
+RESET = "\033[0m"
 
 def color_line(text, i):
-    COLORS = [
-        "\033[38;5;166m",
-        "\033[38;5;208m",
-        "\033[38;5;223m",
-        "\033[38;5;212m",
-        "\033[38;5;197m",
-    ]
-    return COLORS[i % len(COLORS)] + text + "\033[0m"
+    return COLORS[i % len(COLORS)] + text + RESET
 
 
 def print_yuri():
-    COLORS = color_line()
-    RESET = "\033[0m"
-
     text = [
         "██╗   ██╗██╗   ██╗██████╗ ██╗",
         "╚██╗ ██╔╝██║   ██║██╔══██╗██║",
@@ -31,8 +30,7 @@ def print_yuri():
     ]
 
     for i, line in enumerate(text):
-        color = COLORS[int(i * len(COLORS) / len(text))]
-        print(color + line + RESET)
+        print(color_line(line, i))
 
     print("🧡 YuriLang REPL 🩷\n")
 
@@ -87,11 +85,9 @@ def spin_globe():
         "🌏",
     ]
 
-    colors = color_line()
-
     for i in range(20):
         frame = frames[i % len(frames)]
-        color = colors[i % len(colors)]
+        color = color_line(frame, i)
 
         sys.stdout.write(f"\r{color}{frame} Loading Yuri energy... \033[0m")
         sys.stdout.flush()
@@ -101,15 +97,13 @@ def spin_globe():
 
 
 def yuri_prompt():
-    colors = color_line()
     text = ">>> "
     colored = ""
 
     for i, ch in enumerate(text):
-        color = colors[i % len(colors)]
-        colored += f"{color}{ch}"
+        colored += COLORS[i % len(COLORS)] + ch
 
-    return colored + "\033[0m"
+    return colored + RESET
 
 
 def trigger_amy_easter_egg():
