@@ -199,10 +199,9 @@ class YASMCompiler:
 
         # string data section
         offset = 0
-        for idx, value in self.data:
-            encoded = value.encode('utf-8')
-            lines.append(f'  (data (i32.const {offset}) "{value}\\00")')
-            offset += len(encoded) + 1
+        for offset, value, length in self.data:
+            escaped = value.replace('\\', '\\\\').replace('"', '\\"')
+            lines.append(f'  (data (i32.const {offset}) "{escaped}\\00")')
 
         # compiled @ship functions
         for name, params_wat, func_body in self.functions:
