@@ -44,6 +44,10 @@ def parse_line(line):
         val = " ".join(tokens[3:])
         return Node("rebond", (target, val))
 
+    elif keyword == "@devoted":
+        val = " ".join(tokens[3:])
+        return Node("devoted", (tokens[1], val))
+
     elif keyword == "@yuri":
         return Node("import", tokens[1])
 
