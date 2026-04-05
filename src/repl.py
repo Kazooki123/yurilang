@@ -67,6 +67,54 @@ Tips:
   Use @ship to define love (functions)
 """)
 
+def show_license():
+    print("\nOpening LICENSE (press 'q' to exit)\n")
+
+    try:
+        with open("LICENSE", "r") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print("LICENSE file not found.\n")
+        return
+
+    index = 0
+    page_size = 15  # lines per page
+
+    while True:
+        os.system("clear")  # use "cls" if Windows later
+
+        print("LICENSE (press 'q' to exit)\n")
+
+        for line in lines[index:index + page_size]:
+            print(line.rstrip())
+
+        print("\n[Enter = next | q = quit]")
+
+        cmd = input().strip().lower()
+
+        if cmd == "q":
+            print("\nClosing license...\n")
+            break
+
+        index += page_size
+        if index >= len(lines):
+            print("\nEnd of license.\n")
+            break
+
+def show_credits():
+    print("\n⭐ YuriLang Credits\n")
+
+    print("Creator:")
+    print("  StarloExoliz / Kazooki\n")
+
+    print("Contributors:")
+    names = [
+        "@themackabu    → JS-Port",
+        "@@douxx.tech   → Added C callers"
+    ]
+
+    for i, name in enumerate(names):
+        print(f"  {color_line(name, i)}")
 
 
 def yuri_editor():
@@ -196,6 +244,14 @@ def repl():
 
             if code == "edit":
                 yuri_editor()
+                continue
+
+            if code == "credits":
+                show_credits()
+                continue
+
+            if code == "license":
+                show_license()
                 continue
 
             if code == "amy":
