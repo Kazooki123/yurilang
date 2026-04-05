@@ -124,16 +124,13 @@ Used for pattern matching. You can learn what pattern matchings are [here.](http
 
 Anonymous functions used for inline.
 
-> [!WARNING]
-> This feature hasn't been fully implemented *yet*
-
 ```
 @wlw:
-    @bond double = @luna x -> x times 2
+    @bond double = @luna x: x times 2
     @confess @double 5
-```
 
-**Note:** HoF *might* be added to the language sooner on.
+    @bond double = @bloom x: x times 2
+```
 
 ---
 
@@ -246,9 +243,6 @@ Supported return types: `int`, `double`, `float`, `string`. If omitted, defaults
 @spectrum — Enums
 
 A data type that lets you define a value as one of several possible variants.
-
-> [!WARNING]
-> This feature hasn't been fully implemented *yet*
 
 ```
 @spectrum Feeling:
