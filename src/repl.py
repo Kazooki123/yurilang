@@ -53,6 +53,8 @@ Commands:
   help        → show this message
   exit        → exit REPL
   edit        → enters an editor
+  credits     → show credits
+  license     → show license
   amy         → ??? 👀
   morse       → try something mysterious...
 
