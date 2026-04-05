@@ -11,13 +11,15 @@ class YASMCompiler:
         self.exports   = []      # exported function names
         self.data      = []      # string data section
         self.str_count = 0       # string label counter
+        self.str_offset = 0      # tracks actual memory byte offset
         self.locals    = {}      # local variable → index
 
     def new_string(self, value):
-        label = self.str_count
-        self.str_count += 1
-        self.data.append((label, value))
-        return label
+        offset = self.str_offset
+        encoded = value.encode('utf-8')
+        self.data.append((offset, value, len(encoded)))
+        self.str_offset += len(encoded) + 1  # +1 for null terminator
+        return offset
 
     def compile_expr(self, expr):
         instrs = []
@@ -191,6 +193,9 @@ class YASMCompiler:
             '  (import "env" "print_str" (func $print_str (param i32)))',
             '  (import "env" "print_float" (func $print_float (param f64)))',
         ]
+
+        lines.append('  (memory 1)')
+        lines.append('  (export "memory" (memory 0))')
 
         # string data section
         offset = 0
