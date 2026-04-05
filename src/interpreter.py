@@ -3,6 +3,15 @@ import os
 from src.parser import parse
 from src.modules import load_module
 from vm.memory import memory_set, memory_get, memory_forget
+# error handling
+from src.errors import (
+    err_undefined_variable, err_undefined_function,
+    err_type_mismatch, err_index_out_of_range,
+    err_invalid_index, err_awakened_reassign,
+    err_divide_by_zero, err_infinite_loop,
+    err_module_not_found, err_stack_overflow,
+    err_reject, err_devoted_moved, err_missing_key
+)
 
 variables = {}
 functions = {}
