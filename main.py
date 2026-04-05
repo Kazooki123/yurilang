@@ -67,7 +67,7 @@ def main():
             print(f"YASM compiled to {out}")
             print(f"Convert with: wat2wasm {out} -o {out.replace('.wat', '.wasm')}")
             print(f"Run with: wasmtime {out.replace('.wat', '.wasm')}")
-    except StopIteration:
+        except StopIteration:
             print("No .yuri file provided.")
         return
 
