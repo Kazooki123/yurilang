@@ -10,6 +10,7 @@ c_functions = {}
 personas = {}
 spectrums = {}
 owned = {}
+shared_ptrs = {}
 awakened = set()
 
 
@@ -345,6 +346,12 @@ def evaluate(expr):
         return result
 
     if expr in variables:
+        if expr in shared_ptrs:
+            source = shared_ptrs[expr]
+            if source in variables:
+                variables[expr] = variables[source]
+            elif source in owned:
+                variables[expr] = owned[source]
         return variables[expr]
 
     return expr
@@ -567,10 +574,20 @@ def run_node(node):
     # ASSIGN
     elif node.type == "assign":
         name, val = node.value
+
+        if name in shared_ptrs:
+            raise YuriRuntimeError(
+            f"\n💔 YuriLang Error — immutable_shared\n\n"
+            f" | She holds the feeling but cannot change it.\n\n"
+            f" | '{name}' is a @yuu_ptr — immutable shared view.\n"
+            f" | Only the original @devoted '{shared_ptrs[name]}' can be modified.\n\n"
+            f" |> Hint: Use @rebond on the original @devoted variable instead.\n"
+            )
+
         if name in awakened:
-            raise YuriRuntimeError(f"'{name}' has already awakened. It is permanent.")
+            raise YuriRuntimeError(str(err_awakened_reassign(name)))
+
         variables[name] = evaluate(val)
-        # print(f"DEBUG assign: {name} = {variables[name]}")
 
     # BOND @NEW
     elif node.type == "bond_new":
@@ -598,17 +615,26 @@ def run_node(node):
         target, val = node.value
         value = evaluate(val)
 
-        if "[[" in target:
-            obj_name = target.split("[[")[0].strip()
-            if obj_name not in variables:
-                raise YuriRuntimeError(f"Undefined variable: {obj_name}")
-            if obj_name in awakened:
-                raise YuriRuntimeError(f"'{obj_name}' has already awakened. She knows who she is.")
-            set_indexed(obj_name, target, value)
-        else:
+        if "[[" not in target:
+            if target in shared_ptrs:
+                raise YuriRuntimeError(
+                f"\n💔 YuriLang Error — immutable_shared\n\n"
+                f" | '{target}' is a @yuu_ptr — she can see but not change.\n"
+                f" | The original is '@devoted {shared_ptrs[target]}'.\n\n"
+                f" |> Hint: @rebond {shared_ptrs[target]} = <value>\n"
+                )
             if target in awakened:
-                raise YuriRuntimeError(f"'{target}' has already awakened. She knows who she is.")
+                raise YuriRuntimeError(str(err_awakened_reassign(target)))
             variables[target] = value
+        else:
+            obj_name = target.split("[[")[0].strip()
+            if obj_name in shared_ptrs:
+                raise YuriRuntimeError(
+                f"'{obj_name}' is a @yuu_ptr — immutable shared view."
+                )
+            if obj_name in awakened:
+                raise YuriRuntimeError(str(err_awakened_reassign(obj_name)))
+            set_indexed(obj_name, target, value)
 
     # OWNERSHIP
     elif node.type == "devoted":
@@ -904,6 +930,19 @@ def run_node(node):
         key = evaluate(node.value)
         memory_forget(key)
 
+    elif node.type == "yuu_ptr":
+        alias, source = node.value
+        source_val = evaluate(source)
+
+        if source not in variables and source not in owned:
+            raise YuriRuntimeError(
+            str(err_undefined_variable(source))
+        )
+
+        shared_ptrs[alias] = source
+
+        variables[alias] = source_val
+
     # FUNCTION DEFINE
     elif node.type == "function":
         name, params = node.value
@@ -995,8 +1034,22 @@ def run_node(node):
     # AWAKE / PERMANENT VAR
     elif node.type == "awakening":
         name = node.value
-        if name not in variables:
-            raise YuriRuntimeError(f"'{name}' cannot awaken!")
+
+        if name in shared_ptrs:
+            source = shared_ptrs[name]
+            raise YuriRuntimeError(
+            f"\n💔 YuriLang Error — awakening_blocked\n\n"
+            f" | She holds the feeling, but it isn't hers to awaken.\n\n"
+            f" | '{name}' is a @yuu_ptr pointing to @devoted '{source}'.\n"
+            f" | Only the original can awaken.\n\n"
+            f" | Hint: @awakening {source}\n"
+            )
+
+        if name not in variables and name not in owned:
+            raise YuriRuntimeError(
+            f"'{name}' cannot awaken — she hasn't found herself yet."
+            )
+
         awakened.add(name)
 
     # STRUCTS
