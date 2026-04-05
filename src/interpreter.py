@@ -452,28 +452,53 @@ def run_reduce(array, step):
     if func_name not in functions and func_name not in c_functions:
         raise YuriRuntimeError(f"Undefined function: @{func_name}")
 
+    if rest.startswith("@bloom"):
+        bloom_tokens = rest.split()
+        colon_idx = bloom_tokens.index(":")
+        params = bloom_tokens[1:colon_idx]
+        body_expr = " ".join(bloom_tokens[colon_idx + 1:])
+        lam = YuriLambda(params, body_expr, variables.copy())
+    elif rest in variables and isinstance(variables[rest], YuriLambda):
+        lam = variables[rest]
+    elif rest in functions:
+        params, body = functions[rest]
+        lam = None  # handle below
+    else:
+        raise YuriRuntimeError(f"@melt: '{rest}' is not a function or @bloom")
+
+
     accumulator = array[0]
 
     for item in array[1:]:
-        params, body = functions[func_name]
-        old_vars = variables.copy()
+        if lam is not None:
+            old_vars = variables.copy()
+            variables.clear()
+            variables.update(lam.closure)
+            if lam.params:
+                variables[lam.params[0]] = item
+            result = evaluate(lam.body_expr)
+            variables.clear()
+            variables.update(old_vars)
+        else:
+            params, body = functions[func_name]
+            old_vars = variables.copy()
 
-        if len(params) >= 2:
-            variables[params[0]] = accumulator
-            variables[params[1]] = item
-        elif len(params) == 1:
-            variables[params[0]] = item
+            if len(params) >= 2:
+                variables[params[0]] = accumulator
+                variables[params[1]] = item
+            elif len(params) == 1:
+                variables[params[0]] = item
 
-        result = None
-        for child in body:
-            ret = run_node(child)
-            if isinstance(ret, ReturnSignal):
-                result = ret.value
-                break
+            result = None
+            for child in body:
+                ret = run_node(child)
+                if isinstance(ret, ReturnSignal):
+                    result = ret.value
+                    break
 
-        variables.clear()
-        variables.update(old_vars)
-        accumulator = result if result is not None else accumulator
+            variables.clear()
+            variables.update(old_vars)
+            accumulator = result if result is not None else accumulator
 
     return accumulator
 
