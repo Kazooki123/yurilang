@@ -292,6 +292,13 @@ A custom data type that lets you group related data together under one name
 
 ---
 
+## Yuri References
+
+- [Sappho - Wikipedia](https://en.wikipedia.org/wiki/Sappho)
+- [Bloom Into You](https://m.imdb.com/title/tt8993464/)
+- [Citrus](https://yuripedia.fandom.com/wiki/Category:Citrus)
+- [Kase-San](https://m.imdb.com/title/tt7456468/)
+
 ## Compiler
 
 **glc** - Girls Love to Compile
