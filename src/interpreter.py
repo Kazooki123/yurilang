@@ -9,6 +9,7 @@ functions = {}
 c_functions = {}
 personas = {}
 spectrums = {}
+owned = {}
 awakened = set()
 
 
@@ -537,6 +538,22 @@ def run_node(node):
             if target in awakened:
                 raise YuriRuntimeError(f"'{target}' has already awakened. She knows who she is.")
             variables[target] = value
+
+    # OWNERSHIP
+    elif node.type == "devoted":
+        name, val = node.value
+        value = evaluate(val)
+
+        if val.strip() in owned:
+            source = val.strip()
+            owned[name] = value
+
+            del variables[source]
+            del owned[source]
+        else:
+            owned[name] = value
+
+        variables[name] = value
 
     # PRINT
     elif node.type == "print":
