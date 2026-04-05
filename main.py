@@ -2,6 +2,7 @@ import sys
 from src.interpreter import run
 from src.repl import repl
 from src.compiler import compile_yuri
+from src.wasm import compile_to_yasm
 from vm.compiler import compile_to_bytecode
 from vm.bytecode import YuriVM
 from vm.serializer import save_yuric, load_yuric
@@ -52,6 +53,22 @@ def main():
             print("No .yuric file provided.")
         except FileNotFoundError:
             print(f"File not found.")
+        return
+
+    if "--wasm" in args:
+        try:
+            filename = next(arg for arg in args if arg.endswith(".yuri"))
+            with open(filename) as f:
+                code = f.read()
+            wat = compile_to_yasm(code)
+            out = filename.replace(".yuri", ".wat")
+            with open(out, "w") as f:
+                f.write(wat)
+            print(f"YASM compiled to {out}")
+            print(f"Convert with: wat2wasm {out} -o {out.replace('.wat', '.wasm')}")
+            print(f"Run with: wasmtime {out.replace('.wat', '.wasm')}")
+    except StopIteration:
+            print("No .yuri file provided.")
         return
 
     if len(args) == 0:
