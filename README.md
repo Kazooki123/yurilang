@@ -120,7 +120,7 @@ Used for pattern matching. You can learn what pattern matchings are [here.](http
 
 ---
 
-@luna - Lambda function
+@luna / @bloom - Lambda function
 
 Anonymous functions used for inline.
 
@@ -132,6 +132,8 @@ Anonymous functions used for inline.
     @bond double = @luna x -> x times 2
     @confess @double 5
 ```
+
+**Note:** HoF *might* be added to the language sooner on.
 
 ---
 
@@ -292,11 +294,30 @@ A custom data type that lets you group related data together under one name
 
 ## Compiler
 
-[Coming Soon]
+**glc** - Girls Love to Compile
+
+A Rust written compiler made for YuriLang, it will be released soon and if it does expect bugs or errors at it's first released.
+
+## WASM
+
+You can generate a `.wat` file in YuriLang with this command:
+
+> [!NOTE]
+> 🩵 You would need **wat2wasm** for this
+
+```bash
+python main.py yourfile.yuri --wasm
+```
+
+Then convert it to `.wasm` with **wat2wasm**:
+
+```bash
+wat2wasm yourfile.wat -o program.wasm
+```
 
 ## Packages / Libraries / Stores
 
-[Coming Soon]
+Most modules or libraries of yurilang right now is placed in `store/`, containing story driven code from **Yuri media**, but as the language evolves so as its modular system, later on the module system will import modules, libs, and packages whenever it is placed.
 
 ## Issues and Bugs
 
