@@ -59,6 +59,14 @@ def parse_line(line):
         params = tokens[2:]
         return Node("function", (name, params))
 
+    elif keyword == "@bloom":
+        if ":" in tokens:
+            colon_idx = tokens.index(":")
+            params = tokens[1:colon_idx]
+            body_expr = " ".join(tokens[colon_idx + 1:])
+            return Node("bloom", (params, body_expr))
+        raise SyntaxError("@bloom requires ':' separator — @bloom x: x times 2")
+
     elif keyword == "@jam":
         if len(tokens) > 1 and tokens[1] == "pass":
             return Node("continue", None)
