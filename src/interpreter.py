@@ -4,7 +4,7 @@ from src.parser import parse
 from src.modules import load_module
 from vm.memory import memory_set, memory_get, memory_forget
 # error handling
-from src.errors import (
+from src.error import (
     err_undefined_variable, err_undefined_function,
     err_type_mismatch, err_index_out_of_range,
     err_invalid_index, err_awakened_reassign,
