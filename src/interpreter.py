@@ -58,6 +58,17 @@ class ContinueSignal:
     pass
 
 
+class YuriLambda:
+    def __init__(self, params, body_expr, closure):
+        self.params     = params
+        self.body_expr  = body_expr
+        self.closure    = closure.copy()  # captures current scope
+
+    def __repr__(self):
+        params = " ".join(self.params)
+        return f"@bloom {params}: {self.body_expr}"
+
+
 def translate_expr(expr):
     for word, sym in YURI_OPS.items():
         if callable(sym):
@@ -262,6 +273,25 @@ def evaluate(expr):
         func_name = parts[0][1:]
         raw_args  = parts[1:]
 
+        if func_name in variables and isinstance(variables[func_name], YuriLambda):
+            lam = variables[func_name]
+            old_vars = variables.copy()
+
+            # restore closure scope
+            variables.clear()
+            variables.update(lam.closure)
+
+            # bind arguments
+            for i, param in enumerate(lam.params):
+                if i < len(raw_args):
+                    variables[param] = evaluate(raw_args[i])
+
+            result = evaluate(lam.body_expr)
+
+            variables.clear()
+            variables.update(old_vars)
+            return result
+
         # built-in functions
         if func_name == "join":
             arr = evaluate(raw_args[0]) if raw_args else []
@@ -355,36 +385,52 @@ def autoviv_set(obj_name, index_expr, value):
 
 def run_map(array, step):
     if not isinstance(array, list):
-        raise YuriRuntimeError("@affect requires an array on the left side of @>")
+        raise YuriRuntimeError("@affect requires an array")
 
-    step = step.strip()
-
-    parts = step.split()
+    parts = step.split(None, 1)  # split on first whitespace
     if len(parts) < 2:
-        raise YuriRuntimeError("@affect requires a function name")
+        raise YuriRuntimeError("@affect requires a function name or @bloom")
 
-    func_name = parts[1]
+    rest = parts[1].strip()
 
-    if func_name not in functions:
-        raise YuriRuntimeError(f"Undefined function: {func_name}")
+    if rest.startswith("@bloom"):
+        bloom_tokens = rest.split()
+        colon_idx = bloom_tokens.index(":")
+        params = bloom_tokens[1:colon_idx]
+        body_expr = " ".join(bloom_tokens[colon_idx + 1:])
+        lam = YuriLambda(params, body_expr, variables.copy())
+    elif rest in variables and isinstance(variables[rest], YuriLambda):
+        lam = variables[rest]
+    elif rest in functions:
+        params, body = functions[rest]
+        lam = None  # handle below
+    else:
+        raise YuriRuntimeError(f"@affect: '{rest}' is not a function or @bloom")
 
     results = []
     for item in array:
-        params, body = functions[func_name]
-        old_vars = variables.copy()
-
-        if params:
-            variables[params[0]] = item
-
-        result = None
-        for child in body:
-            ret = run_node(child)
-            if isinstance(ret, ReturnSignal):
-                result = ret.value
-                break
-
-        variables.clear()
-        variables.update(old_vars)
+        if lam is not None:
+            old_vars = variables.copy()
+            variables.clear()
+            variables.update(lam.closure)
+            if lam.params:
+                variables[lam.params[0]] = item
+            result = evaluate(lam.body_expr)
+            variables.clear()
+            variables.update(old_vars)
+        else:
+            params, body = functions[rest]
+            old_vars = variables.copy()
+            if params:
+                variables[params[0]] = item
+            result = None
+            for child in body:
+                ret = run_node(child)
+                if isinstance(ret, ReturnSignal):
+                    result = ret.value
+                    break
+            variables.clear()
+            variables.update(old_vars)
         results.append(result)
 
     return results
@@ -865,6 +911,11 @@ def run_node(node):
 
         variables.clear()
         variables.update(old_vars)
+
+    # LAMBDA
+    elif node.type == "bloom":
+        params, body_expr = node.value
+        return YuriLambda(params, body_expr, variables.copy())
 
     # RETURN
     elif node.type == "return":
