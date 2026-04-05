@@ -48,6 +48,9 @@ def parse_line(line):
         val = " ".join(tokens[3:])
         return Node("devoted", (tokens[1], val))
 
+    elif keyword == "@yuu_ptr":
+        return Node("yuu_ptr", (tokens[1], tokens[3]))
+
     elif keyword == "@yuri":
         return Node("import", tokens[1])
 
