@@ -58,9 +58,10 @@ Commands:
 
 Flags:
   yuri file.yuri           → run file
-  yuri --compile file      → compile to ASM
-  yuri --bytecode file     → compile to bytecode
-  yuri --vm file.yuric     → run VM
+  yuri file --compile      → compile to ASM
+  yuri file --bytecode     → compile to bytecode
+  yuri file.yuric --vm     → run VM
+  yuri file --wasm         → compile to a .wat file       
 
 Tips:
   Use @confess to print 🩷
