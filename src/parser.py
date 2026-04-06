@@ -9,6 +9,7 @@ class Node:
         self.type = type_
         self.value = value
         self.children = []
+        self.decorators = []
 
 def parse_line(line):
     tokens = tokenize(line)
