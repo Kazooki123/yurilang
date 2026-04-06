@@ -40,7 +40,7 @@ def parse_line(line):
     elif func_name == "sleep":
         seconds = float(evaluate(raw_args[0])) if raw_args else 1.0
         dream = YuriDream(sleep_dream(seconds), name="sleep")
-       return dream
+        return dream
 
     elif keyword == "@wake":
         target = tokens[1] if len(tokens) > 1 else None
