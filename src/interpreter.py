@@ -1,5 +1,6 @@
 import ctypes
 import os
+import asyncio
 from src.parser import parse
 from src.modules import load_module
 from vm.memory import memory_set, memory_get, memory_forget
@@ -12,6 +13,11 @@ from src.error import (
     err_module_not_found, err_stack_overflow,
     err_reject, err_devoted_moved, err_missing_key
 )
+from src.dream import (
+    YuriDream, make_async_ship, run_dream,
+    gather_dreams, sleep_dream, get_event_loop
+)
+
 
 variables = {}
 functions = {}
@@ -955,7 +961,15 @@ def run_node(node):
     # FUNCTION DEFINE
     elif node.type == "function":
         name, params = node.value
-        functions[name] = (params, node.children)
+        
+        if "async" in node.decorators:
+            async_fn = make_async_ship(
+                params, node.children, functions, variables
+            )
+            functions[name] = (params, node.children, "async")
+            functions[f"__async_{name}"] = async_fn
+        else:
+            functions[name] = (params, node.children)
 
     # FUNCTION CALL
     elif node.type == "call":
@@ -984,6 +998,66 @@ def run_node(node):
 
         variables.clear()
         variables.update(old_vars)
+
+    # ASYNCHRONOUS
+    elif node.type == "dream":
+        var_name, expr = node.value
+        expr = expr.strip()
+
+        if expr.startswith("@"):
+            parts = expr.split()
+            func_name = parts[0][1:]
+            raw_args  = parts[1:]
+
+            if func_name in functions:
+                entry = functions[func_name]
+                if len(entry) == 3 and entry[2] == "async":
+                    async_fn = functions[f"__async_{func_name}"]
+                    evaled_args = [evaluate(a) for a in raw_args]
+                    coro = async_fn(*evaled_args)
+                    dream = YuriDream(coro, name=func_name)
+
+                    if var_name:
+                        variables[var_name] = dream
+                    return dream
+                else:
+                    raise YuriRuntimeError(
+                        f"\n💔 @dream — '{func_name}' is not ##async\n"
+                        f" | She tried to dream about a function that doesn't dream.\n"
+                        f" |> Hint: Add ##async above @ship {func_name}:\n"
+                    )
+
+        if expr.startswith("@sleep"):
+            parts = expr.split()
+            seconds = float(evaluate(parts[1])) if len(parts) > 1 else 1.0
+            dream = YuriDream(sleep_dream(seconds), name="sleep")
+            if var_name:
+                variables[var_name] = dream
+            return dream
+
+    # AWAIT
+    elif node.type == "wake":
+        target = node.value
+
+        if target is None:
+            return
+
+        val = variables.get(target)
+
+        if val is None:
+            raise YuriRuntimeError(
+            f"\n💔 @wake — '{target}' has no dream to wake from\n"
+            f"  💡 hint: Use @dream first: @dream {target} = @my_async_func\n"
+            )
+
+        if isinstance(val, YuriDream):
+            result = run_dream(val)
+            variables[target] = result
+            val.done = True
+            val.result = result
+            return result
+
+        return val
 
     # LAMBDA
     elif node.type == "bloom":
@@ -1051,7 +1125,7 @@ def run_node(node):
             f" | She holds the feeling, but it isn't hers to awaken.\n\n"
             f" | '{name}' is a @yuu_ptr pointing to @devoted '{source}'.\n"
             f" | Only the original can awaken.\n\n"
-            f" | Hint: @awakening {source}\n"
+            f" |> Hint: @awakening {source}\n"
             )
 
         if name not in variables and name not in owned:
