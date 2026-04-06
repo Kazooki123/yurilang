@@ -70,6 +70,9 @@ def parse_line(line):
             return Node("bloom", (params, body_expr))
         raise SyntaxError("@bloom requires ':' separator — @bloom x: x times 2")
 
+    elif keyword == "@kumitate":
+        return Node("kumitate", None)
+
     elif keyword == "@jam":
         if len(tokens) > 1 and tokens[1] == "pass":
             return Node("continue", None)
