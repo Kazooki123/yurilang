@@ -269,6 +269,34 @@ A custom data type that lets you group related data together under one name
 
 ---
 
+### 🍞 Operators
+
+> [!WARNING]
+> Some of these operators & **special symbols** are planned meaning they're not implemented *yet*
+
+```
+@
+>
+<
+=>
+<-
+->
+()
+{}
+~
+~>
+|x|
+:
+^
+#
+$
+&
+!
+?
+```
+
+---
+
 ### Example Program
 
 ```
