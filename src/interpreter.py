@@ -13,7 +13,7 @@ from src.error import (
     err_module_not_found, err_stack_overflow,
     err_reject, err_devoted_moved, err_missing_key
 )
-from src.dream import (
+from src.async import (
     YuriDream, make_async_ship, run_dream,
     gather_dreams, sleep_dream, get_event_loop
 )
