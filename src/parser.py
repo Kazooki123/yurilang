@@ -24,6 +24,25 @@ def parse_line(line):
         val = " ".join(tokens[3:])
         return Node("assign", (tokens[1], val))
 
+    elif line.startswith("##"):
+        decorator = line[2:].strip()
+        return Node("decorator", decorator)
+
+    elif keyword == "@dream":
+        if len(tokens) > 2 and tokens[2] == "=":
+            val = " ".join(tokens[3:])
+            return Node("dream", (tokens[1], val))
+        else:
+            val = " ".join(tokens[1:])
+            return Node("dream", (None, val))
+
+    elif keyword == "@wake":
+        target = tokens[1] if len(tokens) > 1 else None
+        return Node("wake", target)
+
+    elif keyword == "@gather":
+        return Node("gather", tokens[1])
+
     elif keyword == "@confess":
         return Node("print", tokens[1:])
 
@@ -170,6 +189,7 @@ def parse(code):
     lines = code.split("\n")
     root = Node("root")
     stack = [(-1, root)]
+    pending_decorators = []
 
     for line in lines:
         if not line.strip():
@@ -181,10 +201,18 @@ def parse(code):
         if not node:
             continue
 
+        if node.type == "decorator":
+            pending_decorators.append(node.value)
+            continue
+
+        if pending_decorators:
+            node.decorators = pending_decorators.copy()
+            pending_decorators.clear()
+        else:
+            node.decorators = []
+
         while stack and indent <= stack[-1][0]:
             stack.pop()
-
-        parent = stack[-1][1]
 
         if node.type == "else":
             for _, candidate in reversed(stack):
@@ -202,7 +230,7 @@ def parse(code):
                     break
             continue
 
-        parent.children.append(node)
+        stack[-1][1].children.append(node)
         stack.append((indent, node))
 
     return root
