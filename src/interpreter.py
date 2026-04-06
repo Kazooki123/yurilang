@@ -26,6 +26,12 @@ personas = {}
 spectrums = {}
 owned = {}
 shared_ptrs = {}
+
+glances = {} # (immutable borrows)
+reaches = {} # (mutable borrows, max 1 per source)
+glances_of = {} # set of glance aliases
+reach_of   = {} # reach alias or None
+
 awakened = set()
 
 
@@ -1150,6 +1156,89 @@ def run_node(node):
             )
 
         awakened.add(name)
+
+    # BORROWINGS
+    elif node.type == "glance":
+        alias, source = node.value
+
+        if source not in variables and source not in owned:
+            raise YuriRuntimeError(
+            str(err_undefined_variable(source))
+            )
+
+        if reach_of.get(source):
+            reacher = reach_of[source]
+            raise YuriRuntimeError(
+            f"\n💔 YuriLang Error — borrow_conflict\n\n"
+            f" | She tried to glance at '{source}' but\n"
+            f" | '{reacher}' is already reaching into it.\n\n"
+            f" | You cannot @glance while a @reach is active.\n"
+            f" | Hint: @unreach {reacher} first, then @glance.\n"
+            )
+
+        # register glance borrow
+        glances[alias] = source
+        glances_of.setdefault(source, set()).add(alias)
+        variables[alias] = variables.get(source) or owned.get(source)
+
+    elif node.type == "reach":
+        alias, source = node.value
+
+        if source not in variables and source not in owned:
+            raise YuriRuntimeError(
+            str(err_undefined_variable(source))
+            )
+
+        # cannot reach while someone (or a var) is glancing
+        active_glances = glances_of.get(source, set())
+        if active_glances:
+            glancers = ", ".join(active_glances)
+            raise YuriRuntimeError(
+            f"\n💔 YuriLang Error — borrow_conflict\n\n"
+            f" | She tried to reach into '{source}' but\n"
+            f" | [{glancers}] are already glancing at it.\n\n"
+            f" | You cannot @reach while @glance is active.\n"
+            f" | Hint: @unglance first, then @reach.\n"
+            )
+
+        # cannot reach while already reached
+        if reach_of.get(source):
+            existing = reach_of[source]
+            raise YuriRuntimeError(
+            f"\n💔 YuriLang Error — borrow_conflict\n\n"
+            f" | She tried to reach into '{source}' but\n"
+            f" | '{existing}' is already reaching into it.\n\n"
+            f" | Only one @reach at a time.\n"
+            f" | Hint: @unreach {existing} first.\n"
+            )
+
+        # register reach borrow
+        reaches[alias] = source
+        reach_of[source] = alias
+        variables[alias] = variables.get(source) or owned.get(source)
+
+    elif node.type == "unglance":
+        alias = node.value
+        if alias in glances:
+            source = glances[alias]
+            glances_of.get(source, set()).discard(alias)
+            del glances[alias]
+            if alias in variables:
+                del variables[alias]
+
+    elif node.type == "unreach":
+        alias = node.value
+        if alias in reaches:
+        source = reaches[alias]
+
+        if alias in variables:
+            if source in variables:
+                variables[source] = variables[alias]
+            elif source in owned:
+                owned[source] = variables[alias]
+            del variables[alias]
+        reach_of[source] = None
+        del reaches[alias]
 
     # STRUCTS
     elif node.type == "persona":
