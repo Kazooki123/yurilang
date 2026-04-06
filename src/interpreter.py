@@ -602,6 +602,18 @@ def run_node(node):
     elif node.type == "assign":
         name, val = node.value
 
+        if name in glances:
+            source = glances[name]
+            raise YuriRuntimeError(
+            f"\n💔 YuriLang Error — glance_mutate\n\n"
+            f" | '{name}' is a @glance — she can look but not touch.\n"
+            f" | The original is '{source}'.\n\n"
+            f" | Hint: Use @reach to mutate:\n"
+            f"           @unglance {name}\n"
+            f"           @reach {name} = {source}\n"
+            f"           @rebond {name} = <value>\n"
+            )
+
         if name in shared_ptrs:
             raise YuriRuntimeError(
             f"\n💔 YuriLang Error — immutable_shared\n\n"
