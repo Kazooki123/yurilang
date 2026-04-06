@@ -139,6 +139,18 @@ def parse_line(line):
     elif keyword == "@awaken":
         return Node("awakening", tokens[1])
 
+    elif keyword == "@glance":
+        return Node("glance", (tokens[1], tokens[3]))
+
+    elif keyword == "@reach":
+        return Node("reach", (tokens[1], tokens[3]))
+
+    elif keyword == "@unglance":
+        return Node("unglance", tokens[1])
+
+    elif keyword == "@unreach":
+        return Node("unreach", tokens[1])
+
     elif keyword == "@new":
         type_name = tokens[1]
         fields = {}
