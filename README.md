@@ -359,3 +359,6 @@ If you encounter a bug, error, or any issues, please immediately contact me or c
 ## LICENSE 
 
 Under the **GNU Public License** <3
+
+![girlkisser](https://cdn.discordapp.com/emojis/1406933370570801197.png)
+![spinningheart](https://cdn.discordapp.com/emojis/915366171262451784.gif]
