@@ -1059,6 +1059,16 @@ def run_node(node):
 
         return val
 
+    # GATHER
+    elif node.type == "gather":
+        arr_name = node.value
+        dreams = evaluate(arr_name)
+
+        loop = get_event_loop()
+        results = loop.run_until_complete(gather_dreams(dreams))
+        variables[arr_name] = results
+        return results
+
     # LAMBDA
     elif node.type == "bloom":
         params, body_expr = node.value
