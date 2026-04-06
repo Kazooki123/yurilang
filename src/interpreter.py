@@ -332,9 +332,15 @@ def evaluate(expr):
             a = int(evaluate(raw_args[0]))
             b = int(evaluate(raw_args[1]))
             return a << b if b >= 0 else a >> abs(b)
+
         elif func_name == "input":
             prompt = evaluate(raw_args[0]) if raw_args else ""
             return input(prompt)
+
+        elif func_name == "sleep":
+            seconds = float(evaluate(raw_args[0])) if raw_args else 1.0
+            dream = YuriDream(sleep_dream(seconds), name="sleep")
+            return dream
 
         if func_name in c_functions:
             return _call_c(func_name, raw_args)
