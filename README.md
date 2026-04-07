@@ -28,6 +28,16 @@ Simply type this in your terminal:
 curl -sSL https://raw.githubusercontent.com/Kazooki123/yurilang/main/install.sh | bash
 ```
 
+- 🔗 From Source:
+
+```bash
+git clone https://github.com/Kazooki123/yurilang
+cd yurilang
+python install.py          # Linux/Mac (may need sudo :/)
+python install.py --user   # no sudo needed
+install.bat                # Windows (double click or run as admin)
+```
+
 ## Syntax
 
 **General Rules**
