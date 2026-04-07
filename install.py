@@ -257,7 +257,7 @@ def success_message(install_path):
   {PINK}yuri program.yuri --bytecode{RESET}   {PURPLE}# compile to .yuric{RESET}
   {PINK}yuri program.yuric --vm{RESET}        {PURPLE}# run bytecode{RESET}
   {PINK}yuri program.yuri --compile{RESET}    {PURPLE}# compile to ASM{RESET}
-  {PINK}yuri program.yuri --yasm{RESET}       {PURPLE}# compile to WASM{RESET}
+  {PINK}yuri program.yuri --wasm{RESET}       {PURPLE}# compile to WASM{RESET}
   {PINK}yuri{RESET}                           {PURPLE}# launch REPL{RESET}
 
 {PURPLE}  Write your first program:{RESET}
