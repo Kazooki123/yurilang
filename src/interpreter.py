@@ -655,21 +655,37 @@ def run_node(node):
         value = evaluate(val)
 
         if "[[" not in target:
+            if target in glances:
+                source = glances[target]
+                raise YuriRuntimeError(
+                f"\n💔 '{target}' is a @glance — read only.\n"
+                f" |> Hint: @reach {target} = {source} for mutation.\n"
+                )
+
+            if target in reaches:
+                source = reaches[target]
+                variables[target] = value
+
+                if source in variables:
+                    variables[source] = value
+                elif source in owned:
+                    owned[source] = value
+                return
+
             if target in shared_ptrs:
                 raise YuriRuntimeError(
-                f"\n💔 YuriLang Error — immutable_shared\n\n"
-                f" | '{target}' is a @yuu_ptr — she can see but not change.\n"
-                f" | The original is '@devoted {shared_ptrs[target]}'.\n\n"
-                f" |> Hint: @rebond {shared_ptrs[target]} = <value>\n"
+                f"'{target}' is a @yuu_ptr — immutable."
                 )
+
             if target in awakened:
                 raise YuriRuntimeError(str(err_awakened_reassign(target)))
+
             variables[target] = value
         else:
             obj_name = target.split("[[")[0].strip()
-            if obj_name in shared_ptrs:
+            if obj_name in glances:
                 raise YuriRuntimeError(
-                f"'{obj_name}' is a @yuu_ptr — immutable shared view."
+                f"'{obj_name}' is a @glance — read only."
                 )
             if obj_name in awakened:
                 raise YuriRuntimeError(str(err_awakened_reassign(obj_name)))
