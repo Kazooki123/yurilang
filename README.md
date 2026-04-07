@@ -9,6 +9,23 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 > [!IMPORTANT]
 > 💜 Still in development, new keywords and features will be added one by one, and the language isn't stabilize *yet*.
 
+## Setup
+
+> [!NOTE]
+> For Windows, the exe file will be released soon once pyinstaller has done setting up.
+
+Prerequisites:
+
+- Python (3.13)
+- NASM (if you're using this language with it's assembly feature)
+- wat2wasm (if you're testing it for wasm - experimental)
+
+Simply type this in your terminal:
+
+```
+curl -sSL https://raw.githubusercontent.com/Kazooki123/yurilang/main/install.sh | bash
+```
+
 ## Syntax
 
 **General Rules**
