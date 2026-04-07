@@ -11,6 +11,36 @@ from vm.serializer import save_yuric, load_yuric
 def main():
     args = sys.argv[1:]
 
+    if "--version" in args:
+        print(f"""
+    YuriLang v1.0.0
+    Yuring Complete since 2026 🧡🤍🩷
+    Python {sys.version.split()[0]}
+    GPL-3.0 License
+""")
+        return
+
+    if "--help" in args or "-h" in args:
+        print(f"""
+    Usage: yuri [file] [options]
+
+      yuri program.yuri             interpret
+      yuri program.yuri --bytecode  compile to .yuric
+      yuri program.yuric --vm       run bytecode  
+      yuri program.yuri --compile   compile to x86-64 ASM
+      yuri program.yuri --wasm      compile to WebAssembly
+      yuri                          launch REPL
+
+    Options:
+      --version    show version
+      --help       show this message
+      --user       install to user directory
+      --uninstall  remove YuriLang
+
+    "Yuring Complete since 2026" 🍰
+    """)
+        return
+
     if "--compile" in args:
         try:
             filename = next(arg for arg in args if arg.endswith(".yuri"))
