@@ -1257,7 +1257,7 @@ def run_node(node):
     elif node.type == "unreach":
         alias = node.value
         if alias in reaches:
-        source = reaches[alias]
+            source = reaches[alias]
 
         if alias in variables:
             if source in variables:
