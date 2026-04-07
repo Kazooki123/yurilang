@@ -1059,13 +1059,13 @@ def run_node(node):
 
                     if var_name:
                         variables[var_name] = dream
-                    return dream
-                else:
-                    raise YuriRuntimeError(
+                        return dream
+                    else:
+                        raise YuriRuntimeError(
                         f"\n💔 @dream — '{func_name}' is not ##async\n"
                         f" | She tried to dream about a function that doesn't dream.\n"
                         f" |> Hint: Add ##async above @ship {func_name}:\n"
-                    )
+                        )
 
         if expr.startswith("@sleep"):
             parts = expr.split()
