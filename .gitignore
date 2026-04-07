@@ -8,6 +8,11 @@
 !**/*.md
 !**/*.yuri
 !**/*.png
+!/amy/
 
 !/.github/**
 !/LICENSE
+
+# ignore build
+/build/
+
