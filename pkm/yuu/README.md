@@ -1,0 +1,3 @@
+# yuu
+
+A YuriLang project.
