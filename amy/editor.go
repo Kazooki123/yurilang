@@ -111,7 +111,17 @@ func (e *Editor) save() {
 func (e *Editor) draw() {
 	e.screen.Clear()
 
-	style := tcell.StyleDefault.Foreground(e.theme.Foreground)
+	style := tcell.StyleDefault.
+		Foreground(e.theme.Foreground).
+		Background(e.theme.Background)
+
+	width, height := e.screen.Size()
+
+	for y := range height {
+		for x := range width {
+			e.screen.SetContent(x, y, ' ', nil, style)
+		}
+	}
 
 	for y, line := range e.buffer.Lines {
 		for x, ch := range line {
@@ -120,7 +130,7 @@ func (e *Editor) draw() {
 	}
 
 	// Status bar
-	_, height := e.screen.Size()
+	_, height = e.screen.Size()
 	status := "[Amy λ] MODE: "
 
 	if e.mode == INSERT {

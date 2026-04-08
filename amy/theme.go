@@ -13,10 +13,9 @@ type Theme struct {
 }
 
 var LesbianTheme = Theme{
-	Background: tcell.ColorBlack,
+	Background: tcell.ColorOrangeRed,
 	Foreground: tcell.ColorWhite,
 	Accent:     tcell.ColorHotPink,
 	StatusBg:   tcell.ColorDarkOrange,
 	StatusFg:   tcell.ColorWhite,
 }
-
