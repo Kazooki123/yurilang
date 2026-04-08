@@ -166,6 +166,27 @@ Anonymous functions used for inline.
 
 ---
 
+@dream — Asynchronous (async)
+
+Allows a program to start a (new) task and then move on to another work before that task finishes.
+
+```
+@wlw:
+    ##async
+    @ship fetch_feeling url:
+        @dream slept = @sleep 0.5
+        @wake slept
+        @promise "feelings arrived from " plus url
+
+    @dream result = @fetch_feeling "her heart"
+    @wake result
+    @confess result
+```
+
+`@wake` being `await`.
+
+---
+
 @awaken - Immutable
 
 In Yurilang, variables are mutable by default, so to make them permanent or unchangeable, use the `@awaken` keyword.
@@ -269,6 +290,29 @@ Loads and binds a function from a C shared library, callable like any other `@sh
 
 Supported return types: `int`, `double`, `float`, `string`. If omitted, defaults to `int`.
 
+---
+
+@kumitate — **Inline Assembly**
+
+Allows users to embed low-level assembly language instructions directly within high-level code.
+
+> [!WARNING]
+> This feature is very experimental, we'll add a `--experiment` flag later on, but this feature hasn't been fully stabilize *yet*.
+
+```
+@wlw:
+    ? (basic arithmetic in assembly)
+    @bond x = 5
+    @bond y = 3
+    @bond result = 0
+
+    @kumitate:
+        mov rax, {x}
+        add rax, {y}
+        mov {result}, rax
+
+    @confess result         ? (-> 8)
+```
 
 ---
 
