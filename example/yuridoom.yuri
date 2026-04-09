@@ -1,0 +1,287 @@
+? (--- YURIDOOM ---)
+
+? (--- Map Layout ---)
+? (# = wall, ' ' = floor, P = player, D = demon, E = exit)
+
+@ship make_map:
+    @promise [[ 
+        [["#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#"]],
+        [["#"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","#"]],
+        [["#"," ","#","#"," ","#","#","#"," ","#","#","#"," ","#","#","#"," ","#"," ","#"]],
+        [["#"," ","#"," "," "," "," ","#"," ","#"," "," "," "," "," ","#"," ","#"," ","#"]],
+        [["#"," ","#"," ","#","#"," ","#"," ","#"," ","#","#","#"," ","#"," "," "," ","#"]],
+        [["#"," "," "," ","#"," "," "," "," "," "," ","#"," "," "," "," "," ","#"," ","#"]],
+        [["#"," ","#"," ","#"," ","#","#","#","#"," ","#"," ","#","#","#"," ","#"," ","#"]],
+        [["#"," ","#"," "," "," ","#"," "," "," "," "," "," "," "," ","#"," "," "," ","#"]],
+        [["#"," ","#","#","#"," ","#"," ","#","#","#","#","#"," ","#","#"," ","#"," ","#"]],
+        [["#"," "," "," "," "," "," "," ","#"," "," "," "," "," ","#"," "," ","#"," ","#"]],
+        [["#"," ","#","#"," ","#","#"," ","#"," ","#","#"," ","#","#"," ","#","#"," ","#"]],
+        [["#"," ","#"," "," "," ","#"," "," "," ","#"," "," "," "," "," "," "," "," ","#"]],
+        [["#"," "," "," ","#"," ","#","#","#"," ","#"," ","#","#","#","#"," ","#"," ","#"]],
+        [["#","#","#"," ","#"," "," "," "," "," "," "," ","#"," "," "," "," ","#"," ","#"]],
+        [["#"," "," "," ","#","#","#","#","#","#","#"," ","#"," ","#","#"," ","#"," ","#"]],
+        [["#"," ","#"," "," "," "," "," "," "," ","#"," "," "," ","#"," "," "," "," ","#"]],
+        [["#"," ","#","#","#","#"," ","#","#"," ","#","#","#"," ","#"," ","#","#"," ","#"]],
+        [["#"," "," "," "," "," "," ","#"," "," "," "," "," "," "," "," "," "," "," ","#"]],
+        [["#"," ","#","#","#","#"," ","#"," ","#","#","#","#","#","#","#"," ","#"," ","#"]],
+        [["#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#"]]
+    ]]
+
+? (--- Render Engine ---)
+
+@ship render_row row player_row player_col demon_row demon_col row_idx:
+    @bond line = @join row ""
+    @promise line
+
+@ship render map player_row player_col demon_row demon_col hp ammo floor_num:
+    ? (stamp player and demon onto map copy)
+    @rebond map[[player_row]][[player_col]] = "P"
+    @rebond map[[demon_row]][[demon_col]] = "D"
+
+    ? (render each row)
+    @bond i = 0
+    @fate i < 20:
+        @bond row = map[[i]]
+        @bond line = @join row ""
+        @confess line
+        @rebond i = i plus 1
+
+    ? (HUD)
+    @echo "HP: {hp} | AMMO: {ammo} | FLOOR: {floor_num}"
+    @confess "W=up A=left S=down D=right F=fire Q=quit"
+
+? (--- Collision Detection ---)
+
+@ship is_wall map row col:
+    @bond cell = map[[row]][[col]]
+    @jealous cell == "#":
+        @promise 1
+    @forgive:
+        @promise 0
+
+@ship is_demon row col demon_row demon_col:
+    @jealous row == demon_row:
+        @jealous col == demon_col:
+            @promise 1
+        @forgive:
+            @promise 0
+    @forgive:
+        @promise 0
+
+@ship is_exit row col:
+    @jealous row == 18:
+        @jealous col == 18:
+            @promise 1
+        @forgive:
+            @promise 0
+    @forgive:
+        @promise 0
+
+? (--- Combat ---)
+
+@ship try_fire player_row player_col demon_row demon_col ammo hp:
+    @jealous ammo > 0:
+        @rebond ammo = ammo minus 1
+        ? (check if demon is adjacent)
+        @bond dr = demon_row minus player_row
+        @bond dc = demon_col minus player_col
+        @jealous dr == 0:
+            @jealous dc == 1:
+                @confess ">> Direct hit! Demon takes 50 damage!"
+                @rebond hp = hp minus 50
+                @promise hp
+            @forgive:
+                @jealous dc == -1:
+                    @confess ">> Direct hit! Demon takes 50 damage!"
+                    @rebond hp = hp minus 50
+                    @promise hp
+                @forgive:
+                    @confess ">> Shot missed..."
+                    @promise hp
+        @forgive:
+            @jealous dr == 1:
+                @jealous dc == 0:
+                    @confess ">> Direct hit! Demon takes 50 damage!"
+                    @rebond hp = hp minus 50
+                    @promise hp
+                @forgive:
+                    @confess ">> Shot missed..."
+                    @promise hp
+            @forgive:
+                @confess ">> Shot missed..."
+                @promise hp
+    @forgive:
+        @confess ">> No ammo! She's running on pure spite now."
+        @promise hp
+
+? (--- Demon AI ---)
+
+@ship move_demon map demon_row demon_col player_row player_col:
+    ? (simple chase AI — move toward player)
+    @bond new_row = demon_row
+    @bond new_col = demon_col
+
+    @jealous demon_row > player_row:
+        @rebond new_row = demon_row minus 1
+    @forgive:
+        @jealous demon_row < player_row:
+            @rebond new_row = demon_row plus 1
+
+    @bond wall_check = @is_wall map new_row new_col
+    @jealous wall_check == 0:
+        @promise new_row
+    @forgive:
+        @promise demon_row
+
+? (--- Game Messages ---)
+
+@ship game_over:
+    @confess ""
+    @confess "================================"
+    @confess "   GAME OVER — She fell here.   "
+    @confess " But the morning glories bloom  "
+    @confess "       every spring still.       "
+    @confess "================================"
+    @promise "dead"
+
+@ship game_win:
+    @confess ""
+    @confess "================================"
+    @confess "  YOU ESCAPED — She found her   "
+    @confess "  way out. Like she always does. "
+    @confess "  The exit smelled like flowers. "
+    @confess "================================"
+    @promise "escaped"
+
+@ship demon_wins:
+    @confess ""
+    @confess "================================"
+    @confess " THE DEMON CAUGHT HER — But she "
+    @confess " already knew love was terrifying"
+    @confess "================================"
+    @promise "caught"
+
+? (--- Main Game Loop ---)
+
+@ship yuridoom:
+    @confess "================================"
+    @confess "         Y U R I D O O M        "
+    @confess "  A text-based doom experiment  "
+    @confess "  in a Yuri programming language "
+    @confess "   Yuring Complete since 2026   "
+    @confess "================================"
+    @confess ""
+    @confess "Find the exit [E] at row 18 col 18"
+    @confess "Avoid or shoot the demon [D]"
+    @confess "You are [P] — survive."
+    @confess ""
+
+    ? (initial state)
+    @bond map = @make_map
+    @bond player_row = 1
+    @bond player_col = 1
+    @bond demon_row = 10
+    @bond demon_col = 10
+    @bond hp = 100
+    @bond ammo = 10
+    @bond floor_num = 1
+    @bond state = "playing"
+    @bond turns = 0
+
+    ? (place exit marker)
+    @rebond map[[18]][[18]] = "E"
+
+    ? (game loop — max 200 turns to prevent infinite)
+    @fate turns < 200:
+        @jealous state == "playing":
+            ? (render current frame)
+            @render map player_row player_col demon_row demon_col hp ammo floor_num
+
+            ? (get input)
+            @confess ""
+            @bond move = @input "Your move: "
+
+            ? (clear player/demon from map for next render)
+            @rebond map[[player_row]][[player_col]] = " "
+            @rebond map[[demon_row]][[demon_col]] = " "
+
+            ? (--- process movement ---)
+            @bond new_row = player_row
+            @bond new_col = player_col
+
+            @jealous move == "w":
+                @rebond new_row = player_row minus 1
+            @forgive:
+                @jealous move == "s":
+                    @rebond new_row = player_row plus 1
+                @forgive:
+                    @jealous move == "a":
+                        @rebond new_col = player_col minus 1
+                    @forgive:
+                        @jealous move == "d":
+                            @rebond new_col = player_col plus 1
+                        @forgive:
+                            @jealous move == "f":
+                                @bond demon_hp = @try_fire player_row player_col demon_row demon_col ammo hp
+                                @rebond ammo = ammo minus 1
+                                @jealous demon_hp <= 0:
+                                    @confess ">> Demon defeated! But she hears more coming..."
+                                    @rebond demon_row = 5
+                                    @rebond demon_col = 15
+                                    @rebond ammo = ammo plus 5
+                                @forgive:
+                                    @bond _ = demon_hp
+                            @forgive:
+                                @jealous move == "q":
+                                    @rebond state = "quit"
+                                @forgive:
+                                    @confess ">> Unknown move. W/A/S/D to move, F to fire, Q to quit."
+
+            ? (--- check collision before moving ---)
+            @bond wall = @is_wall map new_row new_col
+            @apart wall == 1:
+                @rebond player_row = new_row
+                @rebond player_col = new_col
+
+            ? (--- check win condition ---)
+            @bond at_exit = @is_exit player_row player_col
+            @jealous at_exit == 1:
+                @game_win
+                @rebond state = "won"
+
+            ? (--- move demon toward player ---)
+            @bond next_demon_row = @move_demon map demon_row demon_col player_row player_col
+            @rebond demon_row = next_demon_row
+
+            ? (--- check demon caught player ---)
+            @bond caught = @is_demon player_row player_col demon_row demon_col
+            @jealous caught == 1:
+                @rebond hp = hp minus 30
+                @echo ">> The demon found her! HP: {hp}"
+                @jealous hp <= 0:
+                    @game_over
+                    @rebond state = "dead"
+
+            ? (--- passive hp drain every 10 turns ---)
+            @bond turn_check = @band turns 9
+            @jealous turn_check == 0:
+                @rebond hp = hp minus 5
+                @jealous hp <= 0:
+                    @game_over
+                    @rebond state = "dead"
+
+            @rebond turns = turns plus 1
+
+        @forgive:
+            ? (game ended — exit loop)
+            @rebond turns = 200
+
+    @jealous state == "playing":
+        @confess ">> Time ran out. The darkness took her."
+        @promise "timeout"
+    @forgive:
+        @promise state
+
+? (--- Entry Point ---)
+@wlw:
+    @yuridoom

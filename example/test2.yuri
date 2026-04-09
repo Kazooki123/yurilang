@@ -1,0 +1,56 @@
+@wlw:
+    ? (array indexing)
+    @bond nums = [[10, 20, 30, 40, 50]]
+    @confess nums[[0]]       ? (→ 10)
+    @confess nums[[4]]       ? (→ 50)
+
+    ? (array mutation)
+    @rebond nums[[2]] = 99
+    @confess nums[[2]]       ? (→ 99)
+
+    ? (2D array)
+    @bond grid = [[ [["#","#","#"]], [[" "," "," "]], [["#","#","#"]] ]]
+    @confess grid[[0]][[1]]  ? (→ #)
+    @confess grid[[1]][[1]]  ? (→  )
+
+    ? (join and length)
+    @bond row = [["#"," ","#"," ","#"]]
+    @bond line = @join row ""
+    @confess line            ? (→ # # #)
+    @bond len = @length row
+    @confess len             ? (→ 5)
+
+    ? (bitwise)
+    @bond a = @band 12 10    ? (→ 8)
+    @bond b = @bshift 1 3    ? (→ 8)
+    @confess a
+    @confess b
+
+    ? (--- TRUE/FALSE/BOOL TEST ---)
+    @bond feeling = love
+    @bond doubt = ache
+    @bond status = uncertain
+
+    @confess feeling      ? (→ love)
+    @confess doubt        ? (→ ache)
+    @confess status       ? (→ uncertain)
+
+    ? (boolean in conditions)
+    @jealous feeling == love:
+        @confess "She's sure."
+
+    ? (boolean logic)
+    @bond both = feeling and doubt
+    @confess both         ? (→ ache)
+
+    @bond either = feeling or doubt
+    @confess either       ? (→ love)
+
+    ? (with @spectrum)
+    @spectrum Confession:
+        ready
+        notready
+
+    @bond courage = Confession.ready
+    @bond can_confess = courage == "Confession.ready"
+    @confess can_confess  ? (→ love)
