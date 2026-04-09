@@ -20,3 +20,4 @@ def tokenize(line):
     for match in re.finditer(T_REGEX, line):
         tokens.append(match.group())
     return tokens
+

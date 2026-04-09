@@ -99,3 +99,4 @@ class YuriVM:
                 raise Exception(f"Unknown instruction: {op}")
 
             ip += 1
+

@@ -486,6 +486,8 @@ def run_reduce(array, step):
     if func_name not in functions and func_name not in c_functions:
         raise YuriRuntimeError(f"Undefined function: @{func_name}")
 
+    rest = parts[1].strip()
+
     if rest.startswith("@bloom"):
         bloom_tokens = rest.split()
         colon_idx = bloom_tokens.index(":")
@@ -1201,7 +1203,7 @@ def run_node(node):
             f" | She tried to glance at '{source}' but\n"
             f" | '{reacher}' is already reaching into it.\n\n"
             f" | You cannot @glance while a @reach is active.\n"
-            f" | Hint: @unreach {reacher} first, then @glance.\n"
+            f" |> Hint: @unreach {reacher} first, then @glance.\n"
             )
 
         # register glance borrow
@@ -1237,7 +1239,7 @@ def run_node(node):
             f" | She tried to reach into '{source}' but\n"
             f" | '{existing}' is already reaching into it.\n\n"
             f" | Only one @reach at a time.\n"
-            f" | Hint: @unreach {existing} first.\n"
+            f" |> Hint: @unreach {existing} first.\n"
             )
 
         # register reach borrow

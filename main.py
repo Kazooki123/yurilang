@@ -24,18 +24,18 @@ def main():
         print(f"""
     Usage: yuri [file] [options]
 
-      yuri program.yuri             interpret
-      yuri program.yuri --bytecode  compile to .yuric
-      yuri program.yuric --vm       run bytecode  
-      yuri program.yuri --compile   compile to x86-64 ASM
-      yuri program.yuri --wasm      compile to WebAssembly
-      yuri                          launch REPL
+    yuri program.yuri             interpret
+    yuri program.yuri --bytecode  compile to .yuric
+    yuri program.yuric --vm       run bytecode  
+    yuri program.yuri --compile   compile to x86-64 ASM
+    yuri program.yuri --wasm      compile to WebAssembly
+    yuri                          launch REPL
 
     Options:
-      --version    show version
-      --help       show this message
-      --user       install to user directory
-      --uninstall  remove YuriLang
+    --version    show version
+    --help       show this message
+    --user       install to user directory
+    --uninstall  remove YuriLang
 
     "Yuring Complete since 2026" 🍰
     """)
@@ -115,3 +115,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
