@@ -1,0 +1,20 @@
+[
+  [
+    "PUSH",
+    "Hello, World!"
+  ],
+  [
+    "STORE",
+    "x"
+  ],
+  [
+    "LOAD",
+    "x"
+  ],
+  [
+    "PRINT"
+  ],
+  [
+    "HALT"
+  ]
+]
