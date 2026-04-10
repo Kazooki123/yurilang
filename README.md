@@ -447,6 +447,14 @@ Then convert it to `.wasm` with **wat2wasm**:
 wat2wasm yourfile.wat -o program.wasm
 ```
 
+## Amy
+
+A `TUI`-based editor primarily written in **Go**.
+
+Named after **Amy** from **I Love Amy**, a South Korean yuri manhwa story.
+
+Most contribution is **thanks to** [Angel Miku](https://github.com/iiAngel)
+
 ## Packages / Libraries / Stores
 
 Most modules or libraries of yurilang right now is placed in `store/`, containing story driven code from **Yuri media**, but as the language evolves so as its modular system, later on the module system will import modules, libs, and packages whenever it is placed.
