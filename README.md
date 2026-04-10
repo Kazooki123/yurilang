@@ -278,6 +278,31 @@ For importing modules.
 
 ---
 
+@crush - Types
+
+Declares a type**
+
+- strings -> `heart`
+- numbers -> `int` (type_name may change later)
+- float -> `float` (type_name may change later)
+- boolean -> `bloom/uncertain`
+- lists -> `list` (type_name may change later)
+
+> [!IMPORTANT]
+> Types in this language is **never** enforced.
+
+```
+@wlw:
+    @crush name = heart
+    @crush age = int
+    @crush score = float
+    @crush is_inlove = bloom
+    @crush friends = list
+    @crush mystery = uncertain
+```
+
+---
+
 @sempai — Import C functions
 
 Loads and binds a function from a C shared library, callable like any other `@ship` function.
