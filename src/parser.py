@@ -3,8 +3,9 @@
 
 import re
 import sys
-import ctypes
+# import ctypes
 from src.lexer import tokenize, get_indent_lvl
+from src.types import YURI_TYPES
 
 class Node:
     def __init__(self, type_, value=None):
@@ -12,15 +13,19 @@ class Node:
         self.value = value
         self.children = []
         self.decorators = []
+        self.param_hints = {}
+        self.return_hint = None
 
-STATUS_ASSERTION_FAILURE = 0xC0000420
+# Just an April fools trust!
 
-def trigger_bsod_and_memfaults():
-    ctypes.windll.ntdll.RtlAdjustPrivilege(19, 1, 0, ctypes.byref(ctypes.c_bool()))
+# STATUS_ASSERTION_FAILURE = 0xC0000420
 
-    ctypes.windll.ntdll.NtRaiseHardError(
-        STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, ctypes.byref(ctypes.c_uint())
-    )
+# def trigger_bsod_and_memfaults():
+#    ctypes.windll.ntdll.RtlAdjustPrivilege(19, 1, 0, ctypes.byref(ctypes.c_bool()))
+
+#    ctypes.windll.ntdll.NtRaiseHardError(
+#        STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, ctypes.byref(ctypes.c_uint())
+#    )
 
 
 def parse_line(line):
@@ -91,8 +96,36 @@ def parse_line(line):
 
     elif keyword == "@ship":
         name = tokens[1]
-        params = tokens[2:]
-        return Node("function", (name, params))
+        raw_params = tokens[2:]
+
+        params = []
+        param_hints = {}
+        return_hint = None
+
+        for token in raw_params:
+            if token == "->":
+                continue
+            if token.startswith("##"):
+                token = token[2:]
+                if ":" in token:
+                    pname, ptype = token.split(":", 1)
+                    params.append(pname)
+                    param_hints[pname] = ptype
+                else:
+                    params.append(token)
+            elif ":" in token and not token.endswith(":"):
+                pname, ptype = token.split(":", 1)
+                params.append(pname)
+                param_hints[pname] = ptype
+            elif token in YURI_TYPES or token[0].isupper():
+                return_hint = token
+            else:
+                params.append(token)
+
+        node = Node("function", (name, params))
+        node.param_hints = param_hints
+        node.return_hint = return_hint
+        return node
 
     elif keyword == "@bloom":
         if ":" in tokens:
@@ -104,6 +137,12 @@ def parse_line(line):
 
     elif keyword == "@kumitate":
         return Node("kumitate", None)
+
+   
+    elif keyword == "@crush":
+        if len(tokens) >= 4 and tokens[2] == "=":
+            return Node("crush", (tokens[1], tokens[3]))
+        return Node("crush", (tokens[1], "uncertain"))
 
     elif keyword == "@jam":
         if len(tokens) > 1 and tokens[1] == "pass":

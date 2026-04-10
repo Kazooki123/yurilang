@@ -29,6 +29,7 @@ def main():
     yuri program.yuric --vm       run bytecode  
     yuri program.yuri --compile   compile to x86-64 ASM
     yuri program.yuri --wasm      compile to WebAssembly
+    yuri progrwm.yuri --crush     type annotation flag
     yuri                          launch REPL
 
     Options:
@@ -39,6 +40,15 @@ def main():
 
     "Yuring Complete since 2026" 🍰
     """)
+        return
+
+    if "--crush" in args:
+        from src.types import crush_summary
+
+        with open(filename) as f:
+            run(f.read())
+        print("\n🌸 YuriLang Type Hints (@crush)\n")
+        print(crush_summary())
         return
 
     if "--compile" in args:

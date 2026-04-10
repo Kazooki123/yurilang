@@ -17,7 +17,11 @@ from src.asynchronous import (
     YuriDream, make_async_ship, run_dream,
     gather_dreams, sleep_dream, get_event_loop
 )
-
+from src.types import (
+    register_crush, register_func_hints,
+    check_hint, type_name, crush_summary,
+    YURI_TYPES
+)
 
 variables = {}
 functions = {}
@@ -1003,7 +1007,11 @@ def run_node(node):
     # FUNCTION DEFINE
     elif node.type == "function":
         name, params = node.value
-        
+        functions[name] = (params, node.children)
+
+        if node.param_hints or node.return_hint:
+            register_func_hints(name, node.param_hints, node.return_hint)
+
         if "async" in node.decorators:
             async_fn = make_async_ship(
                 params, node.children, functions, variables
@@ -1040,6 +1048,11 @@ def run_node(node):
 
         variables.clear()
         variables.update(old_vars)
+
+    # TYPE ANNOTATIOND
+    elif node.type == "crush":
+        name, hint = node.value
+        register_crush(name, hint)
 
     # ASYNCHRONOUS
     elif node.type == "dream":
@@ -1089,7 +1102,7 @@ def run_node(node):
         if val is None:
             raise YuriRuntimeError(
             f"\n💔 @wake — '{target}' has no dream to wake from\n"
-            f"  💡 hint: Use @dream first: @dream {target} = @my_async_func\n"
+            f" |> Hint: Use @dream first: @dream {target} = @my_async_func\n"
             )
 
         if isinstance(val, YuriDream):

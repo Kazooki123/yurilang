@@ -113,7 +113,7 @@ def show_credits():
     print("Contributors:")
     names = [
         "@themackabu    → JS-Port",
-        "@@douxx.tech   → Added C callers",
+        "@douxx.tech    → Added C callers",
         "@iiiangel      → Helped the Amy Editor"
     ]
 
