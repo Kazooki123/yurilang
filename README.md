@@ -280,7 +280,7 @@ For importing modules.
 
 @crush - Types
 
-Declares a type**
+Declares a **type**
 
 - strings -> `heart`
 - numbers -> `int` (type_name may change later)
@@ -300,6 +300,8 @@ Declares a type**
     @crush friends = list
     @crush mystery = uncertain
 ```
+
+**Note:** you can use the `--crush` flag for this feature.
 
 ---
 
