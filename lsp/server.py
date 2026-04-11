@@ -1,6 +1,6 @@
 from pygls.server import LanguageServer
 
-ls = LanguageServer("yurilang", "v1.0.1")
+ls = LanguageServer("yurilang", "v1.1.0")
 
 @ls.feature("textDocument/completion")
 def completions(ls, params):
