@@ -59,11 +59,12 @@ Commands:
   morse       → try something mysterious...
 
 Flags:
-  yuri file.yuri           → run file
+  yuri file.yuri           → runs the file at runtime
   yuri file --compile      → compile to ASM
   yuri file --bytecode     → compile to bytecode
-  yuri file.yuric --vm     → run VM
-  yuri file --wasm         → compile to a .wat file       
+  yuri file.yuric --vm     → runs the VM
+  yuri file --wasm         → compile to a .wat file
+  yuri file --glc          → compiles to an executable file
 
 Tips:
   Use @confess to print 🩷
@@ -81,7 +82,7 @@ def show_license():
         return
 
     index = 0
-    page_size = 15  # lines per page
+    page_size = 20  # lines per page
 
     while True:
         os.system("clear")  # use "cls" if Windows later

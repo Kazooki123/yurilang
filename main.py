@@ -6,7 +6,7 @@ from src.wasm import compile_to_yasm
 from vm.compiler import compile_to_bytecode
 from vm.bytecode import YuriVM
 from vm.serializer import save_yuric, load_yuric
-
+from glc.python.compile import glc_compile
 
 def main():
     args = sys.argv[1:]
@@ -30,6 +30,7 @@ def main():
     yuri program.yuri --compile   compile to x86-64 ASM
     yuri program.yuri --wasm      compile to WebAssembly
     yuri progrwm.yuri --crush     type annotation flag
+    yuri program.yuri --glc       compiles it to binary
     yuri                          launch REPL
 
     Options:
@@ -44,6 +45,8 @@ def main():
 
     if "--crush" in args:
         from src.types import crush_summary
+
+        filename = next(arg for arg in args if arg.endswith(".yuri"))
 
         with open(filename) as f:
             run(f.read())
@@ -67,6 +70,18 @@ def main():
             print("No .yuri file provided.")
         except FileNotFoundError:
             print(f"File not found.")
+        return
+
+    if "--glc" in args:
+        try:
+            filename = next(arg for arg in args if arg.endswith(".yuri"))
+            with open(filename) as f:
+                code = f.read()
+            out = filename.replace(".yuri", "")
+            glc_compile(code, out)
+            print(f"Run with: ./{out}")
+        except StopIteration:
+            print("No .yuri file provided.")
         return
 
     if "--bytecode" in args:
