@@ -7,13 +7,15 @@ from vm.compiler import compile_to_bytecode
 from vm.bytecode import YuriVM
 from vm.serializer import save_yuric, load_yuric
 from glc.python.compile import glc_compile
+from llvm.llvm import llvm_compile
+
 
 def main():
     args = sys.argv[1:]
 
     if "--version" in args:
         print(f"""
-    YuriLang v1.2.0
+    YuriLang v1.3.0
     Yuring Complete since 2026 🧡🤍🩷
     Python {sys.version.split()[0]}
     GPL-3.0 License
@@ -31,6 +33,8 @@ def main():
     yuri program.yuri --wasm      compile to WebAssembly
     yuri progrwm.yuri --crush     type annotation flag
     yuri program.yuri --glc       compiles it to binary
+    yuri program.yuri --llvm      compile to LLVM IR (.ll) 
+    yuri program.yuri --llvm-obj  compile to a LLVM object file (.o)
     yuri                          launch REPL
 
     Options:
@@ -80,6 +84,35 @@ def main():
             out = filename.replace(".yuri", "")
             glc_compile(code, out)
             print(f"Run with: ./{out}")
+        except StopIteration:
+            print("No .yuri file provided.")
+        return
+
+    if "--llvm" in args:
+        try:
+            filename = next(arg for arg in args if arg.endswith(".yuri"))
+            with open(filename) as f:
+                code = f.read()
+
+            # .ll IR file
+            out_ll = filename.replace(".yuri", ".ll")
+            llvm_compile(code, out_ll, mode="ir")
+
+        except StopIteration:
+            print("No .yuri file provided.")
+        return
+
+    if "--llvm-obj" in args:
+        try:
+            filename = next(arg for arg in args if arg.endswith(".yuri"))
+            with open(filename) as f:
+                code = f.read()
+
+            # native .o object file
+            out_obj = filename.replace(".yuri", ".o")
+            llvm_compile(code, out_obj, mode="object")
+            print(f"Link with: gcc {out_obj} -o program")
+
         except StopIteration:
             print("No .yuri file provided.")
         return

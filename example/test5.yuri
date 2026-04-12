@@ -1,0 +1,8 @@
+@wlw:
+    @confess "Hello, World!"
+    @bond x = 5
+    @bond y = 3
+    @bond name = "Aiko"
+    @confess x
+    @confess name
+

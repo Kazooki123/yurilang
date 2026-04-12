@@ -2,7 +2,7 @@
 
 ![Logo](https://github.com/Kazooki123/yurilang/blob/main/logo.png)
 
-![version](https://img.shields.io/badge/version-v1.2.0-pink) ![GitHub License](https://img.shields.io/github/license/Kazooki123/yurilang?color=pink) ![GitHub Repo stars](https://img.shields.io/github/stars/Kazooki123/yurilang?logoColor=pink&color=pink)
+![version](https://img.shields.io/badge/version-v1.3.0-pink) ![GitHub License](https://img.shields.io/github/license/Kazooki123/yurilang?color=pink) ![GitHub Repo stars](https://img.shields.io/github/stars/Kazooki123/yurilang?logoColor=pink&color=pink)
  ![GitHub contributors](https://img.shields.io/github/contributors/Kazooki123/yurilang?color=pink)
 
 
