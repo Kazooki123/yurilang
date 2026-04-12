@@ -13,6 +13,10 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 
 **Yuri (/ˈjʊəri/)**
 
+- **Shiny Certificate :3**
+
+![Yuri Certificate](https://img.shields.io/badge/YURI%20CERTIFICATE-ffc0cb?style=flat&logo=github&logoColor=white)
+
 - **Docs:** `Coming Soon...`
 
 > [!IMPORTANT]
