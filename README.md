@@ -146,6 +146,35 @@ Returns the provided typed map unchanged.
 
 ---
 
+@choose - Filter
+
+Extracts an element from a collection (like a list) based on a condition.
+
+```
+@ship is_even x:
+    @bond rem = @band x 1
+    @jealous rem == 0:
+        @promise love
+    @forgive:
+        @promise ache
+
+@bond evens = @choose nums is_even
+@confess evens
+```
+
+---
+
+@slice - Slicing
+
+A technique to extract a specific portion or "subset" of data from a sequence.
+
+```
+@bond part = @slice nums 2 5
+@confess part
+```
+
+---
+
 @sappho / @poet — Pattern matching
 
 Used for pattern matching. You can learn what pattern matchings are [here.](https://en.wikipedia.org/wiki/Pattern_matching)
