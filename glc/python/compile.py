@@ -50,6 +50,10 @@ class Emitter:
     def patch_jumps(self):
         """Resolve all forward jump references."""
         for offset, label in self.patches:
+            if label is None:
+                continue
+            if label.startswith("__rip_"):
+                continue
             if label not in self.labels:
                 raise GlcError(f"Undefined label: {label}")
             target = self.labels[label]
