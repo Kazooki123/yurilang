@@ -248,7 +248,7 @@ class YuriLLVM:
             f.write(ir_text)
         print(f"🌸 YuriLang LLVM IR → {output_path}")
         print(f" |  Compile with:")
-        print(f" |  LLC {OUTPUT_PATH} -O {OUTPUT_PATH.REPLACE('.LL','.S')}")
+        print(f" |  llc {output_path} -o {output_path.replace('.ll','.s')}")
         print(f" |  gcc {output_path.replace('.ll','.s')} -o program")
         print(f" |  Or directly:")
         print(f" |  clang {output_path} -o program")
