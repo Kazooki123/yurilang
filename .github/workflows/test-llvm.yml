@@ -39,7 +39,7 @@ jobs:
 
       - name: Compile using llc + gcc
         run: |
-          llc example/helloworld.ll -o example/helloworld.s
+          llc -relocation-model=pic example/helloworld.ll -o example/helloworld.s
           gcc example/helloworld.s -o program
           ./program
 
