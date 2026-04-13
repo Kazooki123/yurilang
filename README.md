@@ -467,6 +467,15 @@ $
 
 A Rust written compiler made for YuriLang, it will be released soon and if it does expect bugs or errors at it's first released.
 
+**Note:** The compiler is currently implemented in Python.
+
+## LLVM
+
+> [!WARNING]
+> Some bugs and error may still occur btw
+
+As of `v1.3.0`, yurilang can **transpile** to a LLVM IR (Intermediate Representation) file `(.ll)` with the help of the `--llvm` flag, while native object files `(.o)` are done with the `--llvm-obj` flag.
+
 ## WASM
 
 You can generate a `.wat` file in YuriLang with this command:
@@ -495,6 +504,10 @@ Most contribution is **thanks to** [Angel Miku](https://github.com/iiAngel)
 ## Packages / Libraries / Stores
 
 Most modules or libraries of yurilang right now is placed in `store/`, containing story driven code from **Yuri media**, but as the language evolves so as its modular system, later on the module system will import modules, libs, and packages whenever it is placed.
+
+## Codeberg
+
+`[... Coming Soon...]`
 
 ## Issues and Bugs
 
