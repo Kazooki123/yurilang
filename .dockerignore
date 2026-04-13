@@ -1,0 +1,13 @@
+/pkm/
+*.yuric
+*.so 
+*.c 
+/clibs/
+/pkm/
+/amy/
+/yuri-js/
+/example/
+
+.gitmodules
+.gitignore
+
