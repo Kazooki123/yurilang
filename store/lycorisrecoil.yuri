@@ -1,0 +1,261 @@
+? (Lycoris Recoil)
+? (Import with: @yuri lycorisrecoil)
+? ("The best memories are the ones you make with someone worth protecting.")
+
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+? ( CHARACTER VOICES                  )
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+
+@ship chisato_voice:
+    @confess "Good morning! Isn't today a great day to be alive?"
+    @confess "I know, I know — statistically it might be my last."
+    @confess "But that's exactly why it's great."
+    @confess "Every second I get to spend it with her is a gift."
+    @promise "radiant"
+
+@ship takina_voice:
+    @confess "Emotion compromises accuracy."
+    @confess "Attachment compromises mission focus."
+    @confess "She compromises everything I was trained to be."
+    @confess "..."
+    @confess "I don't care anymore."
+    @promise "certain"
+
+@ship majima_voice:
+    @confess "Artificial hearts. Isn't that poetic?"
+    @confess "The girl who saves everyone"
+    @confess "running on borrowed time."
+    @confess "Let's see how long she keeps smiling."
+    @promise "chaos"
+
+@ship mika_voice:
+    @confess "I've been protecting her since she was a child."
+    @confess "But she never needed protecting."
+    @confess "She needed someone to stay."
+    @confess "I should have stayed."
+    @promise "regret"
+
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+? ( THE MEETING                       )
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+
+@ship first_meeting:
+    @confess "She was supposed to be my new partner."
+    @confess "She showed up late, smiling, eating a crepe."
+    @confess "I had never met anyone so unprofessional."
+    @confess "I had never met anyone so alive."
+    @promise "the beginning of everything"
+
+@ship chisato_sees_takina:
+    @confess "She was so stiff. So serious."
+    @confess "Like she'd forgotten what it felt like to just... be."
+    @confess "I wanted to remind her."
+    @confess "I think that's when I decided — she was worth it."
+    @promise "decided"
+
+@ship takina_sees_chisato:
+    @confess "She was nothing like the files described."
+    @confess "Top Lycoris. Undefeated. Zero kills."
+    @confess "That last part made no sense to me."
+    @confess "It makes sense now."
+    @promise "understanding arrives slowly"
+
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+? ( REACTIVE SCENES                   )
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+
+@ship chisato_reacts state:
+    @sappho state:
+        @poet "fighting":
+            @confess "Non-lethal only. That's the rule."
+            @confess "Don't look at me like that —"
+            @confess "everyone gets to go home today."
+            @promise "undefeated"
+        @poet "hurt":
+            @confess "Ahaha... okay that one got me."
+            @confess "Don't tell Takina."
+            @confess "She worries."
+            @confess "I love that she worries."
+            @promise "still smiling"
+        @poet "dying":
+            @confess "The heart is failing. I knew it would."
+            @confess "I'm not scared."
+            @confess "I'm just... not ready to stop seeing her face."
+            @promise "not yet"
+        @poet "saved":
+            @confess "She came back for me."
+            @confess "Of course she did."
+            @confess "She always does."
+            @promise "alive"
+        @poet "happy":
+            @confess "This is it, you know?"
+            @confess "This cafe. This partner. This moment."
+            @confess "This is what I was given extra time for."
+            @promise "grateful"
+        @poet _:
+            @confess "Whatever happens — I choose this."
+            @promise "chosen"
+
+@ship takina_reacts state:
+    @sappho state:
+        @poet "mission":
+            @confess "Target acquired. Objective clear."
+            @confess "..."
+            @confess "Chisato is laughing at something again."
+            @confess "Stay focused."
+            @promise "focused. mostly."
+        @poet "confused":
+            @confess "She gave me a gift for no reason."
+            @confess "It wasn't my birthday."
+            @confess "It wasn't any occasion."
+            @confess "She said — just because."
+            @confess "I don't know what to do with just because."
+            @promise "learning"
+        @poet "scared":
+            @confess "The heart has a timer."
+            @confess "I read the file."
+            @confess "I read it seventeen times."
+            @confess "Each time I hoped the number would change."
+            @promise "it didn't change"
+        @poet "realizing":
+            @confess "When did protecting the mission"
+            @confess "become protecting her?"
+            @confess "When did following orders"
+            @confess "become choosing to stay?"
+            @promise "somewhere between then and now"
+        @poet "certain":
+            @confess "I'm going to find a new heart for her."
+            @confess "I don't care what it takes."
+            @confess "I don't care who I have to become."
+            @confess "She gets to keep living."
+            @promise "absolute"
+        @poet _:
+            @confess "She changed everything."
+            @confess "I think I knew from the first day."
+            @promise "known"
+
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+? ( KEY SCENES                        )
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+
+@ship the_cafe:
+    @confess "LycoReco wasn't supposed to feel like home."
+    @confess "It was an assignment. A cover."
+    @confess "But she made coffee and said welcome"
+    @confess "like she meant it."
+    @confess "Like she'd been waiting."
+    @promise "home"
+
+@ship the_rooftop:
+    @confess "She told me about the heart on the rooftop."
+    @confess "Like it was nothing. Like she wasn't"
+    @confess "describing her own expiration date."
+    @confess "She was smiling."
+    @confess "I wanted to scream."
+    @confess "I held her hand instead."
+    @promise "holding on"
+
+@ship the_farewell:
+    @confess "She said goodbye like it was any other day."
+    @confess "Bright smile. Same as always."
+    @confess "I knew what it meant."
+    @confess "So I didn't let it be goodbye."
+    @confess "I refuse."
+    @promise "not goodbye"
+
+@ship the_return:
+    @confess "She came back."
+    @confess "Of course she came back."
+    @confess "She always said she would."
+    @confess "I just needed to make sure"
+    @confess "the world she came back to"
+    @confess "still had a place for her in it."
+    @promise "she came back"
+
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+? ( CHISATO'S PHILOSOPHY              )
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+
+@ship on_living:
+    @confess "People ask me how I stay positive."
+    @confess "Knowing what I know. Having what I have."
+    @confess "The answer is easy."
+    @confess "Every day I'm alive is a day I chose."
+    @confess "Every smile is a small act of defiance."
+    @confess "She taught me that — without meaning to."
+    @confess "Just by being so completely herself."
+    @promise "defiance as love"
+
+@ship on_killing:
+    @confess "They trained me to be the best."
+    @confess "And I am."
+    @confess "I just decided what best means."
+    @confess "Everyone goes home."
+    @confess "Even the ones who came to hurt us."
+    @confess "Especially them."
+    @promise "undefeated. unkilling."
+
+@ship on_takina:
+    @confess "She thinks she's learning from me."
+    @confess "How to be warmer. How to laugh."
+    @confess "She has no idea."
+    @confess "She's the one teaching."
+    @confess "Every time she chooses to stay —"
+    @confess "she teaches me it was worth it."
+    @promise "worth every second"
+
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+? ( TAKINA'S ARC                      )
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+
+@ship takina_arc state:
+    @sappho state:
+        @poet "beginning":
+            @confess "Mission. Objective. Protocol."
+            @confess "I don't need warmth."
+            @confess "I need results."
+            @promise "cold"
+        @poet "middle":
+            @confess "She made me try takoyaki."
+            @confess "I said it was fine."
+            @confess "It was the best thing I'd ever eaten."
+            @confess "I went back for more when she wasn't looking."
+            @promise "thawing"
+        @poet "turning":
+            @confess "When she got hurt I felt something"
+            @confess "the training manuals never prepared me for."
+            @confess "I think it was fear."
+            @confess "Not of failing the mission."
+            @confess "Of losing her."
+            @promise "the difference matters"
+        @poet "end":
+            @confess "DA reinstated me."
+            @confess "I could go back."
+            @confess "I chose the cafe."
+            @confess "I chose her."
+            @promise "chosen"
+
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+? ( THE ENDING                        )
+? (━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━)
+
+@ship the_ending state:
+    @sappho state:
+        @poet "hopeful":
+            @confess "New heart. New chapter."
+            @confess "Same cafe. Same partner."
+            @confess "She's making coffee and complaining"
+            @confess "I'm not smiling enough."
+            @confess "I'm smiling."
+            @confess "I just don't do it where she can see."
+            @promise "home"
+        @poet "open":
+            @confess "The story doesn't end here."
+            @confess "She made sure of that."
+            @confess "We made sure of that."
+            @promise "to be continued"
+        @poet _:
+            @confess "She's alive."
+            @confess "That's enough."
+            @confess "That's everything."
+            @promise "alive"
