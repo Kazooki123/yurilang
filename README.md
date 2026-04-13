@@ -2,8 +2,9 @@
 
 ![Logo](https://github.com/Kazooki123/yurilang/blob/main/logo.png)
 
-![version](https://img.shields.io/badge/version-v1.3.0-pink) ![GitHub License](https://img.shields.io/github/license/Kazooki123/yurilang?color=pink) ![GitHub Repo stars](https://img.shields.io/github/stars/Kazooki123/yurilang?logoColor=pink&color=pink)
- ![GitHub contributors](https://img.shields.io/github/contributors/Kazooki123/yurilang?color=pink) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Kazooki123/yurilang/run.yml?branch=main&color=pink)  [![Telegram](https://img.shields.io/badge/telegram-2CA5E0?style=flat&logo=telegram&logoColor=white&color=pink)](https://t.me/+UQ449T4ApJliNzJl)
+![version](https://img.shields.io/github/v/release/Kazooki123/yurilang?color=pink) ![GitHub License](https://img.shields.io/github/license/Kazooki123/yurilang?color=pink) ![GitHub Repo stars](https://img.shields.io/github/stars/Kazooki123/yurilang?logoColor=pink&color=pink)
+ ![GitHub contributors](https://img.shields.io/github/contributors/Kazooki123/yurilang?color=pink) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Kazooki123/yurilang/run.yml?branch=main&color=pink) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/Kazooki123/yurilang?logo=github&logoColor=pink&color=pink) [![Telegram](https://img.shields.io/badge/telegram-2CA5E0?style=flat&logo=telegram&logoColor=white&color=pink)](https://t.me/+UQ449T4ApJliNzJl) ![Bluesky followers](https://img.shields.io/bluesky/followers/starloexoliz123.bsky.social?logo=bluesky&logoColor=pink&color=pink) ![Python](https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=white&label=3.13&color=pink) ![LLVM](https://img.shields.io/badge/llvm-262D3A?style=flat&logo=llvm&logoColor=white&label=22.1.3&color=pink)
+
 
 
 
@@ -11,6 +12,10 @@
 YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
 
 **Yuri (/ˈjʊəri/)**
+
+- **Shiny Certificate :3**
+
+![Yuri Certificate](https://img.shields.io/badge/YURI%20CERTIFICATE-ffc0cb?style=flat&logo=github&logoColor=white)
 
 - **Docs:** `Coming Soon...`
 
@@ -137,6 +142,35 @@ Returns the provided typed map unchanged.
 @wlw:
     @bond feelings = [["distant", "confused", "realizing", "confessing"]]
     feelings @> @affect yuu_reacts
+```
+
+---
+
+@choose - Filter
+
+Extracts an element from a collection (like a list) based on a condition.
+
+```
+@ship is_even x:
+    @bond rem = @band x 1
+    @jealous rem == 0:
+        @promise love
+    @forgive:
+        @promise ache
+
+@bond evens = @choose nums is_even
+@confess evens
+```
+
+---
+
+@slice - Slicing
+
+A technique to extract a specific portion or "subset" of data from a sequence.
+
+```
+@bond part = @slice nums 2 5
+@confess part
 ```
 
 ---
@@ -433,6 +467,15 @@ $
 
 A Rust written compiler made for YuriLang, it will be released soon and if it does expect bugs or errors at it's first released.
 
+**Note:** The compiler is currently implemented in Python.
+
+## LLVM
+
+> [!WARNING]
+> Some bugs and error may still occur btw
+
+As of `v1.3.0`, yurilang can **transpile** to a LLVM IR (Intermediate Representation) file `(.ll)` with the help of the `--llvm` flag, while native object files `(.o)` are done with the `--llvm-obj` flag.
+
 ## WASM
 
 You can generate a `.wat` file in YuriLang with this command:
@@ -461,6 +504,10 @@ Most contribution is **thanks to** [Angel Miku](https://github.com/iiAngel)
 ## Packages / Libraries / Stores
 
 Most modules or libraries of yurilang right now is placed in `store/`, containing story driven code from **Yuri media**, but as the language evolves so as its modular system, later on the module system will import modules, libs, and packages whenever it is placed.
+
+## Codeberg
+
+`[... Coming Soon...]`
 
 ## Issues and Bugs
 
