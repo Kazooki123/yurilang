@@ -1,0 +1,26 @@
+name: Test Yurilang's LLVM
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  run-yurilang:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install llvmlite
+        run: |
+          pip install llvmlite
+
+      - name: Run a Yuri file with the LLVM flag
+        run: |
+          python main.py example/hello world.yuri --llvm
