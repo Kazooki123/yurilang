@@ -12,6 +12,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Install LLVM, Clang, and GCC
+        run: |
+          sudo apt update
+          sudo apt install -y llvm clang gcc
+
+      - name: Verify LLVM tools
+        run: |
+          llc --version
+          clang --version
+          gcc --version
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -24,3 +35,15 @@ jobs:
       - name: Run a Yuri file with the LLVM flag
         run: |
           python main.py example/helloworld.yuri --llvm
+
+
+      - name: Compile using llc + gcc
+        run: |
+          llc example/helloworld.ll -o example/helloworld.s
+          gcc example/helloworld.s -o program
+          ./program
+
+      - name: Compile directly using clang
+        run: |
+          clang example/helloworld.ll -o program_clang
+          ./program_clang
