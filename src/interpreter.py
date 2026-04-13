@@ -22,6 +22,7 @@ from src.types import (
     check_hint, type_name, crush_summary,
     YURI_TYPES
 )
+from src.etc.itmye_check import run_itmye # ITMYE 
 
 variables = {}
 functions = {}
@@ -49,9 +50,9 @@ YURI_OPS = {
     "bor":    lambda a, b: int(a) | int(b),
     "bxor":   lambda a, b: int(a) ^ int(b),
     "bshift": lambda a, b: int(a) << int(b) if int(b) >= 0 else int(a) >> abs(int(b)),
-    "and":   lambda a, b: a and b,
-    "or":    lambda a, b: a or b,
-    "not":   lambda a: not a,
+    "and":    lambda a, b: a and b,
+    "or":     lambda a, b: a or b,
+    "not":    lambda a: not a,
 }
 
 def coerce(v):
@@ -199,6 +200,85 @@ def _call_c(name, raw_args):
     return _ctype_to_py(c_functions[name](*c_args))
 
 
+def _apply_affect(arr, func_ref):
+    results = []
+    for item in arr:
+        if func_ref in functions:
+            params, body = functions[func_ref][:2]
+            old_vars = variables.copy()
+            if params:
+                variables[params[0]] = item
+                result = None
+                for child in body:
+                    ret = run_node(child)
+                    if isinstance(ret, ReturnSignal):
+                        result = ret.value
+                        break
+                variables.clear()
+                variables.update(old_vars)
+                results.append(result)
+
+            elif func_ref in variables and isinstance(variables[func_ref], YuriLambda):
+                lam = variables[func_ref]
+                old_vars = variables.copy()
+                variables.clear()
+                variables.update(lam.closure)
+                if lam.params:
+                        variables[lam.params[0]] = item
+                result = evaluate(lam.body_expr)
+                variables.clear()
+                variables.update(old_vars)
+                results.append(result)
+
+            else:
+                raise YuriRuntimeError(
+                    f"\n💔 @affect — '{func_ref}' is not a @ship or @bloom\n"
+                    f" |> hint: Define it first:\n"
+                    f"           @ship {func_ref} x:\n"
+                    f"               @promise x\n"
+                )
+        return results
+
+
+def _apply_choose(arr, func_ref):
+    results = []
+    for item in arr:
+        if func_ref in functions:
+            params, body = functions[func_ref][:2]
+            old_vars = variables.copy()
+            if params:
+                variables[params[0]] = item
+                result = None
+                for child in body:
+                    ret = run_node(child)
+                    if isinstance(ret, ReturnSignal):
+                        result = ret.value
+                        break
+                    variables.clear()
+                    variables.update(old_vars)
+                if result:
+                    results.append(item)
+
+                elif func_ref in variables and isinstance(variables[func_ref], YuriLambda):
+                    lam = variables[func_ref]
+                    old_vars = variables.copy()
+                    variables.clear()
+                    variables.update(lam.closure)
+                    if lam.params:
+                        variables[lam.params[0]] = item
+                    result = evaluate(lam.body_expr)
+                    variables.clear()
+                    variables.update(old_vars)
+                    if result:
+                        results.append(item)
+
+                else:
+                    raise YuriRuntimeError(
+                        f"\n💔 @choose — '{func_ref}' is not a @ship or @bloom\n"
+                    )
+        return results
+
+
 def evaluate(expr):
     global variables
 
@@ -342,6 +422,67 @@ def evaluate(expr):
             a = int(evaluate(raw_args[0]))
             b = int(evaluate(raw_args[1]))
             return a << b if b >= 0 else a >> abs(b)
+
+        elif func_name == "affect":
+            arr = evaluate(raw_args[0]) if raw_args else []
+            func_ref = raw_args[1] if len(raw_args) > 1 else None
+
+            if not isinstance(arr, list):
+                raise YuriRuntimeError("@affect requires an array as first argument")
+            if func_ref is None:
+                raise YuriRuntimeError("@affect requires a function as second argument")
+
+            return _apply_affect(arr, func_ref)
+
+        elif func_name == "choose":
+            arr = evaluate(raw_args[0]) if raw_args else []
+            func_ref = raw_args[1] if len(raw_args) > 1 else None
+
+            if not isinstance(arr, list):
+                raise YuriRuntimeError("@choose requires an array as first argument")
+
+            return _apply_choose(arr, func_ref)
+
+        elif func_name == "slice":
+            arr = evaluate(raw_args[0]) if raw_args else []
+            start = int(evaluate(raw_args[1])) if len(raw_args) > 1 else 0
+            end = int(evaluate(raw_args[2])) if len(raw_args) > 2 else None
+
+            if isinstance(arr, list):
+                return arr[start:end]
+            if isinstance(arr, str):
+                return arr[start:end]
+            raise YuriRuntimeError("@slice requires an array or string")
+
+        elif func_name == "read":
+            path = evaluate(raw_args[0]) if raw_args else ""
+            try:
+                with open(path, 'r') as f:
+                    return f.read()
+            except FileNotFoundError:
+                raise YuriRuntimeError(
+                    f"\n💔 @read — file not found: '{path}'\n"
+                    f" | She reached for a story that doesn't exist.\n"
+                    f" |> Hint: Check the file path.\n"
+                )
+            except PermissionError:
+                raise YuriRuntimeError(
+                    f"\n💔 @read — permission denied: '{path}'\n"
+                    f"  She wasn't allowed to read that story.\n"
+                )
+
+        elif func_name == "write":
+            path = evaluate(raw_args[0]) if raw_args else ""
+            content = evaluate(raw_args[1]) if len(raw_args) > 1 else ""
+            try:
+                with open(path, 'w') as f:
+                    f.write(str(content))
+                return love  # returns True on success
+            except PermissionError:
+                raise YuriRuntimeError(
+                    f"\n💔 @write — permission denied: '{path}'\n"
+                    f"  She wasn't allowed to write there.\n"
+                )
 
         elif func_name == "input":
             prompt = evaluate(raw_args[0]) if raw_args else ""
@@ -1003,6 +1144,47 @@ def run_node(node):
         shared_ptrs[alias] = source
 
         variables[alias] = source_val
+
+    # MAPPING
+    elif node.type == "affect_standalone":
+        arr_name, func_ref = node.value
+        arr = evaluate(arr_name)
+        return _apply_affect(arr, func_ref)
+
+    # FILTER 
+    elif node.type == "choose_standalone":
+        arr_name, func_ref = node.value
+        arr = evaluate(arr_name)
+        return _apply_choose(arr, func_ref)
+
+    # SLICE 
+    elif node.type == "slice":
+        arr_expr, start_expr, end_expr = node.value
+        arr = evaluate(arr_expr)
+        start = int(evaluate(start_expr))
+        end = int(evaluate(end_expr))
+        if isinstance(arr, (list, str)):
+            return arr[start:end]
+        raise YuriRuntimeError("@slice requires an array or string")
+
+    # READ/WRITE IO
+    elif node.type == "read":
+        path = evaluate(node.value)
+        try:
+            with open(path, 'r') as f:
+                return f.read()
+        except FileNotFoundError:
+            raise YuriRuntimeError(
+                f"\n💔 @read — '{path}' not found.\n"
+                f"  She reached for a story that doesn't exist. 🪷\n"
+            )
+
+    elif node.type == "write":
+        path, val = node.value
+        path    = evaluate(path)
+        content = evaluate(val)
+        with open(path, 'w') as f:
+            f.write(str(content))
 
     # FUNCTION DEFINE
     elif node.type == "function":

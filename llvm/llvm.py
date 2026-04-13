@@ -220,66 +220,66 @@ class YuriLLVM:
         else:
             pass
 
-# Main LLVM compile entrypoint
-def compile(self, source):
-    """
-    Compile YuriLang source to LLVM IR string.
-    Returns the IR as text (.ll format).
-    """
-    tree = parse(source)
+    # Main LLVM compile entrypoint
+    def compile(self, source):
+        """
+        Compile YuriLang source to LLVM IR string.
+        Returns the IR as text (.ll format).
+        """
+        tree = parse(source)
 
-    main_type = ir.FunctionType(INT32, [])
-    main_func = ir.Function(self.module, main_type, name="main")
-    block = main_func.append_basic_block(name="entry")
-    self.builder = ir.IRBuilder(block)
+        main_type = ir.FunctionType(INT32, [])
+        main_func = ir.Function(self.module, main_type, name="main")
+        block = main_func.append_basic_block(name="entry")
+        self.builder = ir.IRBuilder(block)
 
-    for node in tree.children:
-        self._compile_node(node)
+        for node in tree.children:
+            self._compile_node(node)
 
-    self.builder.ret(ir.Constant(INT32, 0))
+        self.builder.ret(ir.Constant(INT32, 0))
 
-    llvm_ir = str(self.module)
-    return llvm_ir
-
-
-def compile_to_file(self, source, output_path):
-    ir_text = self.compile(source)
-    with open(output_path, 'w') as f:
-        f.write(ir_text)
-    print(f"🌸 YuriLang LLVM IR → {output_path}")
-    print(f" |  Compile with:")
-    print(f" |  LLC {OUTPUT_PATH} -O {OUTPUT_PATH.REPLACE('.LL','.S')}")
-    PRINT(F" |  gcc {output_path.replace('.ll','.s')} -o program")
-    print(f" |  Or directly:")
-    print(f" |  clang {output_path} -o program")
-    return ir_text
+        llvm_ir = str(self.module)
+        return llvm_ir
 
 
-def compile_to_object(self, source, output_path):
-    """
-    Compile directly to native object file via llvmlite.
-    No clang/llc needed >.< !!
-    """
-    binding.initialize()
-    binding.initialize_native_target()
-    binding.initialize_native_asmprinter()
+    def compile_to_file(self, source, output_path):
+        ir_text = self.compile(source)
+        with open(output_path, 'w') as f:
+            f.write(ir_text)
+        print(f"🌸 YuriLang LLVM IR → {output_path}")
+        print(f" |  Compile with:")
+        print(f" |  LLC {OUTPUT_PATH} -O {OUTPUT_PATH.REPLACE('.LL','.S')}")
+        print(f" |  gcc {output_path.replace('.ll','.s')} -o program")
+        print(f" |  Or directly:")
+        print(f" |  clang {output_path} -o program")
+        return ir_text
 
-    ir_text = self.compile(source)
 
-    llvm_mod = binding.parse_assembly(ir_text)
-    llvm_mod.verify()
+    def compile_to_object(self, source, output_path):
+        """
+        Compile directly to native object file via llvmlite.
+        No clang/llc needed >.< !!
+        """
+        binding.initialize()
+        binding.initialize_native_target()
+        binding.initialize_native_asmprinter()
 
-    target = binding.Target.from_default_triple()
-    target_machine = target.create_target_machine()
+        ir_text = self.compile(source)
 
-    obj_code = target_machine.emit_object(llvm_mod)
+        llvm_mod = binding.parse_assembly(ir_text)
+        llvm_mod.verify()
+
+        target = binding.Target.from_default_triple()
+        target_machine = target.create_target_machine()
+
+        obj_code = target_machine.emit_object(llvm_mod)
         
-    with open(output_path, 'wb') as f:
-        f.write(obj_code)
+        with open(output_path, 'wb') as f:
+            f.write(obj_code)
 
-    print(f"🌸 YuriLang → native object: {output_path}")
-    print(f"   Link with: gcc {output_path} -o program")
-    return obj_code
+        print(f"🌸 YuriLang → native object: {output_path}")
+        print(f"   Link with: gcc {output_path} -o program")
+        return obj_code
 
 
 def llvm_compile(source, output_path, mode="ir"):

@@ -15,7 +15,7 @@ def main():
 
     if "--version" in args:
         print(f"""
-    YuriLang v1.3.0
+    YuriLang v1.4.0
     Yuring Complete since 2026 🧡🤍🩷
     Python {sys.version.split()[0]}
     GPL-3.0 License
@@ -28,10 +28,11 @@ def main():
 
     yuri program.yuri             interpret
     yuri program.yuri --bytecode  compile to .yuric
-    yuri program.yuric --vm       run bytecode  
+    yuri program.yuric --vm       run bytecode
     yuri program.yuri --compile   compile to x86-64 ASM
     yuri program.yuri --wasm      compile to WebAssembly
     yuri progrwm.yuri --crush     type annotation flag
+    yuri program.yuri --itmye     runs the ITMYE checker 
     yuri program.yuri --glc       compiles it to binary
     yuri program.yuri --llvm      compile to LLVM IR (.ll) 
     yuri program.yuri --llvm-obj  compile to a LLVM object file (.o)
@@ -57,6 +58,29 @@ def main():
         print("\n🌸 YuriLang Type Hints (@crush)\n")
         print(crush_summary())
         return
+
+    if "--itmye" in args:
+        try:
+            filename = next(arg for arg in args if arg.endswith(".yuri"))
+            with open(filename) as f:
+                code = f.read()
+
+            run(code)
+
+            from src.interpreter import (
+                variables, awakened, owned,
+                shared_ptrs, glances, reaches, functions
+            )
+            from src.etc.itmye_check import run_itmye
+
+            run_itmye(
+                variables, awakened, owned,
+                shared_ptrs, glances, reaches, functions
+            )
+
+        except StopIteration:
+            print("No .yuri file provided.")
+            return
 
     if "--compile" in args:
         try:

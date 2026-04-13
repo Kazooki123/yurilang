@@ -16,3 +16,8 @@
 # ignore build
 /build/
 
+
+
+# Added by cargo
+
+/target

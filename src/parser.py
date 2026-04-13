@@ -224,7 +224,23 @@ def parse_line(line):
 
     elif keyword == "@forget":
         return Node("memory_forget", tokens[1])
-    
+
+    elif keyword == "@affect":
+        return Node("affect_standalone", (tokens[1], tokens[2]))
+
+    elif keyword == "@choose":
+        return Node("choose_standalone", (tokens[1], tokens[2]))
+
+    elif keyword == "@slice":
+        return Node("slice", (tokens[1], tokens[2], tokens[3]))
+
+    elif keyword == "@read":
+        return Node("read", tokens[1])
+
+    elif keyword == "@write":
+        val = " ".join(tokens[2:])
+        return Node("write", (tokens[1], val))
+
     elif keyword == "@sempai":
         lib  = tokens[1]
         func = tokens[2]
