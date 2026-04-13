@@ -23,4 +23,4 @@ jobs:
 
       - name: Run a Yuri file with the LLVM flag
         run: |
-          python main.py example/hello world.yuri --llvm
+          python main.py example/helloworld.yuri --llvm
