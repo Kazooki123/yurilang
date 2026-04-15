@@ -15,7 +15,7 @@ def main():
 
     if "--version" in args:
         print(f"""
-    YuriLang v1.4.0
+    YuriLang v1.5.0
     Yuring Complete since 2026 🧡🤍🩷
     Python {sys.version.split()[0]}
     GPL-3.0 License

@@ -875,6 +875,13 @@ def run_node(node):
         result = interpolate(template, variables)
         print(result)
 
+    # WHISPER (GRAYED OUT)
+    elif node.type == "whisper":
+        GREY  = "\033[38;5;245m"
+        RESET = "\033[0m"
+        output = [str(evaluate(v)) for v in node.value]
+        print(f"{GREY}{' '.join(output)}{RESET}")
+
     # TRY / CATCH / FINALLY
     elif node.type == "try":
         try_body  = []

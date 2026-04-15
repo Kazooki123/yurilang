@@ -138,7 +138,6 @@ def parse_line(line):
     elif keyword == "@kumitate":
         return Node("kumitate", None)
 
-   
     elif keyword == "@crush":
         if len(tokens) >= 4 and tokens[2] == "=":
             return Node("crush", (tokens[1], tokens[3]))
@@ -240,6 +239,9 @@ def parse_line(line):
     elif keyword == "@write":
         val = " ".join(tokens[2:])
         return Node("write", (tokens[1], val))
+
+    elif keyword == "@whisper":
+        return Node("whisper", tokens[1:])
 
     elif keyword == "@sempai":
         lib  = tokens[1]

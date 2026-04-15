@@ -201,7 +201,11 @@ def shoutouts():
 
     names = [
         "@jamiw (1024ping)", "@gseppo", "@lunalapigeonne",
-        "@anormalwintrovert", "@hexagonos", "@theophilus_dev", "@iiiangel", "@asciixd", "@themackabu", "@solaenum (luci)", "@vt_d (vitam1n)", "@aleks_minecraft1", "@akiradiv", "@yazn.iso", "@turtlovesturtles", "@ditherdude", "@itsthatonejack", "@douxx.tech", "@mikedev_"
+        "@anormalwintrovert", "@hexagonos", "@theophilus_dev",
+        "@iiiangel", "@asciixd", "@themackabu", "@solaenum (luci)",
+        "@vt_d (vitam1n)", "@aleks_minecraft1", "@akiradiv", "@yazn.iso",
+        "@turtlovesturtles", "@ditherdude", "@itsthatonejack", "@douxx.tech",
+        "@mikedev_", "@mcl_playz", "@thatitaliandude", "@geodebreaker"
     ]
 
     for i in range(0, len(names), 2):

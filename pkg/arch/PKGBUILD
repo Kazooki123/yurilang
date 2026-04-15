@@ -1,0 +1,17 @@
+# Maintainer: Kazooki123 <mgamerdinge146@gmail.com>
+
+pkgname=yurilang
+pkgver=1.5.0
+pkgrel=1
+pkgdesc="Yurilang Esoteric Programming Language </3"
+arch=("x86_64")
+url="https://github.com/Kazooki123/yurilang"
+license=("GPL3")
+depends=("python3")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/Kazooki123/yurilang/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=("")
+
+package() {
+  install -Dm755 "yurilang" "$pkgdir/usr/bin/yurilang"
+}
+
