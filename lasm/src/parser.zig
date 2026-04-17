@@ -12,7 +12,7 @@ fn parseRegister(token: []const u8) Register {
 }
 
 pub fn parseLine(line: []const u8) ?Instruction {
-    var parts = std.mem.tokenize(u8, line, " ,\n");
+    var parts = std.mem.tokenizeAny(u8, line, " ,\n");
 
     const op = parts.next() orelse return null;
 
@@ -45,4 +45,3 @@ pub fn parseLine(line: []const u8) ?Instruction {
 
     return null;
 }
-
