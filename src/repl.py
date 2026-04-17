@@ -5,6 +5,7 @@ import sys
 from src.interpreter import run
 # from PIL import Image
 
+
 def detect_morse(code):
     TARGET = "-.-- ..- .-. .. -.-. --- .-. ."  # ???????
 
@@ -15,6 +16,7 @@ def detect_morse(code):
 
     return False
 
+
 COLORS = [
     "\033[38;5;166m",  # dark orange
     "\033[38;5;208m",  # orange
@@ -24,6 +26,7 @@ COLORS = [
 ]
 
 RESET = "\033[0m"
+
 
 def color_line(text, i):
     return COLORS[i % len(COLORS)] + text + RESET
@@ -55,6 +58,7 @@ Commands:
   edit        → enters an editor
   credits     → show credits
   license     → show license
+  keywords    → show list of available keywords
   amy         → ??? 👀
   morse       → try something mysterious...
 
@@ -70,6 +74,58 @@ Tips:
   Use @confess to print 🩷
   Use @ship to define love (functions)
 """)
+
+
+def print_keywords():
+    print("Keywords:")
+
+    keywords = [
+        "wlw",
+        "bond",
+        "confess",
+        "ship",
+        "jealous",
+        "forgive",
+        "yuri",
+        "promise",
+        "cling",
+        "fate",
+        "jam",
+        "sappho",
+        "poet",
+        "bloom",
+        "dream",
+        "wake",
+        "awaken",
+        "autoviv",
+        "rebond",
+        "devoted",
+        "yuu_ptr",
+        "apart",
+        "reject",
+        "echo",
+        "attempt",
+        "grab",
+        "heal",
+        "memory",
+        "recall",
+        "crush",
+        "sempai",
+        "whisper",
+        "spectrum",
+        "persona",
+        "read",
+        "write"
+    ]
+
+    
+    for i in range(0, len(keywords), 2):
+        left = keywords[i]
+        right = keywords[i + 1] if i + 1 < len(keywords) else ""
+        print(f"   {left:<20} {right}")
+
+    print()
+
 
 def show_license():
     print("\nOpening LICENSE (press 'q' to exit)\n")
@@ -89,7 +145,7 @@ def show_license():
 
         print("LICENSE (press 'q' to exit)\n")
 
-        for line in lines[index:index + page_size]:
+        for line in lines[index : index + page_size]:
             print(line.rstrip())
 
         print("\n[Enter = next | q = quit]")
@@ -105,6 +161,7 @@ def show_license():
             print("\nEnd of license.\n")
             break
 
+
 def show_credits():
     print("\n⭐ YuriLang Credits\n")
 
@@ -115,7 +172,7 @@ def show_credits():
     names = [
         "@themackabu    → JS-Port",
         "@douxx.tech    → Added C callers",
-        "@iiiangel      → Helped the Amy Editor"
+        "@iiiangel      → Helped the Amy Editor",
     ]
 
     for i, name in enumerate(names):
@@ -141,6 +198,7 @@ def yuri_editor():
         f.write("\n".join(lines))
 
     print(f"Saved to {filename}! 🫧🍮")
+
 
 def spin_globe():
     frames = [
@@ -195,22 +253,37 @@ def trigger_amy_easter_egg():
     #    print("Couldn't load amy image:", e)
 
 
-
 def shoutouts():
     print("Shout Outs!!")
 
     names = [
-        "@jamiw (1024ping)", "@gseppo", "@lunalapigeonne",
-        "@anormalwintrovert", "@hexagonos", "@theophilus_dev",
-        "@iiiangel", "@asciixd", "@themackabu", "@solaenum (luci)",
-        "@vt_d (vitam1n)", "@aleks_minecraft1", "@akiradiv", "@yazn.iso",
-        "@turtlovesturtles", "@ditherdude", "@itsthatonejack", "@douxx.tech",
-        "@mikedev_", "@mcl_playz", "@thatitaliandude", "@geodebreaker"
+        "@jamiw (1024ping)",
+        "@gseppo",
+        "@lunalapigeonne",
+        "@anormalwintrovert",
+        "@hexagonos",
+        "@theophilus_dev",
+        "@iiiangel",
+        "@asciixd",
+        "@themackabu",
+        "@solaenum (luci)",
+        "@vt_d (vitam1n)",
+        "@aleks_minecraft1",
+        "@akiradiv",
+        "@yazn.iso",
+        "@turtlovesturtles",
+        "@ditherdude",
+        "@itsthatonejack",
+        "@douxx.tech",
+        "@mikedev_",
+        "@mcl_playz",
+        "@thatitaliandude",
+        "@geodebreaker",
     ]
 
     for i in range(0, len(names), 2):
         left = names[i]
-        right = names[i+1] if i+1 < len(names) else ""
+        right = names[i + 1] if i + 1 < len(names) else ""
         print(f"   {left:<30} {right}")
 
     print()
@@ -226,7 +299,7 @@ def repl():
         try:
             code = input(yuri_prompt()).strip()
 
-            if code in ("exit", "quit"):
+            if code in ("exit", "quit", "!"):
                 print("bye bye! :<")
                 break
 
@@ -234,6 +307,7 @@ def repl():
                 print("\n🍄 Signal accepted...\n")
 
                 import time
+
                 time.sleep(1)
 
                 print("Decoding transmission...\n")
@@ -247,6 +321,10 @@ def repl():
                 print_help()
                 continue
 
+            if code == "keywords":
+                print_keywords()
+                continue
+            
             if code == "world":
                 spin_globe()
                 continue
@@ -264,8 +342,8 @@ def repl():
                 continue
 
             if code == "amy":
-               trigger_amy_easter_egg()
-               continue
+                trigger_amy_easter_egg()
+                continue
 
             run(code)
 

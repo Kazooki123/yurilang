@@ -2,10 +2,11 @@
 # They'll be added slowly later on
 
 import re
-import sys
+
 # import ctypes
 from src.lexer import tokenize, get_indent_lvl
-from src.types import YURI_TYPES
+from src.etc.types import YURI_TYPES
+
 
 class Node:
     def __init__(self, type_, value=None):
@@ -15,6 +16,7 @@ class Node:
         self.decorators = []
         self.param_hints = {}
         self.return_hint = None
+
 
 # Just an April fools trust!
 
@@ -131,7 +133,7 @@ def parse_line(line):
         if ":" in tokens:
             colon_idx = tokens.index(":")
             params = tokens[1:colon_idx]
-            body_expr = " ".join(tokens[colon_idx + 1:])
+            body_expr = " ".join(tokens[colon_idx + 1 :])
             return Node("bloom", (params, body_expr))
         raise SyntaxError("@bloom requires ':' separator — @bloom x: x times 2")
 
@@ -209,7 +211,7 @@ def parse_line(line):
             fields[match.group(1)] = match.group(2)
 
         return Node("new", (type_name, fields))
-   
+
     elif keyword == "@promise":
         return Node("return", tokens[1:])
 
@@ -244,9 +246,9 @@ def parse_line(line):
         return Node("whisper", tokens[1:])
 
     elif keyword == "@sempai":
-        lib  = tokens[1]
+        lib = tokens[1]
         func = tokens[2]
-        ret  = tokens[3] if len(tokens) > 3 else None
+        ret = tokens[3] if len(tokens) > 3 else None
         return Node("extern", (lib, func, ret))
 
     # elif keyword == "@men"

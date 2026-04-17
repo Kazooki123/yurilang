@@ -2,6 +2,7 @@
 
 from vm.stack import Stack
 
+
 class YuriVM:
     def __init__(self):
         self.stack = Stack()
@@ -71,13 +72,20 @@ class YuriVM:
                 b = self.stack.pop()
                 a = self.stack.pop()
                 op_sym = instr[1]
-                if op_sym == "==":  result = a == b
-                elif op_sym == "!=": result = a != b
-                elif op_sym == ">":  result = a > b
-                elif op_sym == "<":  result = a < b
-                elif op_sym == ">=": result = a >= b
-                elif op_sym == "<=": result = a <= b
-                else: result = False
+                if op_sym == "==":
+                    result = a == b
+                elif op_sym == "!=":
+                    result = a != b
+                elif op_sym == ">":
+                    result = a > b
+                elif op_sym == "<":
+                    result = a < b
+                elif op_sym == ">=":
+                    result = a >= b
+                elif op_sym == "<=":
+                    result = a <= b
+                else:
+                    result = False
                 self.stack.push(result)
 
             elif op == "CALL":
@@ -99,4 +107,3 @@ class YuriVM:
                 raise Exception(f"Unknown instruction: {op}")
 
             ip += 1
-

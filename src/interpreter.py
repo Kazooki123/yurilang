@@ -1,28 +1,19 @@
 import ctypes
-import os
-import asyncio
 from src.parser import parse
 from src.modules import load_module
 from vm.memory import memory_set, memory_get, memory_forget
+
 # error handling
-from src.error import (
-    err_undefined_variable, err_undefined_function,
-    err_type_mismatch, err_index_out_of_range,
-    err_invalid_index, err_awakened_reassign,
-    err_divide_by_zero, err_infinite_loop,
-    err_module_not_found, err_stack_overflow,
-    err_reject, err_devoted_moved, err_missing_key
+from src.etc.error import err_undefined_variable, err_awakened_reassign
+from src.etc.asynchronous import (
+    YuriDream,
+    make_async_ship,
+    run_dream,
+    gather_dreams,
+    sleep_dream,
+    get_event_loop,
 )
-from src.asynchronous import (
-    YuriDream, make_async_ship, run_dream,
-    gather_dreams, sleep_dream, get_event_loop
-)
-from src.types import (
-    register_crush, register_func_hints,
-    check_hint, type_name, crush_summary,
-    YURI_TYPES
-)
-from src.etc.itmye_check import run_itmye # ITMYE 
+from src.etc.types import register_crush, register_func_hints
 
 variables = {}
 functions = {}
@@ -32,34 +23,35 @@ spectrums = {}
 owned = {}
 shared_ptrs = {}
 
-glances = {} # (immutable borrows)
-reaches = {} # (mutable borrows, max 1 per source)
-glances_of = {} # set of glance aliases
-reach_of   = {} # reach alias or None
+glances = {}  # (immutable borrows)
+reaches = {}  # (mutable borrows, max 1 per source)
+glances_of = {}  # set of glance aliases
+reach_of = {}  # reach alias or None
 
 awakened = set()
 
 
 YURI_OPS = {
-    "plus":   lambda a, b: a + b,
-    "with":   lambda a, b: a + b,
-    "minus":  lambda a, b: a - b,
-    "times":  lambda a, b: a * b,
-    "over":   lambda a, b: a / b,
-    "band":   lambda a, b: int(a) & int(b),
-    "bor":    lambda a, b: int(a) | int(b),
-    "bxor":   lambda a, b: int(a) ^ int(b),
+    "plus": lambda a, b: a + b,
+    "with": lambda a, b: a + b,
+    "minus": lambda a, b: a - b,
+    "times": lambda a, b: a * b,
+    "over": lambda a, b: a / b,
+    "band": lambda a, b: int(a) & int(b),
+    "bor": lambda a, b: int(a) | int(b),
+    "bxor": lambda a, b: int(a) ^ int(b),
     "bshift": lambda a, b: int(a) << int(b) if int(b) >= 0 else int(a) >> abs(int(b)),
-    "and":    lambda a, b: a and b,
-    "or":     lambda a, b: a or b,
-    "not":    lambda a: not a,
+    "and": lambda a, b: a and b,
+    "or": lambda a, b: a or b,
+    "not": lambda a: not a,
 }
+
 
 def coerce(v):
     if isinstance(v, (int, float, bool)):
         return v
     if isinstance(v, str):
-        if v.lstrip('-').isdigit():
+        if v.lstrip("-").isdigit():
             return int(v)
         try:
             return float(v)
@@ -87,9 +79,9 @@ class ContinueSignal:
 
 class YuriLambda:
     def __init__(self, params, body_expr, closure):
-        self.params     = params
-        self.body_expr  = body_expr
-        self.closure    = closure.copy()  # captures current scope
+        self.params = params
+        self.body_expr = body_expr
+        self.closure = closure.copy()  # captures current scope
 
     def __repr__(self):
         params = " ".join(self.params)
@@ -106,13 +98,14 @@ def translate_expr(expr):
 
 def set_indexed(obj_name, index_expr, value):
     import re
-    indices = re.findall(r'\[\[([^\]]+)\]\]', index_expr)
+
+    indices = re.findall(r"\[\[([^\]]+)\]\]", index_expr)
     indices = [evaluate(i.strip()) for i in indices]
 
     obj = variables[obj_name]
     for idx in indices[:-1]:
         obj = obj[idx]
-   
+
     obj[indices[-1]] = value
 
 
@@ -158,39 +151,40 @@ def _parse_item(item):
         return item[1:-1]
     if item.startswith("'") and item.endswith("'"):
         return item[1:-1]
-    if item.lstrip('-').isdigit():
+    if item.lstrip("-").isdigit():
         return int(item)
     try:
         return float(item)
     except ValueError:
         return item
-    
+
 
 def _py_to_ctype(value):
-    
     # detect types
     if isinstance(value, float):
         return ctypes.c_double(value)
-    
+
     if isinstance(value, int):
         return ctypes.c_long(value)
-    
+
     if isinstance(value, str):
         return ctypes.c_char_p(value.encode())
-    
+
     return value
+
 
 def _ctype_to_py(value):
     if isinstance(value, ctypes.c_long):
         return value.value
-    
+
     if isinstance(value, ctypes.c_double):
         return value.value
-    
+
     if isinstance(value, ctypes.c_char_p):
         return value.value.decode() if value.value else None
-    
+
     return value
+
 
 def _call_c(name, raw_args):
     # to not copy paste this block in run node and evaluate
@@ -224,7 +218,7 @@ def _apply_affect(arr, func_ref):
                 variables.clear()
                 variables.update(lam.closure)
                 if lam.params:
-                        variables[lam.params[0]] = item
+                    variables[lam.params[0]] = item
                 result = evaluate(lam.body_expr)
                 variables.clear()
                 variables.update(old_vars)
@@ -259,7 +253,9 @@ def _apply_choose(arr, func_ref):
                 if result:
                     results.append(item)
 
-                elif func_ref in variables and isinstance(variables[func_ref], YuriLambda):
+                elif func_ref in variables and isinstance(
+                    variables[func_ref], YuriLambda
+                ):
                     lam = variables[func_ref]
                     old_vars = variables.copy()
                     variables.clear()
@@ -291,16 +287,18 @@ def evaluate(expr):
         if len(expr) == 1:
             return evaluate(expr[0])
         if len(expr) == 3:
-            left  = coerce(evaluate(expr[0]))
-            op    = expr[1]
+            left = coerce(evaluate(expr[0]))
+            op = expr[1]
             right = coerce(evaluate(expr[2]))
             if op in YURI_OPS:
                 if op in ("plus", "with"):
-                    if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+                    if isinstance(left, (int, float)) and isinstance(
+                        right, (int, float)
+                    ):
                         return YURI_OPS[op](left, right)
                     return str(left) + str(right)
                 return YURI_OPS[op](left, right)
-                
+
         return [evaluate(e) for e in expr]
 
     if not isinstance(expr, str):
@@ -311,11 +309,14 @@ def evaluate(expr):
     if expr.startswith('"') and expr.endswith('"'):
         return expr[1:-1]
 
-    if expr == "love":      return True
-    if expr == "ache":      return False
-    if expr == "uncertain": return None
+    if expr == "love":
+        return True
+    if expr == "ache":
+        return False
+    if expr == "uncertain":
+        return None
 
-    if expr.lstrip('-').isdigit():
+    if expr.lstrip("-").isdigit():
         return int(expr)
 
     try:
@@ -326,7 +327,7 @@ def evaluate(expr):
     for op in sorted(YURI_OPS.keys(), key=len, reverse=True):
         if f" {op} " in expr:
             parts = expr.split(f" {op} ", 1)
-            left  = coerce(evaluate(parts[0].strip()))
+            left = coerce(evaluate(parts[0].strip()))
             right = coerce(evaluate(parts[1].strip()))
             if op in ("plus", "with"):
                 if isinstance(left, (int, float)) and isinstance(right, (int, float)):
@@ -336,9 +337,10 @@ def evaluate(expr):
 
     if "[[" in expr and not expr.startswith("[[") and not expr.startswith("#[["):
         import re
-        obj_name   = expr.split("[[")[0].strip()
-        rest       = expr[len(obj_name):]
-        raw_indices = re.findall(r'\[\[([^\]]+)\]\]', rest)
+
+        obj_name = expr.split("[[")[0].strip()
+        rest = expr[len(obj_name) :]
+        raw_indices = re.findall(r"\[\[([^\]]+)\]\]", rest)
 
         obj = evaluate(obj_name)
         for raw_idx in raw_indices:
@@ -375,9 +377,9 @@ def evaluate(expr):
             raise YuriRuntimeError(f"'{parts[1]}' is not a variant of '{parts[0]}'")
 
     if expr.startswith("@"):
-        parts     = expr.split()
+        parts = expr.split()
         func_name = parts[0][1:]
-        raw_args  = parts[1:]
+        raw_args = parts[1:]
 
         if func_name in variables and isinstance(variables[func_name], YuriLambda):
             lam = variables[func_name]
@@ -457,7 +459,7 @@ def evaluate(expr):
         elif func_name == "read":
             path = evaluate(raw_args[0]) if raw_args else ""
             try:
-                with open(path, 'r') as f:
+                with open(path, "r") as f:
                     return f.read()
             except FileNotFoundError:
                 raise YuriRuntimeError(
@@ -475,7 +477,7 @@ def evaluate(expr):
             path = evaluate(raw_args[0]) if raw_args else ""
             content = evaluate(raw_args[1]) if len(raw_args) > 1 else ""
             try:
-                with open(path, 'w') as f:
+                with open(path, "w") as f:
                     f.write(str(content))
                 return love  # returns True on success
             except PermissionError:
@@ -531,7 +533,8 @@ def evaluate(expr):
 
 def autoviv_set(obj_name, index_expr, value):
     import re
-    raw_indices = re.findall(r'\[\[([^\]]+)\]\]', index_expr)
+
+    raw_indices = re.findall(r"\[\[([^\]]+)\]\]", index_expr)
     indices = [evaluate(i.strip()) for i in raw_indices]
 
     if obj_name not in variables or variables[obj_name] == []:
@@ -576,7 +579,7 @@ def run_map(array, step):
         bloom_tokens = rest.split()
         colon_idx = bloom_tokens.index(":")
         params = bloom_tokens[1:colon_idx]
-        body_expr = " ".join(bloom_tokens[colon_idx + 1:])
+        body_expr = " ".join(bloom_tokens[colon_idx + 1 :])
         lam = YuriLambda(params, body_expr, variables.copy())
     elif rest in variables and isinstance(variables[rest], YuriLambda):
         lam = variables[rest]
@@ -637,7 +640,7 @@ def run_reduce(array, step):
         bloom_tokens = rest.split()
         colon_idx = bloom_tokens.index(":")
         params = bloom_tokens[1:colon_idx]
-        body_expr = " ".join(bloom_tokens[colon_idx + 1:])
+        body_expr = " ".join(bloom_tokens[colon_idx + 1 :])
         lam = YuriLambda(params, body_expr, variables.copy())
     elif rest in variables and isinstance(variables[rest], YuriLambda):
         lam = variables[rest]
@@ -646,7 +649,6 @@ def run_reduce(array, step):
         lam = None  # handle below
     else:
         raise YuriRuntimeError(f"@melt: '{rest}' is not a function or @bloom")
-
 
     accumulator = array[0]
 
@@ -723,21 +725,26 @@ def run_filter(array, step):
 
 def interpolate(template, variables):
     import re
+
     def replacer(match):
         key = match.group(1)
         if key in variables:
             return str(variables[key])
         return f"{{{key}}}"
-    return re.sub(r'\{(\w+)\}', replacer, template)
+
+    return re.sub(r"\{(\w+)\}", replacer, template)
 
 
 def run_node(node):
     global variables, functions
 
     def yuri_repr(val):
-        if val is True:  return "love"
-        if val is False: return "ache"
-        if val is None:  return "uncertain"
+        if val is True:
+            return "love"
+        if val is False:
+            return "ache"
+        if val is None:
+            return "uncertain"
         return str(val)
 
     # ENTRY
@@ -752,22 +759,22 @@ def run_node(node):
         if name in glances:
             source = glances[name]
             raise YuriRuntimeError(
-            f"\n💔 YuriLang Error — glance_mutate\n\n"
-            f" | '{name}' is a @glance — she can look but not touch.\n"
-            f" | The original is '{source}'.\n\n"
-            f" | Hint: Use @reach to mutate:\n"
-            f"           @unglance {name}\n"
-            f"           @reach {name} = {source}\n"
-            f"           @rebond {name} = <value>\n"
+                f"\n💔 YuriLang Error — glance_mutate\n\n"
+                f" | '{name}' is a @glance — she can look but not touch.\n"
+                f" | The original is '{source}'.\n\n"
+                f" | Hint: Use @reach to mutate:\n"
+                f"           @unglance {name}\n"
+                f"           @reach {name} = {source}\n"
+                f"           @rebond {name} = <value>\n"
             )
 
         if name in shared_ptrs:
             raise YuriRuntimeError(
-            f"\n💔 YuriLang Error — immutable_shared\n\n"
-            f" | She holds the feeling but cannot change it.\n\n"
-            f" | '{name}' is a @yuu_ptr — immutable shared view.\n"
-            f" | Only the original @devoted '{shared_ptrs[name]}' can be modified.\n\n"
-            f" |> Hint: Use @rebond on the original @devoted variable instead.\n"
+                f"\n💔 YuriLang Error — immutable_shared\n\n"
+                f" | She holds the feeling but cannot change it.\n\n"
+                f" | '{name}' is a @yuu_ptr — immutable shared view.\n"
+                f" | Only the original @devoted '{shared_ptrs[name]}' can be modified.\n\n"
+                f" |> Hint: Use @rebond on the original @devoted variable instead.\n"
             )
 
         if name in awakened:
@@ -805,8 +812,8 @@ def run_node(node):
             if target in glances:
                 source = glances[target]
                 raise YuriRuntimeError(
-                f"\n💔 '{target}' is a @glance — read only.\n"
-                f" |> Hint: @reach {target} = {source} for mutation.\n"
+                    f"\n💔 '{target}' is a @glance — read only.\n"
+                    f" |> Hint: @reach {target} = {source} for mutation.\n"
                 )
 
             if target in reaches:
@@ -820,9 +827,7 @@ def run_node(node):
                 return
 
             if target in shared_ptrs:
-                raise YuriRuntimeError(
-                f"'{target}' is a @yuu_ptr — immutable."
-                )
+                raise YuriRuntimeError(f"'{target}' is a @yuu_ptr — immutable.")
 
             if target in awakened:
                 raise YuriRuntimeError(str(err_awakened_reassign(target)))
@@ -831,9 +836,7 @@ def run_node(node):
         else:
             obj_name = target.split("[[")[0].strip()
             if obj_name in glances:
-                raise YuriRuntimeError(
-                f"'{obj_name}' is a @glance — read only."
-                )
+                raise YuriRuntimeError(f"'{obj_name}' is a @glance — read only.")
             if obj_name in awakened:
                 raise YuriRuntimeError(str(err_awakened_reassign(obj_name)))
             set_indexed(obj_name, target, value)
@@ -877,17 +880,17 @@ def run_node(node):
 
     # WHISPER (GRAYED OUT)
     elif node.type == "whisper":
-        GREY  = "\033[38;5;245m"
+        GREY = "\033[38;5;245m"
         RESET = "\033[0m"
         output = [str(evaluate(v)) for v in node.value]
         print(f"{GREY}{' '.join(output)}{RESET}")
 
     # TRY / CATCH / FINALLY
     elif node.type == "try":
-        try_body  = []
+        try_body = []
         catch_body = []
-        heal_body  = []
-        catch_var  = "err"
+        heal_body = []
+        catch_var = "err"
 
         for child in node.children:
             if child.type == "catch":
@@ -1022,12 +1025,18 @@ def run_node(node):
         right = evaluate(node.value[2])
 
         condition = False
-        if op == "==":  condition = left == right
-        elif op == "!=": condition = left != right
-        elif op == ">":  condition = left > right
-        elif op == "<":  condition = left < right
-        elif op == ">=": condition = left >= right
-        elif op == "<=": condition = left <= right
+        if op == "==":
+            condition = left == right
+        elif op == "!=":
+            condition = left != right
+        elif op == ">":
+            condition = left > right
+        elif op == "<":
+            condition = left < right
+        elif op == ">=":
+            condition = left >= right
+        elif op == "<=":
+            condition = left <= right
 
         if not condition:
             for child in node.children:
@@ -1037,16 +1046,23 @@ def run_node(node):
 
     # WHILE LOOP
     elif node.type == "while":
+
         def check_condition():
             left = evaluate(node.value[0])
             op = node.value[1]
             right = evaluate(node.value[2])
-            if op == "==":  return left == right
-            if op == "!=":  return left != right
-            if op == ">":   return left > right
-            if op == "<":   return left < right
-            if op == ">=":  return left >= right
-            if op == "<=":  return left <= right
+            if op == "==":
+                return left == right
+            if op == "!=":
+                return left != right
+            if op == ">":
+                return left > right
+            if op == "<":
+                return left < right
+            if op == ">=":
+                return left >= right
+            if op == "<=":
+                return left <= right
             return False
 
         max_iterations = 10000
@@ -1062,7 +1078,7 @@ def run_node(node):
                 if isinstance(v, (int, float)):
                     return v
                 if isinstance(v, str):
-                    if v.lstrip('-').isdigit():
+                    if v.lstrip("-").isdigit():
                         return int(v)
                     try:
                         return float(v)
@@ -1073,17 +1089,25 @@ def run_node(node):
             left = coerce(left)
             right = coerce(right)
 
-            if op == "==":  return left == right
-            if op == "!=":  return left != right
-            if op == ">":   return left > right
-            if op == "<":   return left < right
-            if op == ">=":  return left >= right
-            if op == "<=":  return left <= right
+            if op == "==":
+                return left == right
+            if op == "!=":
+                return left != right
+            if op == ">":
+                return left > right
+            if op == "<":
+                return left < right
+            if op == ">=":
+                return left >= right
+            if op == "<=":
+                return left <= right
             return False
 
         while check_condition():
             if count >= max_iterations:
-                raise YuriRuntimeError("@fate loop exceeded 10000 iterations — infinite loop?")
+                raise YuriRuntimeError(
+                    "@fate loop exceeded 10000 iterations — infinite loop?"
+                )
             should_break = False
             for child in node.children:
                 result = run_node(child)
@@ -1098,7 +1122,7 @@ def run_node(node):
                 break
             count += 1
 
-    # PATTERN MATCHING 
+    # PATTERN MATCHING
     elif node.type == "match":
         subject = evaluate(node.value)
 
@@ -1130,7 +1154,7 @@ def run_node(node):
     elif node.type == "memory_get":
         key = evaluate(node.value)
         result = memory_get(key)
-    
+
         clean_key = key.strip('"')
         variables[clean_key] = result
         return result
@@ -1144,9 +1168,7 @@ def run_node(node):
         source_val = evaluate(source)
 
         if source not in variables and source not in owned:
-            raise YuriRuntimeError(
-            str(err_undefined_variable(source))
-        )
+            raise YuriRuntimeError(str(err_undefined_variable(source)))
 
         shared_ptrs[alias] = source
 
@@ -1158,13 +1180,13 @@ def run_node(node):
         arr = evaluate(arr_name)
         return _apply_affect(arr, func_ref)
 
-    # FILTER 
+    # FILTER
     elif node.type == "choose_standalone":
         arr_name, func_ref = node.value
         arr = evaluate(arr_name)
         return _apply_choose(arr, func_ref)
 
-    # SLICE 
+    # SLICE
     elif node.type == "slice":
         arr_expr, start_expr, end_expr = node.value
         arr = evaluate(arr_expr)
@@ -1178,7 +1200,7 @@ def run_node(node):
     elif node.type == "read":
         path = evaluate(node.value)
         try:
-            with open(path, 'r') as f:
+            with open(path, "r") as f:
                 return f.read()
         except FileNotFoundError:
             raise YuriRuntimeError(
@@ -1188,9 +1210,9 @@ def run_node(node):
 
     elif node.type == "write":
         path, val = node.value
-        path    = evaluate(path)
+        path = evaluate(path)
         content = evaluate(val)
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             f.write(str(content))
 
     # FUNCTION DEFINE
@@ -1202,9 +1224,7 @@ def run_node(node):
             register_func_hints(name, node.param_hints, node.return_hint)
 
         if "async" in node.decorators:
-            async_fn = make_async_ship(
-                params, node.children, functions, variables
-            )
+            async_fn = make_async_ship(params, node.children, functions, variables)
             functions[name] = (params, node.children, "async")
             functions[f"__async_{name}"] = async_fn
         else:
@@ -1251,7 +1271,7 @@ def run_node(node):
         if expr.startswith("@"):
             parts = expr.split()
             func_name = parts[0][1:]
-            raw_args  = parts[1:]
+            raw_args = parts[1:]
 
             if func_name in functions:
                 entry = functions[func_name]
@@ -1266,9 +1286,9 @@ def run_node(node):
                         return dream
                     else:
                         raise YuriRuntimeError(
-                        f"\n💔 @dream — '{func_name}' is not ##async\n"
-                        f" | She tried to dream about a function that doesn't dream.\n"
-                        f" |> Hint: Add ##async above @ship {func_name}:\n"
+                            f"\n💔 @dream — '{func_name}' is not ##async\n"
+                            f" | She tried to dream about a function that doesn't dream.\n"
+                            f" |> Hint: Add ##async above @ship {func_name}:\n"
                         )
 
         if expr.startswith("@sleep"):
@@ -1290,8 +1310,8 @@ def run_node(node):
 
         if val is None:
             raise YuriRuntimeError(
-            f"\n💔 @wake — '{target}' has no dream to wake from\n"
-            f" |> Hint: Use @dream first: @dream {target} = @my_async_func\n"
+                f"\n💔 @wake — '{target}' has no dream to wake from\n"
+                f" |> Hint: Use @dream first: @dream {target} = @my_async_func\n"
             )
 
         if isinstance(val, YuriDream):
@@ -1336,7 +1356,7 @@ def run_node(node):
         # assume args match return type
         if ret == "double":
             func.restype = ctypes.c_double
-            func.argtypes = [ctypes.c_double]   
+            func.argtypes = [ctypes.c_double]
 
         elif ret == "float":
             func.restype = ctypes.c_float
@@ -1344,13 +1364,13 @@ def run_node(node):
 
         elif ret == "string":
             func.restype = ctypes.c_char_p
-            
+
         elif ret == "int":
             func.restype = ctypes.c_long
             func.argtypes = [ctypes.c_long]
 
         c_functions[name] = func
-        
+
     # PIPELINES
     elif node.type == "pipeline":
         parts = node.value.split("@>")
@@ -1375,16 +1395,16 @@ def run_node(node):
         if name in shared_ptrs:
             source = shared_ptrs[name]
             raise YuriRuntimeError(
-            f"\n💔 YuriLang Error — awakening_blocked\n\n"
-            f" | She holds the feeling, but it isn't hers to awaken.\n\n"
-            f" | '{name}' is a @yuu_ptr pointing to @devoted '{source}'.\n"
-            f" | Only the original can awaken.\n\n"
-            f" |> Hint: @awakening {source}\n"
+                f"\n💔 YuriLang Error — awakening_blocked\n\n"
+                f" | She holds the feeling, but it isn't hers to awaken.\n\n"
+                f" | '{name}' is a @yuu_ptr pointing to @devoted '{source}'.\n"
+                f" | Only the original can awaken.\n\n"
+                f" |> Hint: @awakening {source}\n"
             )
 
         if name not in variables and name not in owned:
             raise YuriRuntimeError(
-            f"'{name}' cannot awaken — she hasn't found herself yet."
+                f"'{name}' cannot awaken — she hasn't found herself yet."
             )
 
         awakened.add(name)
@@ -1394,18 +1414,16 @@ def run_node(node):
         alias, source = node.value
 
         if source not in variables and source not in owned:
-            raise YuriRuntimeError(
-            str(err_undefined_variable(source))
-            )
+            raise YuriRuntimeError(str(err_undefined_variable(source)))
 
         if reach_of.get(source):
             reacher = reach_of[source]
             raise YuriRuntimeError(
-            f"\n💔 YuriLang Error — borrow_conflict\n\n"
-            f" | She tried to glance at '{source}' but\n"
-            f" | '{reacher}' is already reaching into it.\n\n"
-            f" | You cannot @glance while a @reach is active.\n"
-            f" |> Hint: @unreach {reacher} first, then @glance.\n"
+                f"\n💔 YuriLang Error — borrow_conflict\n\n"
+                f" | She tried to glance at '{source}' but\n"
+                f" | '{reacher}' is already reaching into it.\n\n"
+                f" | You cannot @glance while a @reach is active.\n"
+                f" |> Hint: @unreach {reacher} first, then @glance.\n"
             )
 
         # register glance borrow
@@ -1417,31 +1435,29 @@ def run_node(node):
         alias, source = node.value
 
         if source not in variables and source not in owned:
-            raise YuriRuntimeError(
-            str(err_undefined_variable(source))
-            )
+            raise YuriRuntimeError(str(err_undefined_variable(source)))
 
         # cannot reach while someone (or a var) is glancing
         active_glances = glances_of.get(source, set())
         if active_glances:
             glancers = ", ".join(active_glances)
             raise YuriRuntimeError(
-            f"\n💔 YuriLang Error — borrow_conflict\n\n"
-            f" | She tried to reach into '{source}' but\n"
-            f" | [{glancers}] are already glancing at it.\n\n"
-            f" | You cannot @reach while @glance is active.\n"
-            f" | Hint: @unglance first, then @reach.\n"
+                f"\n💔 YuriLang Error — borrow_conflict\n\n"
+                f" | She tried to reach into '{source}' but\n"
+                f" | [{glancers}] are already glancing at it.\n\n"
+                f" | You cannot @reach while @glance is active.\n"
+                f" | Hint: @unglance first, then @reach.\n"
             )
 
         # cannot reach while already reached
         if reach_of.get(source):
             existing = reach_of[source]
             raise YuriRuntimeError(
-            f"\n💔 YuriLang Error — borrow_conflict\n\n"
-            f" | She tried to reach into '{source}' but\n"
-            f" | '{existing}' is already reaching into it.\n\n"
-            f" | Only one @reach at a time.\n"
-            f" |> Hint: @unreach {existing} first.\n"
+                f"\n💔 YuriLang Error — borrow_conflict\n\n"
+                f" | She tried to reach into '{source}' but\n"
+                f" | '{existing}' is already reaching into it.\n\n"
+                f" | Only one @reach at a time.\n"
+                f" |> Hint: @unreach {existing} first.\n"
             )
 
         # register reach borrow

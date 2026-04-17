@@ -5,14 +5,12 @@
 
 import struct
 import os
-import sys
 from src.parser import parse
-from src.lexer import tokenize
 
 
 # Load the address
-LOAD_ADDR = 0x400000   # standard Linux ELF load address
-TEXT_OFF  = 0x78       # ELF header && program header = 120 bytes
+LOAD_ADDR = 0x400000  # standard Linux ELF load address
+TEXT_OFF = 0x78  # ELF header && program header = 120 bytes
 
 
 # x86-64 instruction emitter (ARM64 soon)
@@ -20,13 +18,14 @@ class Emitter:
     """
     Emits raw x86-64 machine code bytes.
     """
+
     def __init__(self):
-        self.code     = bytearray()
-        self.labels   = {}        # label -> offset
-        self.patches  = []        # (offset, label) to patch later
-        self.data     = bytearray()
-        self.data_labels = {}     # label -> offset in data section
-        self.rodata   = bytearray()
+        self.code = bytearray()
+        self.labels = {}  # label -> offset
+        self.patches = []  # (offset, label) to patch later
+        self.data = bytearray()
+        self.data_labels = {}  # label -> offset in data section
+        self.rodata = bytearray()
 
     def pos(self):
         return len(self.code)
@@ -58,21 +57,21 @@ class Emitter:
                 raise GlcError(f"Undefined label: {label}")
             target = self.labels[label]
             rel32 = target - (offset + 4)
-            struct.pack_into('<i', self.code, offset, rel32)
+            struct.pack_into("<i", self.code, offset, rel32)
 
-    # MOV 
+    # MOV
     def mov_reg_imm64(self, reg, imm):
         rex_b = 0x49 if reg >= 8 else 0x48
         reg_enc = reg & 7
         self.emit(rex_b, 0xB8 | reg_enc)
-        self.emit(struct.pack('<q', imm))
+        self.emit(struct.pack("<q", imm))
 
     def mov_reg_imm32(self, reg, imm):
         if reg >= 8:
             self.emit(0x41, 0xB8 | (reg & 7))
         else:
             self.emit(0xB8 | reg)
-        self.emit(struct.pack('<I', imm & 0xFFFFFFFF))
+        self.emit(struct.pack("<I", imm & 0xFFFFFFFF))
 
     def mov_reg_reg(self, dst, src):
         """mov dst, src"""
@@ -85,14 +84,14 @@ class Emitter:
         rex = 0x48
         modrm = 0x80 | ((src_reg & 7) << 3) | (base_reg & 7)
         self.emit(rex, 0x89, modrm)
-        self.emit(struct.pack('<i', offset))
+        self.emit(struct.pack("<i", offset))
 
     def mov_reg_mem(self, dst_reg, base_reg, offset):
         """mov dst_reg, [base_reg + offset]"""
         rex = 0x48
         modrm = 0x80 | ((dst_reg & 7) << 3) | (base_reg & 7)
         self.emit(rex, 0x8B, modrm)
-        self.emit(struct.pack('<i', offset))
+        self.emit(struct.pack("<i", offset))
 
     def lea_reg_rip(self, reg, label):
         """lea reg, [rip + label_offset] — for string addresses"""
@@ -112,7 +111,7 @@ class Emitter:
         """add reg, imm32"""
         modrm = 0xC0 | reg
         self.emit(0x48, 0x81, modrm)
-        self.emit(struct.pack('<i', imm))
+        self.emit(struct.pack("<i", imm))
 
     def sub_reg_reg(self, dst, src):
         """sub dst, src"""
@@ -124,7 +123,7 @@ class Emitter:
         """sub reg, imm32"""
         modrm = 0xC0 | reg
         self.emit(0x48, 0x81, 0xE8 | (modrm & 7))
-        self.emit(struct.pack('<i', imm))
+        self.emit(struct.pack("<i", imm))
 
     def imul_reg_reg(self, dst, src):
         """imul dst, src"""
@@ -140,7 +139,7 @@ class Emitter:
         """cqo — sign extend rax into rdx:rax"""
         self.emit(0x48, 0x99)
 
-    # STACK 
+    # STACK
     def push_reg(self, reg):
         if reg >= 8:
             self.emit(0x41, 0x50 | (reg & 7))
@@ -153,18 +152,21 @@ class Emitter:
         else:
             self.emit(0x58 | reg)
 
-    def push_rbp(self):  self.push_reg(RBP)
-    def pop_rbp(self):   self.pop_reg(RBP)
+    def push_rbp(self):
+        self.push_reg(RBP)
+
+    def pop_rbp(self):
+        self.pop_reg(RBP)
 
     def sub_rsp(self, n):
         """sub rsp, n — allocate stack space"""
         self.emit(0x48, 0x81, 0xEC)
-        self.emit(struct.pack('<I', n))
+        self.emit(struct.pack("<I", n))
 
     def add_rsp(self, n):
         """add rsp, n — deallocate stack space"""
         self.emit(0x48, 0x81, 0xC4)
-        self.emit(struct.pack('<I', n))
+        self.emit(struct.pack("<I", n))
 
     # CMP && JMP
     def cmp_reg_reg(self, a, b):
@@ -176,7 +178,7 @@ class Emitter:
     def cmp_reg_imm32(self, reg, imm):
         """cmp reg, imm32"""
         self.emit(0x48, 0x81, 0xF8 | (reg & 7))
-        self.emit(struct.pack('<i', imm))
+        self.emit(struct.pack("<i", imm))
 
     def jmp(self, label):
         """jmp label (rel32)"""
@@ -215,7 +217,7 @@ class Emitter:
         self.patches.append((self.pos(), label))
         self.emit(0, 0, 0, 0)
 
-    # FUNC CALLS 
+    # FUNC CALLS
     def call(self, label):
         self.emit(0xE8)
         self.patches.append((self.pos(), label))
@@ -233,77 +235,83 @@ class Emitter:
         modrm = 0xC0 | ((b & 7) << 3) | (a & 7)
         self.emit(rex, 0x31, modrm)
 
+
 # Registers
 RAX, RCX, RDX, RBX = 0, 1, 2, 3
 RSP, RBP, RSI, RDI = 4, 5, 6, 7
-R8, R9, R10, R11   = 8, 9, 10, 11
+R8, R9, R10, R11 = 8, 9, 10, 11
 R12, R13, R14, R15 = 12, 13, 14, 15
 
 # Linux x86-64 syscall numbers
-SYS_READ  = 0
+SYS_READ = 0
 SYS_WRITE = 1
-SYS_EXIT  = 60
+SYS_EXIT = 60
+
 
 # ELF writer
 def write_elf(code_bytes, data_bytes, output_path):
-    load_addr   = LOAD_ADDR
+    load_addr = LOAD_ADDR
     text_offset = TEXT_OFF
     data_offset = text_offset + len(code_bytes)
-    data_addr   = load_addr + data_offset
+    data_addr = load_addr + data_offset
     entry_point = load_addr + text_offset
 
     total_size = data_offset + len(data_bytes)
 
     # ELF header (64 bytes)
-    elf_header = struct.pack('<4sBBBBBxxxxxxx',
-        b'\x7fELF',  # magic
-        2,           # 64-bit
-        1,           # little endian
-        1,           # ELF version
-        0,           # OS/ABI: System V
-        0,           # ABI version
+    elf_header = struct.pack(
+        "<4sBBBBBxxxxxxx",
+        b"\x7fELF",  # magic
+        2,  # 64-bit
+        1,  # little endian
+        1,  # ELF version
+        0,  # OS/ABI: System V
+        0,  # ABI version
     )
-    elf_header += struct.pack('<HHIQQQIHHHHHH',
-        2,           # e_type: ET_EXEC
-        0x3E,        # e_machine: x86-64
-        1,           # e_version
-        entry_point, # e_entry
-        0x40,        # e_phoff: program header offset (right after ELF header)
-        0,           # e_shoff: no section headers
-        0,           # e_flags
-        0x40,        # e_ehsize: 64 bytes
-        0x38,        # e_phentsize: 56 bytes
-        2,           # e_phnum: 2 program headers (text + data)
-        0x40,        # e_shentsize
-        0,           # e_shnum
-        0,           # e_shstrndx
+    elf_header += struct.pack(
+        "<HHIQQQIHHHHHH",
+        2,  # e_type: ET_EXEC
+        0x3E,  # e_machine: x86-64
+        1,  # e_version
+        entry_point,  # e_entry
+        0x40,  # e_phoff: program header offset (right after ELF header)
+        0,  # e_shoff: no section headers
+        0,  # e_flags
+        0x40,  # e_ehsize: 64 bytes
+        0x38,  # e_phentsize: 56 bytes
+        2,  # e_phnum: 2 program headers (text + data)
+        0x40,  # e_shentsize
+        0,  # e_shnum
+        0,  # e_shstrndx
     )
 
     # Program header, text segment (56 bytes)
-    ph_text = struct.pack('<IIQQQQQQ',
-        1,                       # p_type: PT_LOAD
-        5,                       # p_flags: PF_R | PF_X (read + execute)
-        0,                       # p_offset: from start of file
-        load_addr,               # p_vaddr
-        load_addr,               # p_paddr
+    ph_text = struct.pack(
+        "<IIQQQQQQ",
+        1,  # p_type: PT_LOAD
+        5,  # p_flags: PF_R | PF_X (read + execute)
+        0,  # p_offset: from start of file
+        load_addr,  # p_vaddr
+        load_addr,  # p_paddr
         text_offset + len(code_bytes),  # p_filesz
         text_offset + len(code_bytes),  # p_memsz
-        0x200000,                # p_align: 2MB
+        0x200000,  # p_align: 2MB
     )
 
     # Program header, data segment
-    ph_data = struct.pack('<IIQQQQQQ',
-        1,                       # p_type: PT_LOAD
-        6,                       # p_flags: PF_R | PF_W (read + write)
-        data_offset,             # p_offset
-        data_addr,               # p_vaddr
-        data_addr,               # p_paddr
-        len(data_bytes),         # p_filesz
-        len(data_bytes),         # p_memsz
-        0x200000,                # p_align
+    ph_data = struct.pack(
+        "<IIQQQQQQ",
+        1,  # p_type: PT_LOAD
+        6,  # p_flags: PF_R | PF_W (read + write)
+        data_offset,  # p_offset
+        data_addr,  # p_vaddr
+        data_addr,  # p_paddr
+        len(data_bytes),  # p_filesz
+        len(data_bytes),  # p_memsz
+        0x200000,  # p_align
     )
 
-    with open(output_path, 'wb') as f:
+    with open(output_path, "wb") as f:
         f.write(elf_header)
         f.write(ph_text)
         f.write(ph_data)
@@ -317,9 +325,11 @@ def write_elf(code_bytes, data_bytes, output_path):
     print(f" |  Total: {total_size} bytes")
     print(f" |  Entry: 0x{entry_point:x}")
 
-# GLC Compiler 
+
+# GLC Compiler
 class GlcError(Exception):
     pass
+
 
 class GLC:
     """
@@ -328,19 +338,19 @@ class GLC:
     """
 
     def __init__(self):
-        self.emit      = Emitter()
-        self.variables = {}   # name → stack offset (rbp-relative)
-        self.functions = {}   # name → label
-        self.stack_size = 0   # current frame size
+        self.emit = Emitter()
+        self.variables = {}  # name → stack offset (rbp-relative)
+        self.functions = {}  # name → label
+        self.stack_size = 0  # current frame size
         self.label_count = 0  # unique label counter
-        self.strings   = {}   # string content → data label
+        self.strings = {}  # string content → data label
         self.str_count = 0
 
     def new_label(self, prefix="L"):
         self.label_count += 1
         return f"{prefix}_{self.label_count}"
 
-    # String data 
+    # String data
     def intern_string(self, s):
         """Store string in data section, return label."""
         if s in self.strings:
@@ -365,7 +375,7 @@ class GLC:
             )
         return self.variables[name]
 
-    # EXPR compiler 
+    # EXPR compiler
     def compile_expr(self, expr):
         """
         Compile expression, results in RAX.
@@ -378,7 +388,7 @@ class GLC:
             expr = expr.strip()
 
             # integer literal
-            if expr.lstrip('-').isdigit():
+            if expr.lstrip("-").isdigit():
                 self.emit.mov_reg_imm64(RAX, int(expr))
                 return
 
@@ -392,10 +402,10 @@ class GLC:
 
             # inline binary ("a plus b")
             for op, handler in [
-                (" plus ",  self._emit_add),
+                (" plus ", self._emit_add),
                 (" minus ", self._emit_sub),
                 (" times ", self._emit_mul),
-                (" over ",  self._emit_div),
+                (" over ", self._emit_div),
             ]:
                 if op in expr:
                     parts = expr.split(op, 1)
@@ -411,7 +421,7 @@ class GLC:
             if expr.startswith("@"):
                 parts = expr.split()
                 fname = parts[0][1:]
-                args  = parts[1:]
+                args = parts[1:]
                 self._emit_call(fname, args)
                 return
 
@@ -483,7 +493,7 @@ class GLC:
         elif node.type == "if":
             left, op, right = node.value[0], node.value[1], node.value[2]
             else_label = self.new_label("else")
-            end_label  = self.new_label("endif")
+            end_label = self.new_label("endif")
 
             self.compile_expr(left)
             self.emit.push_reg(RAX)
@@ -501,13 +511,14 @@ class GLC:
                 (else_body if in_else else if_body).append(child)
 
             jmp_map = {
-                "==": self.emit.jne, "!=": self.emit.je,
-                ">":  self.emit.jle, "<":  self.emit.jge,
-                ">=": self.emit.jl,  "<=": self.emit.jg,
+                "==": self.emit.jne,
+                "!=": self.emit.je,
+                ">": self.emit.jle,
+                "<": self.emit.jge,
+                ">=": self.emit.jl,
+                "<=": self.emit.jg,
             }
-            jmp_map.get(op, self.emit.jne)(
-                else_label if else_body else end_label
-            )
+            jmp_map.get(op, self.emit.jne)(else_label if else_body else end_label)
 
             for child in if_body:
                 self.compile_node(child)
@@ -524,8 +535,8 @@ class GLC:
         elif node.type == "loop":
             count_expr = node.value[-1]
             loop_label = self.new_label("loop")
-            end_label  = self.new_label("endloop")
-            counter    = f"__loop_{self.label_count}"
+            end_label = self.new_label("endloop")
+            counter = f"__loop_{self.label_count}"
 
             self.compile_expr(count_expr)
             self.alloc_var(counter)
@@ -549,7 +560,7 @@ class GLC:
         elif node.type == "while":
             left, op, right = node.value[0], node.value[1], node.value[2]
             loop_label = self.new_label("while")
-            end_label  = self.new_label("endwhile")
+            end_label = self.new_label("endwhile")
 
             self.emit.label(loop_label)
             self.compile_expr(left)
@@ -560,9 +571,12 @@ class GLC:
             self.emit.cmp_reg_reg(RAX, RCX)
 
             jmp_map = {
-                "==": self.emit.jne, "!=": self.emit.je,
-                ">":  self.emit.jle, "<":  self.emit.jge,
-                ">=": self.emit.jl,  "<=": self.emit.jg,
+                "==": self.emit.jne,
+                "!=": self.emit.je,
+                ">": self.emit.jle,
+                "<": self.emit.jge,
+                ">=": self.emit.jl,
+                "<=": self.emit.jg,
             }
             jmp_map.get(op, self.emit.jne)(end_label)
 
@@ -591,11 +605,7 @@ class GLC:
             arg_regs = [RDI, RSI, RDX, RCX, R8, R9]
             for i, param in enumerate(params[:6]):
                 self.alloc_var(param)
-                self.emit.mov_mem_reg(
-                    RBP,
-                    self.var_offset(param),
-                    arg_regs[i]
-                )
+                self.emit.mov_mem_reg(RBP, self.var_offset(param), arg_regs[i])
 
             self.emit.sub_rsp(256)
 
@@ -631,9 +641,7 @@ class GLC:
         # rsi = address of string
         self.emit.emit(0x48, 0x8D, 0x35)
         # lea rsi, [rip+?]
-        self.emit.patches.append(
-            (self.emit.pos(), f"__data_{label}")
-        )
+        self.emit.patches.append((self.emit.pos(), f"__data_{label}"))
         self.emit.emit(0, 0, 0, 0)
         self.emit.mov_reg_imm32(RDX, length)
         self.emit.syscall()
@@ -650,7 +658,10 @@ class GLC:
 
         # store newline at end of buffer
         self.emit.emit(
-            0xC6, 0x45, 0xE8, 0x0A  # mov byte [rbp-24], 10 (newline)
+            0xC6,
+            0x45,
+            0xE8,
+            0x0A,  # mov byte [rbp-24], 10 (newline)
         )
 
         # rax = abs(rdi)
@@ -667,7 +678,10 @@ class GLC:
 
         # store digit: mov [rbp + rcx*1 - 25], dl
         self.emit.emit(
-            0x88, 0x54, 0x0D, 0xE7  # mov [rbp+rcx-25], dl
+            0x88,
+            0x54,
+            0x0D,
+            0xE7,  # mov [rbp+rcx-25], dl
         )
         self.emit.emit(0x48, 0xFF, 0xC1)  # inc rcx
         self.emit.emit(0x48, 0x85, 0xC0)  # test rax, rax
@@ -676,7 +690,7 @@ class GLC:
         self.emit.mov_reg_imm32(RAX, SYS_WRITE)
         self.emit.mov_reg_imm32(RDI, 1)
 
-        self.emit.emit(0x48, 0x8D, 0x74, 0x0D, 0xE7) # lea rsi, [rbp+rcx-25]
+        self.emit.emit(0x48, 0x8D, 0x74, 0x0D, 0xE7)  # lea rsi, [rbp+rcx-25]
         self.emit.mov_reg_reg(RDX, RCX)
         self.emit.syscall()
 
@@ -690,7 +704,7 @@ class GLC:
         Full compilation pipeline:
         YuriLang source → ELF binary
         """
-        print(f"🌸 GLC — Girls Love to Compile")
+        print("🌸 GLC — Girls Love to Compile")
         print(f"   Compiling {output_path}...")
 
         tree = parse(source)
@@ -716,7 +730,7 @@ class GLC:
 
         for s, label in self.strings.items():
             data_map[label] = len(data)
-            data.extend(s.encode('utf-8'))
+            data.extend(s.encode("utf-8"))
 
         code_len = len(self.emit.code)
         text_start = LOAD_ADDR + TEXT_OFF
@@ -725,13 +739,11 @@ class GLC:
             if label.startswith("__data_"):
                 str_label = label[7:]
                 if str_label in data_map:
-                    data_section_addr = (
-                    LOAD_ADDR + TEXT_OFF + code_len
-                    )
+                    data_section_addr = LOAD_ADDR + TEXT_OFF + code_len
                     str_addr = data_section_addr + data_map[str_label]
                     rip_after_patch = text_start + offset + 4
                     rel32 = str_addr - rip_after_patch
-                    struct.pack_into('<i', self.emit.code, offset, rel32)
+                    struct.pack_into("<i", self.emit.code, offset, rel32)
                     self.emit.patches[i] = (offset, None)
 
         # patch remaining jumps/calls
@@ -743,4 +755,3 @@ class GLC:
 
 def glc_compile(source, output_path):
     GLC().compile(source, output_path)
-

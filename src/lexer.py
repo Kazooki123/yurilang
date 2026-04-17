@@ -8,10 +8,11 @@ T_REGEX = r'(#\[\[(?:[^\[\]]|\[(?:[^\[\]]|\[[^\[\]]*\])*\])*\]\])|(\[\[(?:[^\[\]
 def get_indent_lvl(line):
     return len(line) - len(line.lstrip(" "))
 
+
 def tokenize(line):
-    comment_match = re.search(r'\?\s*\(.*\)', line)
+    comment_match = re.search(r"\?\s*\(.*\)", line)
     if comment_match:
-        line = line[:comment_match.start()]
+        line = line[: comment_match.start()]
 
     if not line.strip():
         return []
@@ -20,4 +21,3 @@ def tokenize(line):
     for match in re.finditer(T_REGEX, line):
         tokens.append(match.group())
     return tokens
-

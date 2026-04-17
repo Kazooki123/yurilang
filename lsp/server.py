@@ -2,6 +2,7 @@ from pygls.server import LanguageServer
 
 ls = LanguageServer("yurilang", "v1.5.0")
 
+
 @ls.feature("textDocument/completion")
 def completions(ls, params):
     return [
@@ -9,5 +10,5 @@ def completions(ls, params):
         {"label": "@bond", "kind": 14},
     ]
 
-ls.start_io()
 
+ls.start_io()

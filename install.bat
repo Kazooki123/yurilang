@@ -1,6 +1,6 @@
 @echo off
 :: YuriLang Windows Installer
-:: "She found her way in. Now so can you." 🪟
+:: "She found her way in. Now so can you. 🪟"
 :: Double-click to install, or run from cmd
 
 title YuriLang Installer

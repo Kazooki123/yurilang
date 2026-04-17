@@ -2,7 +2,7 @@ import sys
 from src.interpreter import run
 from src.repl import repl
 from src.compiler import compile_yuri
-from src.wasm import compile_to_yasm
+from src.etc.wasm import compile_to_yasm
 from vm.compiler import compile_to_bytecode
 from vm.bytecode import YuriVM
 from vm.serializer import save_yuric, load_yuric
@@ -23,7 +23,7 @@ def main():
         return
 
     if "--help" in args or "-h" in args:
-        print(f"""
+        print("""
     Usage: yuri [file] [options]
 
     yuri program.yuri             interpret
@@ -49,7 +49,7 @@ def main():
         return
 
     if "--crush" in args:
-        from src.types import crush_summary
+        from src.etc.types import crush_summary
 
         filename = next(arg for arg in args if arg.endswith(".yuri"))
 
@@ -68,14 +68,18 @@ def main():
             run(code)
 
             from src.interpreter import (
-                variables, awakened, owned,
-                shared_ptrs, glances, reaches, functions
+                variables,
+                awakened,
+                owned,
+                shared_ptrs,
+                glances,
+                reaches,
+                functions,
             )
             from src.etc.itmye_check import run_itmye
 
             run_itmye(
-                variables, awakened, owned,
-                shared_ptrs, glances, reaches, functions
+                variables, awakened, owned, shared_ptrs, glances, reaches, functions
             )
 
         except StopIteration:
@@ -92,12 +96,14 @@ def main():
             with open(out, "w") as f:
                 f.write(asm)
             print(f"Compiled to {out}")
-            print(f"Run with:")
-            print(f"  nasm -f elf64 {out} -o program.o && ld program.o -o program && ./program")
+            print("Run with:")
+            print(
+                f"  nasm -f elf64 {out} -o program.o && ld program.o -o program && ./program"
+            )
         except StopIteration:
             print("No .yuri file provided.")
         except FileNotFoundError:
-            print(f"File not found.")
+            print("File not found.")
         return
 
     if "--glc" in args:
@@ -152,7 +158,7 @@ def main():
         except StopIteration:
             print("No .yuri file provided.")
         except FileNotFoundError:
-            print(f"File not found.")
+            print("File not found.")
         return
 
     if "--vm" in args:
@@ -164,7 +170,7 @@ def main():
         except StopIteration:
             print("No .yuric file provided.")
         except FileNotFoundError:
-            print(f"File not found.")
+            print("File not found.")
         return
 
     if "--wasm" in args:
@@ -197,4 +203,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -14,13 +14,15 @@ from src.parser import parse
 class LLVMError(Exception):
     pass
 
+
 # LLVM TYPES
-INT64   = ir.IntType(64)
-INT32   = ir.IntType(32)
-INT8    = ir.IntType(8)
-INT1    = ir.IntType(1)
-VOID    = ir.VoidType()
+INT64 = ir.IntType(64)
+INT32 = ir.IntType(32)
+INT8 = ir.IntType(8)
+INT1 = ir.IntType(1)
+VOID = ir.VoidType()
 INT8PTR = ir.PointerType(INT8)
+
 
 class YuriLLVM:
     """
@@ -32,9 +34,9 @@ class YuriLLVM:
         self.module = ir.Module(name="yurilang")
         self.module.triple = binding.get_default_triple()
 
-        self.builder   = None
-        self.variables = {}   # name → alloca ptr
-        self.strings   = {}   # content → global constant
+        self.builder = None
+        self.variables = {}  # name → alloca ptr
+        self.strings = {}  # content → global constant
         self.str_count = 0
 
         self._declare_externals()
@@ -47,8 +49,8 @@ class YuriLLVM:
         printf_type = ir.FunctionType(INT32, [INT8PTR], var_arg=True)
         self.printf = ir.Function(self.module, printf_type, name="printf")
 
-        self._fmt_int  = self._add_global_str("%lld\n\0", "__fmt_int")
-        self._fmt_str  = self._add_global_str("%s\n\0",   "__fmt_str")
+        self._fmt_int = self._add_global_str("%lld\n\0", "__fmt_int")
+        self._fmt_str = self._add_global_str("%s\n\0", "__fmt_str")
 
     def _add_global_str(self, s, name=None):
         """Add a global string constant, return GEP pointer."""
@@ -59,11 +61,11 @@ class YuriLLVM:
             name = f"__str_{self.str_count}"
             self.str_count += 1
 
-        encoded = (s if s.endswith('\0') else s + '\0').encode('utf-8')
+        encoded = (s if s.endswith("\0") else s + "\0").encode("utf-8")
         str_type = ir.ArrayType(INT8, len(encoded))
         global_var = ir.GlobalVariable(self.module, str_type, name=name)
         global_var.global_constant = True
-        global_var.linkage = 'internal'
+        global_var.linkage = "internal"
         global_var.initializer = ir.Constant(str_type, bytearray(encoded))
 
         # GEP to get i8* pointer
@@ -85,14 +87,14 @@ class YuriLLVM:
         if isinstance(expr, str):
             expr = expr.strip()
 
-            # string 
+            # string
             if expr.startswith('"') and expr.endswith('"'):
                 content = expr[1:-1]
                 ptr = self._add_global_str(content)
                 return ptr
 
             # ints
-            if expr.lstrip('-').isdigit():
+            if expr.lstrip("-").isdigit():
                 return ir.Constant(INT64, int(expr))
 
             # booleans
@@ -103,18 +105,18 @@ class YuriLLVM:
 
             # inline binart
             for op_word, ir_op in [
-                (" plus ",  "add"),
+                (" plus ", "add"),
                 (" minus ", "sub"),
                 (" times ", "mul"),
-                (" over ",  "sdiv"),
+                (" over ", "sdiv"),
             ]:
                 if op_word in expr:
                     parts = expr.split(op_word, 1)
-                    left  = self._eval_expr(parts[0].strip())
+                    left = self._eval_expr(parts[0].strip())
                     right = self._eval_expr(parts[1].strip())
 
                     # coerce to INT64 for God knows how long
-                    left  = self._to_int64(left)
+                    left = self._to_int64(left)
                     right = self._to_int64(right)
 
                     if ir_op == "add":
@@ -126,7 +128,7 @@ class YuriLLVM:
                     elif ir_op == "sdiv":
                         return self.builder.sdiv(left, right, name="div")
 
-            # var lookup :p 
+            # var lookup :p
             if expr in self.variables:
                 ptr = self.variables[expr]
                 return self.builder.load(ptr, name=f"{expr}_val")
@@ -139,7 +141,6 @@ class YuriLLVM:
 
         raise LLVMError(f"Unexpected expression type: {type(expr)}")
 
-
     def _to_int64(self, val):
         """Coerce an IR value to INT64 if needed."""
         if val.type == INT64:
@@ -148,11 +149,9 @@ class YuriLLVM:
             return self.builder.sext(val, INT64, name="sext")
         return val
 
-
     def _is_string_val(self, val):
         """Check if an IR value is a string pointer."""
         return isinstance(val.type, ir.PointerType)
-
 
     # Node Compile
     def _compile_node(self, node):
@@ -191,15 +190,15 @@ class YuriLLVM:
                     self.builder.call(self.puts, [ptr])
 
                 elif token in self.variables:
-                    ptr   = self.variables[token]
+                    ptr = self.variables[token]
                     alloc = ptr.type.pointee
 
                     if alloc == INT8PTR:
                         val = self.builder.load(ptr, name=f"{token}_val")
                         self.builder.call(self.puts, [val])
                     else:
-                        val    = self.builder.load(ptr, name=f"{token}_val")
-                        fmt    = self._fmt_int
+                        val = self.builder.load(ptr, name=f"{token}_val")
+                        fmt = self._fmt_int
                         self.builder.call(self.printf, [fmt, val])
 
                 else:
@@ -209,9 +208,7 @@ class YuriLLVM:
                             self.builder.call(self.puts, [val])
                         else:
                             val = self._to_int64(val)
-                            self.builder.call(
-                                self.printf, [self._fmt_int, val]
-                            )
+                            self.builder.call(self.printf, [self._fmt_int, val])
                     except LLVMError:
                         raise LLVMError(
                             f"\n💔 @confess — cannot print '{token}'\n"
@@ -241,19 +238,17 @@ class YuriLLVM:
         llvm_ir = str(self.module)
         return llvm_ir
 
-
     def compile_to_file(self, source, output_path):
         ir_text = self.compile(source)
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             f.write(ir_text)
         print(f"🌸 YuriLang LLVM IR → {output_path}")
-        print(f" |  Compile with:")
-        print(f" |  llc {output_path} -o {output_path.replace('.ll','.s')}")
-        print(f" |  gcc {output_path.replace('.ll','.s')} -o program")
-        print(f" |  Or directly:")
+        print(" |  Compile with:")
+        print(f" |  llc {output_path} -o {output_path.replace('.ll', '.s')}")
+        print(f" |  gcc {output_path.replace('.ll', '.s')} -o program")
+        print(" |  Or directly:")
         print(f" |  clang {output_path} -o program")
         return ir_text
-
 
     def compile_to_object(self, source, output_path):
         """
@@ -273,8 +268,8 @@ class YuriLLVM:
         target_machine = target.create_target_machine()
 
         obj_code = target_machine.emit_object(llvm_mod)
-        
-        with open(output_path, 'wb') as f:
+
+        with open(output_path, "wb") as f:
             f.write(obj_code)
 
         print(f"🌸 YuriLang → native object: {output_path}")
@@ -296,5 +291,3 @@ def llvm_compile(source, output_path, mode="ir"):
         compiler.compile_to_object(source, output_path)
     else:
         compiler.compile_to_file(source, output_path)
-
-

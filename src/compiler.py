@@ -3,19 +3,19 @@
 
 from src.parser import parse
 
+
 class YuriCompileError(Exception):
     pass
 
 
 class Compiler:
     def __init__(self):
-        self.data_section = []    # .data labels
-        self.bss_section = []     # .bss labels (uninitialized vars)
-        self.text_section = []    # .text instructions
-        self.string_count = 0     # unique label counter for strings
-        self.var_offsets = {}     # variable name → stack offset
-        self.stack_offset = 0     # current rsp offset
-
+        self.data_section = []  # .data labels
+        self.bss_section = []  # .bss labels (uninitialized vars)
+        self.text_section = []  # .text instructions
+        self.string_count = 0  # unique label counter for strings
+        self.var_offsets = {}  # variable name → stack offset
+        self.stack_offset = 0  # current rsp offset
 
     def new_string_label(self, value):
         """Store a string in .data and return its label."""
@@ -53,7 +53,7 @@ class Compiler:
             expr = expr.strip()
 
             # integer literal
-            if expr.lstrip('-').isdigit():
+            if expr.lstrip("-").isdigit():
                 self.emit(f"mov rax, {expr}")
                 return
 
@@ -93,14 +93,12 @@ class Compiler:
         elif func == "mul":
             self.emit("imul rax, rbx")
         elif func == "div":
-            self.emit("cqo")            
-            self.emit("idiv rbx")      
+            self.emit("cqo")
+            self.emit("idiv rbx")
         else:
             raise YuriCompileError(f"Unknown built-in: @{func}")
 
-
     def compile_node(self, node):
-
         # ENTRY
         if node.type in ("root", "entry"):
             for child in node.children:
@@ -109,7 +107,7 @@ class Compiler:
         # ASSIGN
         elif node.type == "assign":
             name, val = node.value
-            self.compile_expr(val)          # result in rax
+            self.compile_expr(val)  # result in rax
 
             if name not in self.var_offsets:
                 self.allocate_var(name)
@@ -125,16 +123,16 @@ class Compiler:
                 if token.startswith('"') and token.endswith('"'):
                     value = token[1:-1]
                     label, length = self.new_string_label(value)
-                    self.emit(f"mov rax, 1")        # sys_write
-                    self.emit(f"mov rdi, 1")        # stdout
+                    self.emit("mov rax, 1")  # sys_write
+                    self.emit("mov rdi, 1")  # stdout
                     self.emit(f"mov rsi, {label}")  # string address
-                    self.emit(f"mov rdx, {length}") # length
-                    self.emit(f"syscall")
+                    self.emit(f"mov rdx, {length}")  # length
+                    self.emit("syscall")
 
                 # variable — convert int to string via helper
                 elif token in self.var_offsets:
                     self.emit(f"mov rdi, {self.var_addr(token)}")
-                    self.emit(f"call print_int")    # helper we emit at end
+                    self.emit("call print_int")  # helper we emit at end
 
                 else:
                     raise YuriCompileError(f"@confess can't print: {token}")
@@ -143,29 +141,29 @@ class Compiler:
         elif node.type == "loop":
             count = node.value[-1]
             loop_label = f"loop_{len(self.text_section)}"
-            end_label  = f"end_{loop_label}"
+            end_label = f"end_{loop_label}"
 
             # store counter in rcx
             self.compile_expr(count)
-            self.emit(f"mov rcx, rax")
+            self.emit("mov rcx, rax")
 
             self.emit_label(loop_label)
-            self.emit(f"cmp rcx, 0")
+            self.emit("cmp rcx, 0")
             self.emit(f"je {end_label}")
-            self.emit(f"push rcx")          # preserve counter
+            self.emit("push rcx")  # preserve counter
 
             for child in node.children:
                 self.compile_node(child)
 
-            self.emit(f"pop rcx")           # restore counter
-            self.emit(f"dec rcx")
+            self.emit("pop rcx")  # restore counter
+            self.emit("dec rcx")
             self.emit(f"jmp {loop_label}")
             self.emit_label(end_label)
 
         # IF
         elif node.type == "if":
             left, op, right = node.value[0], node.value[1], node.value[2]
-            end_label  = f"end_if_{len(self.text_section)}"
+            end_label = f"end_if_{len(self.text_section)}"
             else_label = f"else_{len(self.text_section)}"
 
             self.compile_expr(left)
@@ -184,8 +182,14 @@ class Compiler:
                     continue
                 (else_body if in_else else if_body).append(child)
 
-            jump = {"==": "jne", "!=": "je", ">": "jle",
-                    "<":  "jge", ">=": "jl", "<=": "jg"}
+            jump = {
+                "==": "jne",
+                "!=": "je",
+                ">": "jle",
+                "<": "jge",
+                ">=": "jl",
+                "<=": "jg",
+            }
             self.emit(f"{jump[op]} {else_label if else_body else end_label}")
 
             for child in if_body:
@@ -207,15 +211,15 @@ class Compiler:
         self.text_section.append("")
         self.text_section.append("print_int:")
         self.text_section.append("    mov rax, rdi")
-        self.text_section.append("    mov rcx, 0")          # digit count
-        self.text_section.append("    mov rbx, 10")         # base 10
-        self.text_section.append("    lea rsi, [rsp - 24]") # buffer on stack
-        self.text_section.append("    mov byte [rsi + 20], 10") # newline
-        self.text_section.append("    mov rdi, 20")         # position
+        self.text_section.append("    mov rcx, 0")  # digit count
+        self.text_section.append("    mov rbx, 10")  # base 10
+        self.text_section.append("    lea rsi, [rsp - 24]")  # buffer on stack
+        self.text_section.append("    mov byte [rsi + 20], 10")  # newline
+        self.text_section.append("    mov rdi, 20")  # position
         self.text_section.append(".conv_loop:")
         self.text_section.append("    cqo")
         self.text_section.append("    idiv rbx")
-        self.text_section.append("    add rdx, 48")         # to ASCII
+        self.text_section.append("    add rdx, 48")  # to ASCII
         self.text_section.append("    dec rdi")
         self.text_section.append("    mov [rsi + rdi], dl")
         self.text_section.append("    inc rcx")
@@ -223,7 +227,7 @@ class Compiler:
         self.text_section.append("    jnz .conv_loop")
         self.text_section.append("    ; sys_write")
         self.text_section.append("    lea rsi, [rsi + rdi]")
-        self.text_section.append("    inc rcx")             # +1 for newline
+        self.text_section.append("    inc rcx")  # +1 for newline
         self.text_section.append("    mov rax, 1")
         self.text_section.append("    mov rdi, 1")
         self.text_section.append("    mov rdx, rcx")
@@ -243,14 +247,14 @@ class Compiler:
         self.emit_label("_start")
         self.emit("push rbp")
         self.emit("mov rbp, rsp")
-        self.emit(f"sub rsp, 256")
+        self.emit("sub rsp, 256")
 
         for node in tree.children:
             self.compile_node(node)
 
         # Clean exit
-        self.emit("mov rax, 60")        # sys_exit
-        self.emit("xor rdi, rdi")       # exit code 0
+        self.emit("mov rax, 60")  # sys_exit
+        self.emit("xor rdi, rdi")  # exit code 0
         self.emit("syscall")
 
         # Assemble the final output
@@ -258,11 +262,10 @@ class Compiler:
         lines += ["", "section .text", ""]
         lines += self.text_section
         self.emit_print_int_helper()
-        lines += self.text_section[-(len(self.text_section)):]
+        lines += self.text_section[-(len(self.text_section)) :]
 
         return "\n".join(lines)
 
 
 def compile_yuri(code):
     return Compiler().compile(code)
-

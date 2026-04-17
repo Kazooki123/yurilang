@@ -21,7 +21,7 @@ class BytecodeCompiler:
         if isinstance(expr, str):
             expr = expr.strip()
 
-            if expr.lstrip('-').isdigit():
+            if expr.lstrip("-").isdigit():
                 self.emit("PUSH", int(expr))
                 return
 
@@ -35,10 +35,7 @@ class BytecodeCompiler:
                 args = parts[1:]
                 for arg in args:
                     self.compile_expr(arg)
-                op_map = {
-                    "add": "ADD", "sub": "SUB",
-                    "mul": "MUL", "div": "DIV"
-                }
+                op_map = {"add": "ADD", "sub": "SUB", "mul": "MUL", "div": "DIV"}
                 if func in op_map:
                     self.emit(op_map[func])
                 else:
@@ -51,16 +48,12 @@ class BytecodeCompiler:
             if len(expr) == 3:
                 self.compile_expr(expr[0])
                 self.compile_expr(expr[2])
-                op_map = {
-                    "plus": "ADD", "minus": "SUB",
-                    "times": "MUL", "over": "DIV"
-                }
+                op_map = {"plus": "ADD", "minus": "SUB", "times": "MUL", "over": "DIV"}
                 if expr[1] in op_map:
                     self.emit(op_map[expr[1]])
             return
 
     def compile_node(self, node):
-
         if node.type in ("root", "entry"):
             for child in node.children:
                 self.compile_node(child)
@@ -82,7 +75,7 @@ class BytecodeCompiler:
         elif node.type == "if":
             left, op, right = node.value[0], node.value[1], node.value[2]
             else_label = self.new_label("else")
-            end_label  = self.new_label("end_if")
+            end_label = self.new_label("end_if")
 
             if_body, else_body = [], []
             in_else = False
@@ -111,8 +104,8 @@ class BytecodeCompiler:
         elif node.type == "loop":
             count = node.value[-1]
             loop_label = self.new_label("loop")
-            end_label  = self.new_label("end_loop")
-            counter    = f"__loop_{self.label_count}"
+            end_label = self.new_label("end_loop")
+            counter = f"__loop_{self.label_count}"
 
             self.compile_expr(count)
             self.emit("STORE", counter)
@@ -135,7 +128,7 @@ class BytecodeCompiler:
 
         elif node.type == "while":
             loop_label = self.new_label("while")
-            end_label  = self.new_label("end_while")
+            end_label = self.new_label("end_while")
             left, op, right = node.value[0], node.value[1], node.value[2]
 
             self.emit("LABEL", loop_label)

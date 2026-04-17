@@ -9,6 +9,9 @@ edition = "2024"
 readme = "README.md"
 license = "GPL-3.0-only"
 
+[workspace]
+members = ["pkm/yuu"]
+
 [dependencies]
 pyo3 = "0.28.3"
 
