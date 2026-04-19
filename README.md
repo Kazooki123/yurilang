@@ -36,7 +36,7 @@ Prerequisites:
 
 Simply type this in your terminal:
 
-```
+```bash
 curl -sSL https://raw.githubusercontent.com/Kazooki123/yurilang/main/install.sh | bash
 ```
 

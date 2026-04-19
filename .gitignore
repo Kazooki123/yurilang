@@ -1,22 +1,35 @@
 # ignore everything
 *
-!/.gitignore
+!/**/*.gitignore
+!/.dockerignore
+!/.editorconfig
 
 # and then whitelist specific things
 !/**/
 !**/*.py
+!**/*.rs
+!**/*.go
+!**/*.zig
+!**/*.yml
 !**/*.md
 !**/*.yuri
+!**/*.toml
+!*.txt
 !**/*.png
+!**/*.ico
+!*.sh
+!*.bat
 !/amy/
+!/Dockerfile
+!/pkg/**
 
-!/.github/**
-!/LICENSE
+
+!/.github/
+!/**/LICENSE
 
 # ignore build
 /build/
-
-
+/dump/
 
 # Added by cargo
 

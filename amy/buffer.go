@@ -33,5 +33,3 @@ func (b *Buffer) Backspace(y, x int) (int, int) {
 
     return y, x
 }
-
-
