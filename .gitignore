@@ -30,6 +30,9 @@
 # ignore build
 /build/
 /dump/
+/.idea/
+/pkm/yuu/test/
+
 
 # Added by cargo
 
