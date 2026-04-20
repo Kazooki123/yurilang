@@ -2,7 +2,7 @@ import sys
 from src.interpreter import run
 from src.repl import repl
 from src.compiler import compile_yuri
-from src.etc.wasm import compile_to_yasm
+from src.asm.wasm import compile_to_yasm
 from vm.compiler import compile_to_bytecode
 from vm.bytecode import YuriVM
 from vm.serializer import save_yuric, load_yuric
@@ -15,7 +15,7 @@ def main():
 
     if "--version" in args:
         print(f"""
-    YuriLang v1.5.0
+    YuriLang v1.6.0
     Yuring Complete since 2026 🧡🤍🩷
     Python {sys.version.split()[0]}
     GPL-3.0 License

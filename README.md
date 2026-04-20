@@ -507,7 +507,7 @@ Most modules or libraries of yurilang right now is placed in `store/`, containin
 
 ## Codeberg
 
-`[... Coming Soon...]`
+[Available Here](https://codeberg.org/Kazooki123/yurilang)
 
 ## Issues and Bugs
 

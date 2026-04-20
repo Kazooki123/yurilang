@@ -1,5 +1,5 @@
 PORTNAME=       yurilang
-DISTVERSION=    1.5.0
+DISTVERSION=    1.6.0
 CATEGORIES=     lang
 
 MAINTAINER=     mgamerdinge146@gmail.com
