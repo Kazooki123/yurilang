@@ -115,10 +115,9 @@ def print_keywords():
         "spectrum",
         "persona",
         "read",
-        "write"
+        "write",
     ]
 
-    
     for i in range(0, len(keywords), 2):
         left = keywords[i]
         right = keywords[i + 1] if i + 1 < len(keywords) else ""
@@ -324,7 +323,7 @@ def repl():
             if code == "keywords":
                 print_keywords()
                 continue
-            
+
             if code == "world":
                 spin_globe()
                 continue

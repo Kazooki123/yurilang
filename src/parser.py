@@ -137,6 +137,19 @@ def parse_line(line):
             return Node("bloom", (params, body_expr))
         raise SyntaxError("@bloom requires ':' separator — @bloom x: x times 2")
 
+    elif keyword == "@lua":
+        rest = " ".join(tokens[1:]).strip()
+
+        if rest and not rest.startswith(":"):
+            return Node("lua_expr", rest)
+        elif rest == "" or rest == ":":
+            return Node("lua_block", None)
+        else:
+            code = rest.lstrip(":").strip()
+            node = Node("lua_block", None)
+            node.children = [Node("lua_line", code)]
+            return node
+
     elif keyword == "@kumitate":
         return Node("kumitate", None)
 
@@ -278,13 +291,25 @@ def parse(code):
     root = Node("root")
     stack = [(-1, root)]
     pending_decorators = []
+    in_lua_block = False
+    lua_indent = 0
 
     for line in lines:
         if not line.strip():
             continue
 
         indent = get_indent_lvl(line)
-        node = parse_line(line.strip())
+        stripped = line.strip()
+
+        if in_lua_block:
+            if indent > lua_indent:
+                node = Node("lua_line", stripped)
+                stack[-1][1].children.append(node)
+                continue
+            else:
+                in_lua_block = False
+
+        node = parse_line(stripped)
 
         if not node:
             continue
@@ -302,6 +327,8 @@ def parse(code):
         while stack and indent <= stack[-1][0]:
             stack.pop()
 
+        parent = stack[-1][1]
+
         if node.type == "else":
             for _, candidate in reversed(stack):
                 if candidate.type == "if":
@@ -318,7 +345,11 @@ def parse(code):
                     break
             continue
 
-        stack[-1][1].children.append(node)
+        parent.children.append(node)
         stack.append((indent, node))
+
+        if node.type == "lua_block":
+            in_lua_block = True
+            lua_indent = indent
 
     return root

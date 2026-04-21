@@ -7,8 +7,8 @@ title YuriLang Installer
 
 echo.
 echo   ╔══════════════════════════════════════╗
-echo   ║         Y U R I L A N G            ║
-echo   ║   "Yuring Complete since 2026"     ║
+echo   ║         Y U R I L A N G              ║
+echo   ║   "Yuring Complete since 2026"       ║
 echo   ╚══════════════════════════════════════╝
 echo.
 

@@ -1,0 +1,6 @@
+@wlw:
+    @confess "- Basic Lua Block -"
+    @lua:
+        confess("Hello From Lua!!")
+
+    

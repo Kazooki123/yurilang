@@ -15,16 +15,5 @@ yuri = "yurilang.main:main"
 requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
-[project]
-name = "yurilang"
-version = "1.5.0"
-description = "A Yuri-themed esoteric programming language 🧡"
-authors = [
-    { name="starloexoliz11" }
-]
-readme = "README.md"
-license = { text = "GPL3-only" }
-requires-python = ">=3.13"
-
 [tool.maturin]
 module-name = "yurilang"

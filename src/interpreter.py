@@ -14,6 +14,7 @@ from src.etc.asynchronous import (
     get_event_loop,
 )
 from src.etc.types import register_crush, register_func_hints
+from lua.lua import get_lua_runtime, LuaError
 
 variables = {}
 functions = {}
@@ -425,6 +426,14 @@ def evaluate(expr):
             b = int(evaluate(raw_args[1]))
             return a << b if b >= 0 else a >> abs(b)
 
+        elif func_name == "lua":
+            expr = evaluate(raw_args[0]) if raw_args else ""
+            try:
+                runtime = get_lua_runtime(variables, functions, run_node, evaluate)
+                return runtime.execute_expr(expr)
+            except LuaError as e:
+                raise YuriRuntimeError(str(e))
+
         elif func_name == "affect":
             arr = evaluate(raw_args[0]) if raw_args else []
             func_ref = raw_args[1] if len(raw_args) > 1 else None
@@ -479,7 +488,7 @@ def evaluate(expr):
             try:
                 with open(path, "w") as f:
                     f.write(str(content))
-                return love  # returns True on success
+                return True  # returns True on success
             except PermissionError:
                 raise YuriRuntimeError(
                     f"\n💔 @write — permission denied: '{path}'\n"
@@ -1018,6 +1027,37 @@ def run_node(node):
                 )
             variables[target] = value
 
+    # INLINE LUA
+    elif node.type == "lua_block":
+        lua_lines = []
+        for child in node.children:
+            if child.type == "lua_line":
+                lua_lines.append(child.value)
+
+        if not lua_lines:
+            return
+
+        lua_code = "\n".join(lua_lines)
+
+        try:
+            runtime = get_lua_runtime(variables, functions, run_node, evaluate)
+            runtime.execute_block(lua_code)
+        except LuaError as e:
+            raise YuriRuntimeError(str(e))
+
+    elif node.type == "lua_expr":
+        expr = node.value
+        if expr.startswith('"') and expr.endswith('"'):
+            expr = expr[1:-1]
+        try:
+            runtime = get_lua_runtime(variables, functions, run_node, evaluate)
+            return runtime.execute_expr(expr)
+        except LuaError as e:
+            raise YuriRuntimeError(str(e))
+
+    elif node.type == "lua_line":
+        pass
+
     # NOT / APART
     elif node.type == "not":
         left = evaluate(node.value[0])
@@ -1046,25 +1086,6 @@ def run_node(node):
 
     # WHILE LOOP
     elif node.type == "while":
-
-        def check_condition():
-            left = evaluate(node.value[0])
-            op = node.value[1]
-            right = evaluate(node.value[2])
-            if op == "==":
-                return left == right
-            if op == "!=":
-                return left != right
-            if op == ">":
-                return left > right
-            if op == "<":
-                return left < right
-            if op == ">=":
-                return left >= right
-            if op == "<=":
-                return left <= right
-            return False
-
         max_iterations = 10000
         count = 0
 
@@ -1072,7 +1093,7 @@ def run_node(node):
             left = evaluate(node.value[0])
             op = node.value[1]
             right = evaluate(node.value[2])
-            print(f"DEBUG FATE: left={repr(left)} op={op} right={repr(right)}")
+            print(f"DEBUG FATE: left={repr(left)} op='{op}' right='{repr(right)}'")
 
             def coerce(v):
                 if isinstance(v, (int, float)):
