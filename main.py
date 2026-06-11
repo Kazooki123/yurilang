@@ -50,7 +50,7 @@ def main():
         return
 
     if "--crush" in args:
-        from src.etc.types import crush_summary
+        from src.etc.crush import crush_summary
 
         filename = next(arg for arg in args if arg.endswith(".yuri"))
 

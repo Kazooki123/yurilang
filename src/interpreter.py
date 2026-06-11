@@ -32,7 +32,7 @@ from gui.gui import (
 from gui.threedimension import get_gl3d, GL3DError
 from gui.audio import get_audio, AudioError
 from gui.renderer import RendererError
-from src.etc.types import register_crush, register_func_hints
+from src.etc.crush import register_crush, register_func_hints
 from lua.lua import get_lua_runtime, LuaError
 
 variables = {}
@@ -399,9 +399,8 @@ def evaluate(expr):
         rest    = parts[1].strip()
         obj = variables.get(parts[0])
         
-        if ns_name in namespaces:
+        # if ns_name in namespaces:
             
-        
         if isinstance(obj, dict):
             key = parts[1]
             if key in obj:

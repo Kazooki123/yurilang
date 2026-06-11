@@ -5,7 +5,7 @@ import re
 
 # import ctypes
 from src.lexer import tokenize, get_indent_lvl
-from src.etc.types import YURI_TYPES
+from src.etc.crush import YURI_TYPES
 
 
 class Node:

@@ -116,7 +116,7 @@ class YuriLuaRuntime:
         def yuri_type(key):
             k = _decode(key)
             val = variables.get(k)
-            from src.etc.types import type_name
+            from src.etc.crush import type_name
 
             return type_name(val)
 
