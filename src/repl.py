@@ -287,11 +287,26 @@ def shoutouts():
 
     print()
 
+def urls():
+    urls = [
+        "https://codeberg.org/Kazooki123/sappho",
+        "https://codeberg.org/Kazooki123/6chan",
+        "https://codeberg.org/Kazooki123/oakwood",
+    ]
+
+    for i in range(0, len(urls), 2):
+        left = urls[i]
+        right = urls[i + 1] if i + 1 < len(urls) else ""
+        print(f"   {left:<50} {right}")
+
+    print()
 
 def repl():
     print_yuri()
     print("Made with Love by StarloExoliz!")
     shoutouts()
+    print("You might want to check my other projects as well! <3")
+    urls()
     print("YuriLang REPL 💖 (type 'exit' to quit)\n")
 
     while True:
