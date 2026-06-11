@@ -13,7 +13,6 @@ import platform
 import os
 from types import crush_hints
 
-
 # Wow colors, freaking fancy!!!
 PINK = "\033[38;5;218m"
 PURPLE = "\033[38;5;183m"
@@ -275,7 +274,7 @@ def check_movement(owned, variables):
 
 
 def check_type_hints(variables, crush_hints):
-    from src.types import check_hint, type_name
+    from types import check_hint, type_name
 
     results = []
 
