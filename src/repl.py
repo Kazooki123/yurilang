@@ -64,7 +64,7 @@ Commands:
 
 Flags:
   yuri file.yuri           → runs the file at runtime
-  yuri file --compile      → compile to ASM
+  yuri file --asm          → compile to ASM
   yuri file --bytecode     → compile to bytecode
   yuri file.yuric --vm     → runs the VM
   yuri file --wasm         → compile to a .wat file

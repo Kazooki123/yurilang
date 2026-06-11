@@ -1,13 +1,14 @@
 import sys
 from src.interpreter import run
 from src.repl import repl
-from src.compiler import compile_yuri
+from src.asm.compiler import compile_yuri
 from src.asm.wasm import compile_to_yasm
 from vm.compiler import compile_to_bytecode
 from vm.bytecode import YuriVM
 from vm.serializer import save_yuric, load_yuric
 from glc.python.compile import glc_compile
 from llvm.llvm import llvm_compile
+from hvm.hvm import transpile_hvm
 
 
 def main():
@@ -15,7 +16,7 @@ def main():
 
     if "--version" in args:
         print(f"""
-    YuriLang v1.6.0
+    YuriLang v1.7.0
     Yuring Complete since 2026 🧡🤍🩷
     Python {sys.version.split()[0]}
     GPL-3.0 License
@@ -29,7 +30,7 @@ def main():
     yuri program.yuri             interpret
     yuri program.yuri --bytecode  compile to .yuric
     yuri program.yuric --vm       run bytecode
-    yuri program.yuri --compile   compile to x86-64 ASM
+    yuri program.yuri --asm       compile to x86-64 ASM
     yuri program.yuri --wasm      compile to WebAssembly
     yuri progrwm.yuri --crush     type annotation flag
     yuri program.yuri --itmye     runs the ITMYE checker 
@@ -44,7 +45,7 @@ def main():
     --user       install to user directory
     --uninstall  remove YuriLang
 
-    "Yuring Complete since 2026" 🍰
+    Yuring Complete since 2026 🍰
     """)
         return
 
@@ -86,7 +87,7 @@ def main():
             print("No .yuri file provided.")
             return
 
-    if "--compile" in args:
+    if "--asm" in args:
         try:
             filename = next(arg for arg in args if arg.endswith(".yuri"))
             with open(filename) as f:
@@ -145,6 +146,23 @@ def main():
 
         except StopIteration:
             print("No .yuri file provided.")
+        return
+        
+    if "--hvm" in args:
+        try:
+            filename = next(arg for arg in args if arg.endswith(".yuri"))
+            with open(filename) as f:
+                code = f.read()
+
+            hvm = transpile_hvm(code)
+            out = filename.replace(".yuri", ".hvm")
+            with open(out, "w") as f:
+                f.write(hvm)
+                
+        except StopIteration as e:
+            print(f"No .yuri file provided: {e}")
+        except FileNotFoundError as e2:
+            print(f"File not found! {e2}\n")
         return
 
     if "--bytecode" in args:

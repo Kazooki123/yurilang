@@ -11,7 +11,7 @@
 
 import platform
 import os
-from src.types import crush_hints
+from types import crush_hints
 
 
 # Wow colors, freaking fancy!!!

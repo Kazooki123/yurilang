@@ -1,0 +1,23 @@
+@wlw:
+    @stage3 800 600 "Yuri3D"
+    @yuri math
+    
+    @bond angle = 0
+    
+    @scene:
+        @color3 30 27 46
+        @curtain
+        
+        ? (Camera)
+        @cam 0 2 5
+        
+        @color3 255 192 203
+        @rotate3 angle 1 1 0
+        @actor3 cube 0 0 0 1.5
+        
+        @color3 155 114 207
+        @actor3 sphere 2 0 0 0.5
+        
+        @rebond angle = @add angle 1
+        
+        @perform

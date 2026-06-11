@@ -1,0 +1,8 @@
+@wlw:
+    @yuri math
+    @fate i < 20:
+        @confess i
+        @rebond i = @add i 1
+
+    @bond x = 20
+    @cling "No!!" x

@@ -91,7 +91,12 @@ def parse_line(line):
         return Node("yuu_ptr", (tokens[1], tokens[3]))
 
     elif keyword == "@yuri":
-        return Node("import", tokens[1])
+        if "as" in tokens:
+            as_idx = tokens.index("as")
+            module = tokens[1]
+            alias  = tokens[as_idx + 1]
+            return Node("import", (module, alias))
+        return Node("import", (tokens[1], None))
 
     elif keyword == "@wlw":
         return Node("entry")
@@ -153,6 +158,83 @@ def parse_line(line):
     elif keyword == "@kumitate":
         return Node("kumitate", None)
 
+    elif keyword == "@stage":
+        w     = tokens[1] if len(tokens) > 1 else "800"
+        h     = tokens[2] if len(tokens) > 2 else "600"
+        title = tokens[3] if len(tokens) > 3 else '"YuriGUI"'
+        
+        return Node("stage", (w, h, title))
+        
+    elif keyword == "@stage3":
+        w     = tokens[1] if len(tokens) > 1 else "800"
+        h     = tokens[2] if len(tokens) > 2 else "600"
+        title = tokens[3] if len(tokens) > 3 else "Yuri3D"
+        return Node("stage3d", (w, h, title))
+
+    elif keyword == "@scene":
+        return Node("scene", None)
+        
+    elif keyword == "@curtain":
+        return Node("curtain", None)
+        
+    elif keyword == "@perform":
+        return Node("perform", None)
+        
+    elif keyword == "@extstage":
+        return Node("exit_stage", None)
+        
+    elif keyword == "@actor":
+        shape   = tokens[1] if len(tokens) > 1 else "rect"
+        args    = tokens[2:]
+        return Node("actor", (shape, args))
+        
+    elif keyword == "@actor3":
+        shape   = tokens[1] if len(tokens) > 1 else "cube"
+        args    = tokens[2:]
+        return Node("actor3d", (shape, args))
+        
+    elif keyword == "@cam":
+        return Node("camera", tokens[1:])
+        
+    elif keyword == "@color3":
+        r = tokens[1] if len(tokens) > 1 else "255"
+        g = tokens[2] if len(tokens) > 2 else "192"
+        b = tokens[3] if len(tokens) > 3 else "203"
+        return Node("color3d", (r, g, b))
+        
+    elif keyword == "@sound":
+        action = tokens[1] if len(tokens) > 1 else "play"
+        args   = tokens[2:]
+        return Node("sound", (action, args))
+        
+    elif keyword == "@music":
+        action = tokens[1] if len(tokens) > 1 else "play"
+        args   = tokens[2:]
+        return Node("music", (action, args))
+    
+    elif keyword == "@spotlight":
+        r   = tokens[1] if len(tokens) > 1 else "255"
+        g   = tokens[2] if len(tokens) > 2 else "255"
+        b   = tokens[3] if len(tokens) > 3 else "255"
+        return Node("spotlight", (r, g, b))
+        
+    elif keyword == "@backdrop":
+        r   = tokens[1] if len(tokens) > 1 else "0"
+        g   = tokens[2] if len(tokens) > 2 else "0"
+        b   = tokens[3] if len(tokens) > 3 else "0"
+        return Node("backdrop", (r, g, b))
+        
+    elif keyword == "@fps":
+        return Node("fps", tokens[1] if len(tokens) > 1 else "60")
+  
+    elif keyword == "@keys":
+        direction = tokens[1] if len(tokens) > 1 else "up"
+        return Node("keys", direction)
+
+    elif keyword == "@mouse":
+        prop = tokens[1] if len(tokens) > 1 else "x"
+        return Node("mouse", prop)
+        
     elif keyword == "@crush":
         if len(tokens) >= 4 and tokens[2] == "=":
             return Node("crush", (tokens[1], tokens[3]))

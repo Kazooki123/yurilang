@@ -1,3 +1,11 @@
+# Yurilang Interpreter
+# @ -> Starting points of statements and (or) using a function
+# Built-in functions under `def evaluate()`
+# GUI & 3D Support as well
+# 
+# LICENSE UNDER GPL3
+# 
+
 import ctypes
 from src.parser import parse
 from src.modules import load_module
@@ -13,6 +21,17 @@ from src.etc.asynchronous import (
     sleep_dream,
     get_event_loop,
 )
+# gui
+from gui.gui import (
+    stage as gui_stage, curtain as gui_curtain,
+    actor as gui_actor, spotlight as gui_spotlight,
+    perform as gui_perform,
+    exit_stage as gui_exit_stage, set_fps as gui_set_fps,
+    get_keys as gui_get_keys, get_mouse as gui_get_mouse, scene_running
+)
+from gui.threedimension import get_gl3d, GL3DError
+from gui.audio import get_audio, AudioError
+from gui.renderer import RendererError
 from src.etc.types import register_crush, register_func_hints
 from lua.lua import get_lua_runtime, LuaError
 
@@ -23,6 +42,7 @@ personas = {}
 spectrums = {}
 owned = {}
 shared_ptrs = {}
+namespaces = {}
 
 glances = {}  # (immutable borrows)
 reaches = {}  # (mutable borrows, max 1 per source)
@@ -111,6 +131,10 @@ def set_indexed(obj_name, index_expr, value):
 
 
 def parse_array_literal(expr):
+    """
+    #[[...]] -> Array of literals
+    [[...]]  -> Array of numbers
+    """
     expr = expr.strip()
 
     if expr.startswith("#[[") and expr.endswith("]]"):
@@ -369,8 +393,15 @@ def evaluate(expr):
         return parse_array_literal(expr)
 
     if "." in expr and not expr.startswith('"'):
-        parts = expr.split(".", 1)
+        dot_idx = expr.index(".")
+        parts   = expr[:dot_idx], expr[dot_idx+1:]
+        ns_name = parts[0].strip()
+        rest    = parts[1].strip()
         obj = variables.get(parts[0])
+        
+        if ns_name in namespaces:
+            
+        
         if isinstance(obj, dict):
             key = parts[1]
             if key in obj:
@@ -588,7 +619,7 @@ def run_map(array, step):
         bloom_tokens = rest.split()
         colon_idx = bloom_tokens.index(":")
         params = bloom_tokens[1:colon_idx]
-        body_expr = " ".join(bloom_tokens[colon_idx + 1 :])
+        body_expr = " ".join(bloom_tokens[colon_idx + 1:])
         lam = YuriLambda(params, body_expr, variables.copy())
     elif rest in variables and isinstance(variables[rest], YuriLambda):
         lam = variables[rest]
@@ -743,6 +774,101 @@ def interpolate(template, variables):
 
     return re.sub(r"\{(\w+)\}", replacer, template)
 
+
+def _safe_coerce(val):
+    if val is None:
+        return 0
+        
+    if isinstance(val, bool):
+        return int(val)
+    if isinstance(val, (int, float)):
+        return val
+        
+    if isinstance(val, str):
+        val = val.strip()
+        
+        if val == "love":
+            return 1
+        if val == "ache":
+            return 0
+        if val == "uncertain":
+            return 0
+        
+        if val.lstrip('-').isdigit():
+            return int(val)
+        try:
+            return float(val)
+        except ValueError:
+            pass
+            
+        return val
+        
+    return val
+
+
+def _safe_compare(left, op, right):
+    """
+    Safely compares two values using OP.
+    handles mixed types gracefully since
+    python unfortunately doesn't like mixed types :p
+    """
+    if op == "==":
+        return left == right
+    if op == "!=":
+        return left != right
+
+    if isinstance(left, str) or isinstance(right, str):
+        try:
+            left  = float(left)
+            right = float(right)
+        except (ValueError, TypeError):
+            return False
+            
+    if op == ">":
+        return left > right
+    if op == "<":
+        return left < right
+    if op == ">=":
+        return left >= right
+    if op == "<=":
+        return left <= right
+    return False
+
+
+def evaluate_condition_operand(expr):
+    if not isinstance(expr, str):
+        return coerce(expr)
+        
+    expr = expr.strip()
+    
+    if expr.startswith("@keys"):
+        parts = expr.split()
+        direction = parts[1] if len(parts) > 1 else "up"
+        key_map = {
+            "up":     "__keys_up",
+            "down":   "__keys_down",
+            "left":   "__keys_left",
+            "right":  "__keys_right",
+            "space":  "__keys_space",
+            "escape": "__keys_escape",
+        }
+        var = key_map.get(direction, "__keys_up")
+        return variables.get(var, False)
+        
+    if expr.startswith("@mouse"):
+        parts = expr.split()
+        prop = parts[1] if len(parts) > 1 else "x"
+        prop_map = {
+            "x":     "__mouse_x",
+            "y":     "__mouse_y",
+            "left":  "__mouse_left",
+            "right": "__mouse_right",
+        }
+        var = prop_map.get(prop, "__mouse_x")
+        return variables.get(var, 0)
+        
+    val = evaluate(expr)
+    return _safe_coerce(val)
 
 def run_node(node):
     global variables, functions
@@ -941,36 +1067,20 @@ def run_node(node):
 
     # IF
     elif node.type == "if":
-        left = evaluate(node.value[0])
+        left = evaluate_condition_operand(node.value[0])
         op = node.value[1]
-        right = evaluate(node.value[2])
+        right = evaluate_condition_operand(node.value[2])
 
-        condition = False
-        if op == "==":
-            condition = left == right
-        elif op == "!=":
-            condition = left != right
-        elif op == ">":
-            condition = left > right
-        elif op == "<":
-            condition = left < right
-        elif op == ">=":
-            condition = left >= right
-        elif op == "<=":
-            condition = left <= right
-
-        if_body = []
-        else_body = []
+        condition = _safe_compare(left, op, right)
+    
+        if_body, else_body = [], []
         in_else = False
 
         for child in node.children:
             if child.type == "else":
                 in_else = True
                 continue
-            if in_else:
-                else_body.append(child)
-            else:
-                if_body.append(child)
+            (else_body if in_else else if_body).append(child)
 
         if condition:
             for child in if_body:
@@ -1007,6 +1117,179 @@ def run_node(node):
                     break
             if should_break:
                 break
+                
+    # 3D GUI++
+    elif node.type == "stage":
+        w, h, title = node.value
+        try:
+            gui_stage(
+                int(evaluate(w)),
+                int(evaluate(h)),
+                str(evaluate(title))
+            )
+        except RendererError as e:
+            raise YuriRuntimeError(str(e))
+    
+    elif node.type == "stage3d":
+        w, h, title = node.value
+        try:
+            get_gl3d().setup(
+                int(evaluate(w)),
+                int(evaluate(h)),
+                str(evaluate(title))
+            )
+        except GL3DError as e:
+            raise YuriRuntimeError(str(e))
+    
+    elif node.type == "scene":
+        try:
+            while scene_running():
+                keys = gui_get_keys()
+                variables["__keys_up"]      = keys["up"]
+                variables["__keys_down"]    = keys["down"]
+                variables["__keys_left"]    = keys["left"]
+                variables["__keys_right"]   = keys["right"]
+                variables["__keys_space"]   = keys["space"]
+                variables["__keys_escape"]  = keys["escape"]
+                
+                mx, my, ml, mr = gui_get_mouse()
+                variables["__mouse_x"]      = mx
+                variables["__mouse_y"]      = my
+                variables["__mouse_left"]   = ml
+                variables["__mouse_right"]  = mr
+                
+                for child in node.children:
+                    result = run_node(child)
+                    if isinstance(result, ReturnSignal):
+                        return result
+                    if isinstance(result, BreakSignal):
+                        gui_exit_stage()
+                        break
+        except RendererError as e:
+            raise YuriRuntimeError(str(e))
+        finally:
+            gui_exit_stage()
+        
+    elif node.type == "keys":
+        direction = node.value
+        key_map = {
+            "up":     "__keys_up",
+            "down":   "__keys_down",
+            "left":   "__keys_left",
+            "right":  "__keys_right",
+            "space":  "__keys_space",
+            "escape": "__keys_escape",
+        }
+        var = key_map.get(direction, "__keys_up")
+        return variables.get(var, False)
+        
+    elif node.type == "mouse":
+        prop = node.value
+        prop_map = {
+            "x":     "__mouse_x",
+            "y":     "__mouse_y",
+            "left":  "__mouse_left",
+            "right": "__mouse_right",
+        }
+        var = prop_map.get(prop, "__mouse_x")
+        return variables.get(var, 0)
+    
+    elif node.type == "curtain":
+        try:
+            gui_curtain()
+        except RendererError as e:
+            raise YuriRuntimeError(str(e))
+            
+    elif node.type == "actor":
+        shape, args = node.value
+        try:
+            evaled = [evaluate(a) for a in args]
+            gui_actor(evaluate(shape), *evaled)
+        except RendererError as e:
+            raise YuriRuntimeError(str(e))
+            
+    elif node.type == "actor3d":
+        shape, args = node.value
+        shape = str(evaluate(shape)).lower()
+        evaled = [evaluate(a) for a in args]
+        gl = get_gl3d()
+        try:
+            if shape == "cube":
+                gl.cube(*evaled)
+            elif shape == "sphere":
+                gl.sphere(*evaled)
+            elif shape == "plane":
+               gl.plane(*evaled)
+        except GL3DError as e:
+           raise YuriRuntimeError(str(e)) 
+            
+    elif node.type == "camera":
+        args = [evaluate(a) for a in node.value]
+        get_gl3d().camera(*args)
+        
+    elif node.type == "color3d":
+        r, g, b = node.value
+        get_gl3d().color3d(
+            evaluate(r), evaluate(g), evaluate(b)
+        )
+            
+    elif node.type == "spotlight":
+        r, g, b = node.value
+        gui_spotlight(evaluate(r), evaluate(g), evaluate(b))
+        
+    elif node.type == "backdrop":
+        r, g, b = node.value
+        gui_spotlight(evaluate(r), evaluate(g), evaluate(b))
+        
+    elif node.type == "perform":
+        try:
+            gui_perform()
+        except RendererError as e:
+            raise YuriRuntimeError(str(e))
+            
+    elif node.type == "exit_stage":
+        gui_exit_stage()
+        
+    elif node.type == "fps":
+        gui_set_fps(evaluate(node.value))
+        
+    # AUDIO (FOR 3D)
+    elif node.type == "sound":
+        action, args = node.value
+        evaled = [evaluate(a) for a in args]
+        audio = get_audio()
+        
+        try:
+            if action == "load":
+                audio.load_sound(str(evaled[0]), str(evaled[1]))
+            elif action == "play":
+                audio.play_sound(str(evaled[0]))
+            elif action == "stop":
+                audio.stop_sound(str(evaled[0]))
+            elif action == "volume":
+                audio.volume_sound(str(evaled[0]), evaled[1])
+        except AudioError as e:
+            raise YuriRuntimeError(str(e))
+        
+        
+    elif node.type == "music":
+        action, args = node.value
+        evaled = [evaluate(a) for a in args]
+        audio = get_audio()
+
+        try:
+            if action == "play":
+                audio.play_music(str(evaled[0]))
+            elif action == "stop":
+                audio.stop_music()
+            elif action == "pause":
+                audio.pause_music()
+            elif action == "resume":
+                audio.resume_music()
+            elif action == "volume":
+                audio.volume_music(evaled[0])
+        except AudioError as e:
+            raise YuriRuntimeError(str(e))
 
     # AUTOVIVIFICATION (PERL :3)
     elif node.type == "autoviv":
@@ -1060,23 +1343,11 @@ def run_node(node):
 
     # NOT / APART
     elif node.type == "not":
-        left = evaluate(node.value[0])
+        left = evaluate_condition_operand(node.value[0])
         op = node.value[1]
-        right = evaluate(node.value[2])
+        right = evaluate_condition_operand(node.value[2])
 
-        condition = False
-        if op == "==":
-            condition = left == right
-        elif op == "!=":
-            condition = left != right
-        elif op == ">":
-            condition = left > right
-        elif op == "<":
-            condition = left < right
-        elif op == ">=":
-            condition = left >= right
-        elif op == "<=":
-            condition = left <= right
+        condition = _self_compare(left, op, right)
 
         if not condition:
             for child in node.children:
@@ -1086,43 +1357,15 @@ def run_node(node):
 
     # WHILE LOOP
     elif node.type == "while":
-        max_iterations = 10000
-        count = 0
-
         def check_condition():
-            left = evaluate(node.value[0])
-            op = node.value[1]
-            right = evaluate(node.value[2])
+            left  = evaluate_condition_operand(node.value[0])
+            op    = node.value[1]
+            right = evaluate_condition_operand(node.value[2])
+            return _safe_compare(left, op, right)
             print(f"DEBUG FATE: left={repr(left)} op='{op}' right='{repr(right)}'")
 
-            def coerce(v):
-                if isinstance(v, (int, float)):
-                    return v
-                if isinstance(v, str):
-                    if v.lstrip("-").isdigit():
-                        return int(v)
-                    try:
-                        return float(v)
-                    except ValueError:
-                        pass
-                return v
-
-            left = coerce(left)
-            right = coerce(right)
-
-            if op == "==":
-                return left == right
-            if op == "!=":
-                return left != right
-            if op == ">":
-                return left > right
-            if op == "<":
-                return left < right
-            if op == ">=":
-                return left >= right
-            if op == "<=":
-                return left <= right
-            return False
+        max_iterations = 10000
+        count = 0
 
         while check_condition():
             if count >= max_iterations:
@@ -1279,7 +1522,7 @@ def run_node(node):
         variables.clear()
         variables.update(old_vars)
 
-    # TYPE ANNOTATIOND
+    # TYPE ANNOTATIONS
     elif node.type == "crush":
         name, hint = node.value
         register_crush(name, hint)
@@ -1365,7 +1608,17 @@ def run_node(node):
 
     # IMPORT
     elif node.type == "import":
-        load_module(node.value, functions)
+        module_name, alias = node.value \
+            if isinstance(node.value, tuple) \
+            else (node.value, None)
+            
+        load_module(module_name, functions)
+
+        if alias:
+            ns = {}
+            from src.modules import get_module_functions
+            ns = get_module_functions(module_name)
+            namespaces[alias] = ns
 
     # EXTERN
     elif node.type == "extern":
@@ -1500,9 +1753,9 @@ def run_node(node):
         if alias in reaches:
             source = reaches[alias]
 
-        if alias in variables:
-            if source in variables:
-                variables[source] = variables[alias]
+            if alias in variables:
+                if source in variables:
+                    variables[source] = variables[alias]
             elif source in owned:
                 owned[source] = variables[alias]
             del variables[alias]

@@ -1,0 +1,23 @@
+@wlw:
+    @yuri math
+    @stage 800 600 "Moving Circle!!"
+    @backdrop 30 27 46
+    @bond x = 400
+    @bond y = 300
+    @bond speed = 4
+    
+    @scene:
+        @curtain
+        
+        @jealous @keys up == love:
+            @rebond y = @sub y speed
+        @jealous @keys down == love:
+            @rebond y = @add y speed
+        @jealous @keys left == love:
+            @rebond x = @sub x speed
+        @jealous @keys right == love:
+            @rebond x = @add x speed
+            
+        @spotlight 255 192 203
+        @actor circle x y 20
+        @perform

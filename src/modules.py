@@ -11,6 +11,22 @@ def normalize(name):
     return name.replace("_", "").lower()
 
 
+def get_module_functions(name):
+    normalized = normalize(name)
+    filename = os.path.join(STORE_PATH, f"{normalized}.yuri")
+    
+    if not os.path.exists(filename):
+        raise Exception(f"Module '{name} not found!'")
+        
+    with open(filename, "r") as f:
+        code = f.read()
+        
+    tree = parse(code)
+    funcs = {}
+    extract_functions(tree, funcs)
+    return funcs
+
+
 def extract_functions(node, functions):
     if node.type == "function":
         name, params = node.value

@@ -1,0 +1,20 @@
+@wlw:
+    @stage 800 600 "Yurilang 3D"
+    @backdrop 30 27 46
+    
+    @scene:
+        @curtain
+        
+        @spotlight 255 192 203
+        @actor text "Yuring Complete" 280 270 32
+        
+        @spotlight 155 114 207
+        @actor text "She takes the stage.." 300 320 20
+        
+        @spotlight 232 160 191
+        @actor circle 100 100 30
+        @actor circle 700 100 30
+        @actor circle 100 500 30
+        @actor circle 700 500 30
+        
+        @perform

@@ -1,0 +1,40 @@
+@wlw:
+    @stage 640 480 "Yuri DOOM!"
+    @backdrop 10 8 20
+    
+    @bond player_x = 320
+    @bond player_y = 240
+    @bond speed = 4
+    @bond hp = 100
+    
+    @scene:
+        @curtain
+        
+        ? (Floor)
+        @spotlight 40 35 60
+        @actor rect 0 240 640 240
+        
+        ? (Ceiling)
+        @spotlight 20 18 35
+        @actor rect 0 0 640 240
+        
+        ? (Player)
+        @spotlight 255 192 203
+        @actor circle player_x player_y 12
+        
+        ? (Hp Bar)
+        @spotlight 232 160 191
+        @actor rect 10 10 hp 16
+        @spotlight 100 80 120
+        @actor rect 10 10 100 16
+        
+        ? (HUD)
+        @spotlight 255 192 203
+        @actor text "HP" 115 10 14
+        @actor text "YuriDoom" 10 450 18
+        
+        @spotlight 155 114 207
+        @actor text "Yuring Complete" 460 450 16
+        
+        @perform
+        @fps 60
