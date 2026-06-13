@@ -1,5 +1,5 @@
-from gui.renderer import YuriRenderer
-from gui.threedimension import YuriGL3D
+from src.gui.renderer import YuriRenderer
+from src.gui.threedimension import YuriGL3D
 
 _renderer = None
 _3drenderer = None

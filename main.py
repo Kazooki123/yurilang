@@ -3,12 +3,12 @@ from src.interpreter import run
 from src.repl import repl
 from src.asm.compiler import compile_yuri
 from src.asm.wasm import compile_to_yasm
-from vm.compiler import compile_to_bytecode
-from vm.bytecode import YuriVM
-from vm.serializer import save_yuric, load_yuric
+from src.vm.compiler import compile_to_bytecode
+from src.vm.bytecode import YuriVM
+from src.vm.serializer import save_yuric, load_yuric
 from glc.python.compile import glc_compile
-from llvm.llvm import llvm_compile
-from hvm.hvm import transpile_hvm
+from src.llvm.llvm import llvm_compile
+from src.hvm.hvm import transpile_hvm
 
 
 def main():

@@ -1,4 +1,4 @@
-from gui.api import (
+from src.gui.api import (
     stage, curtain, actor, spotlight,
     backdrop, perform, exit_stage,
     set_fps, get_keys, get_mouse,

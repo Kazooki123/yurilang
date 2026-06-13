@@ -1,8 +1,10 @@
 # ignore everything
 *
+
 !/**/*.gitignore
 !/.dockerignore
 !/.editorconfig
+!/.gitmodules
 
 # and then whitelist specific things
 !/**/
@@ -11,6 +13,7 @@
 !**/*.go
 !**/*.zig
 # !**/*.swift
+!**/*.odin
 !**/*.c
 !**/*.yml
 !**/*.md
@@ -33,8 +36,7 @@
 /build/
 /dump/
 /.idea/
-/pkm/yuu/test/
-
+/pkm/test/
 
 # Added by cargo
 

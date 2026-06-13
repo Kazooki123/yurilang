@@ -26,8 +26,8 @@
     @confess ""
     @promise "silence"
 
-@ship reflect feeling:
-    @sappho feeling:
+@ship reflect feelings:
+    @sappho feelings:
         @poet "joy":
             @confess "She smiled and the whole room changed."
             @promise "joy"

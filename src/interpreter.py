@@ -9,7 +9,7 @@
 import ctypes
 from src.parser import parse
 from src.modules import load_module
-from vm.memory import memory_set, memory_get, memory_forget
+from src.vm.memory import memory_set, memory_get, memory_forget
 
 # error handling
 from src.etc.error import err_undefined_variable, err_awakened_reassign
@@ -22,18 +22,18 @@ from src.etc.asynchronous import (
     get_event_loop,
 )
 # gui
-from gui.gui import (
+from src.gui.gui import (
     stage as gui_stage, curtain as gui_curtain,
     actor as gui_actor, spotlight as gui_spotlight,
     perform as gui_perform,
     exit_stage as gui_exit_stage, set_fps as gui_set_fps,
     get_keys as gui_get_keys, get_mouse as gui_get_mouse, scene_running
 )
-from gui.threedimension import get_gl3d, GL3DError
-from gui.audio import get_audio, AudioError
-from gui.renderer import RendererError
+from src.gui.threedimension import get_gl3d, GL3DError
+from src.gui.audio import get_audio, AudioError
+from src.gui.renderer import RendererError
 from src.etc.crush import register_crush, register_func_hints
-from lua.lua import get_lua_runtime, LuaError
+from src.lua.lua import get_lua_runtime, LuaError
 
 variables = {}
 functions = {}
@@ -43,6 +43,7 @@ spectrums = {}
 owned = {}
 shared_ptrs = {}
 namespaces = {}
+notes = {}
 
 glances = {}  # (immutable borrows)
 reaches = {}  # (mutable borrows, max 1 per source)
@@ -393,13 +394,118 @@ def evaluate(expr):
         return parse_array_literal(expr)
 
     if "." in expr and not expr.startswith('"'):
-        dot_idx = expr.index(".")
-        parts   = expr[:dot_idx], expr[dot_idx+1:]
-        ns_name = parts[0].strip()
-        rest    = parts[1].strip()
-        obj = variables.get(parts[0])
+        parts     = expr.split(".", 1)
+        obj_name  = parts[0].strip()
+        method    = parts[1].strip()
+
+        notekey = expr
+        if notekey in notes:
+            return notes[notekey]
+
+        if obj_name in namespaces:
+            pass
+
+        obj = variables.get(obj_name)
+        if isinstance(obj, dict) and method in obj:
+            return obj[method]
         
-        # if ns_name in namespaces:
+        if obj_name in namespaces:
+            call_parts = method.split()
+            func_name  = call_parts[0]
+            raw_args   = call_parts[1:]
+            ns         = namespaces[obj_name]
+
+            if func_name not in ns:
+                raise YuriRuntimeError(
+                    f"\n💔 '{obj_name}.{func_name}' not found!\n"
+                    f"  Available: {', '.join(ns.keys())}\n"
+                )
+
+            params, body = ns[func_name][:2]
+            old_vars = variables.copy()
+
+            for i, param in enumerate(params):
+                if i < len(raw_args):
+                    variables[param] = evaluate(raw_args[i])
+
+            result = None
+            for child in body:
+                ret = run_node(child)
+                if isinstance(ret, ReturnSignal):
+                    result = ret.value
+                    break
+
+            variables.clear()
+            variables.update(old_vars)
+            return result
+
+        if isinstance(obj, str):
+            if method == "upper":
+                return obj.upper()
+            elif method == "lower":
+                return obj.lower()
+            elif method == "length":
+                return len(obj)
+            elif method == "reverse":
+                return obj[::-1]
+            elif method == "strip":
+                return obj.strip()
+            elif method == "title":
+                return obj.title()
+            elif method == "isdigit":
+                return obj.isdigit()
+            elif method == "isalpha":
+                return obj.isalpha()
+            elif method.startswith("split"):
+                return obj.split()
+            elif method.startswith("replace_"):
+                parts2 = method.split("_", 2)
+                if len(parts2) == 3:
+                    return obj.replace(parts2[1], parts2[2])
+            raise YuriRuntimeError(
+                f"\n💔 Unknown string method: '{method}'\n"
+                 "Available: upper, lower, length, reverse,\n"
+                 "           strip, title, isdigit, isalpha, split\n"
+            )
+
+        if isinstance(obj, list):
+            if method == "length":
+                return len(obj)
+            elif method == "reverse":
+                return obj[::-1]
+            elif method == "first":
+                return obj[0] if obj else None
+            elif method == "last":
+                return obj[-1] if obj else None
+            elif method == "sum":
+                return sum(obj)
+            elif method == "min":
+                return min(obj)
+            elif method == "max":
+                return max(obj)
+            elif method == "sort":
+                return sorted(obj)
+            elif method == "unique":
+                seen = []
+                [seen.append(x) for x in obj if x not in seen]
+                return seen
+            elif method == "empty":
+                return len(obj) == 0
+            raise YuriRuntimeError(
+                f"\n💔 Unknown list method: '{method}'\n"
+                 "  Available: length, reverse, first, last,\n"
+                 "             sum, min, max, sort, unique, empty\n"
+            )
+            
+        if isinstance(obj, (int, float)):
+            if method == "abs":
+                return abs(obj)
+            elif method == "str":
+                return str(obj)
+            elif method == "float":
+                return float(obj)
+            elif method == "int":
+                return int(obj)
             
         if isinstance(obj, dict):
             key = parts[1]
@@ -1116,7 +1222,12 @@ def run_node(node):
                     break
             if should_break:
                 break
-                
+
+    # NAMESPACES
+    elif node.type == "note":
+        target, val = node.value
+        notes[target] = evaluate(val)
+    
     # 3D GUI++
     elif node.type == "stage":
         w, h, title = node.value
@@ -1758,7 +1869,7 @@ def run_node(node):
             elif source in owned:
                 owned[source] = variables[alias]
             del variables[alias]
-        reach_of[source] = None
+            reach_of[source] = None
         del reaches[alias]
 
     # STRUCTS

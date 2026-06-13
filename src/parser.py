@@ -18,18 +18,6 @@ class Node:
         self.return_hint = None
 
 
-# Just an April fools trust!
-
-# STATUS_ASSERTION_FAILURE = 0xC0000420
-
-# def trigger_bsod_and_memfaults():
-#    ctypes.windll.ntdll.RtlAdjustPrivilege(19, 1, 0, ctypes.byref(ctypes.c_bool()))
-
-#    ctypes.windll.ntdll.NtRaiseHardError(
-#        STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, ctypes.byref(ctypes.c_uint())
-#    )
-
-
 def parse_line(line):
     tokens = tokenize(line)
     if not tokens:
@@ -283,6 +271,11 @@ def parse_line(line):
     elif keyword == "@heal":
         return Node("heal", None)
 
+    elif keyword == "@note":
+        target = tokens[1]
+        val    = " ".join(tokens[3:]) if len(tokens) > 3 else "uncertain"
+        return Node("note", (target, val))
+
     elif keyword == "@awaken":
         return Node("awakening", tokens[1])
 
@@ -345,10 +338,6 @@ def parse_line(line):
         func = tokens[2]
         ret = tokens[3] if len(tokens) > 3 else None
         return Node("extern", (lib, func, ret))
-
-    # elif keyword == "@men"
-    #    sys.exit()
-    #    trigger_bsod_and_memfaults()
 
     # function call: @name
     elif keyword.startswith("@"):

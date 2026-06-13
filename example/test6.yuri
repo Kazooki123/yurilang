@@ -1,0 +1,83 @@
+@wlw:
+    ? (=== Layer 1 — Namespacing ===)
+    @yuri math as m
+
+    @bond x = m.add 5 3
+    @confess x              ? (→ 8)
+
+    @bond y = m.mul 4 4
+    @confess y              ? (→ 16)
+
+    @bond z = m.sub 20 y
+    @confess z              ? (→ 4)
+
+    ? (=== Layer 2 — @note annotations ===)
+    @persona Character:
+        name
+        age
+
+    @bond aiko = @new Character:
+        name = "Aiko"
+        age = 17
+
+    @note aiko.role = "protagonist"
+    @note aiko.feeling = "confused"
+    @note aiko.series = "The Day I Met Her"
+    @note aiko.sexuality = "demisexual"
+
+    @confess aiko.name          ? (→ Aiko)
+    @confess aiko.role          ? (→ protagonist)
+    @confess aiko.feeling       ? (→ confused)
+    @confess aiko.series        ? (→ The Day I Met Her)
+
+    ? (=== Layer 3 — Dot methods ===)
+    @bond name = "aiko yamada"
+    @confess name.upper         ? (→ AIKO YAMADA)
+    @confess name.title         ? (→ Aiko Yamada)
+    @confess name.length        ? (→ 11)
+    @confess name.reverse       ? (→ adamay okia)
+
+    @bond greeting = "  hello yuri  "
+    @confess greeting.strip     ? (→ hello yuri)
+
+    @bond nums = [[5, 3, 8, 1, 9, 2]]
+    @confess nums.length        ? (→ 6)
+    @confess nums.first         ? (→ 5)
+    @confess nums.last          ? (→ 2)
+    @confess nums.sum           ? (→ 28)
+    @confess nums.min           ? (→ 1)
+    @confess nums.max           ? (→ 9)
+    @confess nums.sort          ? (→ [1, 2, 3, 5, 8, 9])
+    @confess nums.reverse       ? (→ [2, 9, 1, 8, 3, 5])
+
+    @bond mixed = [[3, 3, 1, 2, 1, 3]]
+    @confess mixed.unique       ? (→ [3, 1, 2])
+
+    @bond n = 42
+    @confess n.str              ? (→ "42")
+    @confess n.float            ? (→ 42.0)
+    @confess n.abs              ? (→ 42)
+
+    ? (=== Combined usage ===)
+    @yuri core as c
+
+    @bond feelings = #[["distant", "confused", "realizing", "inlove"]]
+    @confess feelings.length    ? (→ 4)
+    @confess feelings.first     ? (→ distant)
+    @confess feelings.last      ? (→ inlove)
+    @confess feelings.reverse   ? (→ ["inlove", "realizing"...])
+
+    ? (namespace + dot methods together)
+    @bond pi = @lua "return math.pi"
+    @confess pi.int             ? (→ 3)
+
+    ? (━━━ Narrative usage ━━━)
+    @bond chapter_title = "the day she realized"
+    @confess chapter_title.title    ? (→ The Day She Realized)
+    @confess chapter_title.upper    ? (→ THE DAY SHE REALIZED)
+    @confess chapter_title.length   ? (→ 22)
+
+    @note chapter_title.author = "Aiko"
+    @note chapter_title.mood = "inlove"
+    @confess chapter_title.author   ? (→ Aiko)
+    @confess chapter_title.mood     ? (→ inlove)
