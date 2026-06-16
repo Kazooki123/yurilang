@@ -15,28 +15,43 @@
 # !**/*.swift
 !**/*.odin
 !**/*.c
+!**/*.h
+# !**/*.d
 !**/*.yml
+!**/*.scm
 !**/*.md
 !**/*.yuri
 !**/*.toml
+!**/*.htm
+!**/*.html
+!**/*.css
 !*.txt
 !**/*.png
+!**/*.jpg
 !**/*.ico
+!**/*.json
 !*.sh
 !*.bat
+!**/*.dll
 !/amy/
+!/extension/vscode/yurilang/
 !/Dockerfile
+!/AUTHORS
 !/pkg/**
-
+!/bin/
 
 !/.github/
 !/**/LICENSE
+!/**/Makefile
 
-# ignore build
+# ignore build & unnecessary directories
 /build/
 /dump/
 /.idea/
+/.zed/
+/.vscode/
 /pkm/test/
+/extension/
 
 # Added by cargo
 

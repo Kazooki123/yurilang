@@ -1,5 +1,8 @@
-# Stack-based VM for YuriLang
+"""
+Stack Based VM
 
+`push`, `pop`, etc...
+"""
 
 class Stack:
     def __init__(self):

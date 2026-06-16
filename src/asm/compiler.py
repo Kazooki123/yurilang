@@ -1,5 +1,8 @@
-# .yuri -> asm transpiler/compiler
+# Main Assembly Transpiler
+# .yuri -> .asm/.s
 # x86-64 Architect (because it's based)
+
+# TODO: Expansion of the code and keywords implemented.
 
 from src.parser import parse
 

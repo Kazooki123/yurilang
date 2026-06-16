@@ -54,15 +54,15 @@ if _ROOT not in sys.path:
 
 class TranspileError(Exception):
     """Raised when the transpiler encounters an unsupported construct."""
-    
+
 
 def _hvm_num(value: int | float) -> str:
     """Return an HVM2 numeric literal for an int or float."""
     if isinstance(value, float):
         return str(value)
     if value < 0:
-        return f"+{value}"         # I24 signed literal
-    return str(value)              # U24 unsigned literal
+        return f"+{value}"  # I24 signed literal
+    return str(value)  # U24 unsigned literal
 
 
 def _hvm_string(text: str) -> str:
@@ -104,9 +104,8 @@ def _hvm_value(raw: str, env: dict[str, str]) -> str:
     if raw == "ache":
         return "0"
     if raw == "uncertain":
-        return "*"   # ERA(ser) — null / unit
+        return "*"  # ERA(ser) — null / unit
 
-    
     if raw.lstrip("-").isdigit():
         return _hvm_num(int(raw))
 
@@ -116,14 +115,14 @@ def _hvm_value(raw: str, env: dict[str, str]) -> str:
         pass
 
     YURI_TO_HVM_OP = {
-        "plus":   "+",
-        "with":   "+",
-        "minus":  "-",
-        "times":  "*",
-        "over":   "/",
-        "band":   "&",
-        "bor":    "|",
-        "bxor":   "^",
+        "plus": "+",
+        "with": "+",
+        "minus": "-",
+        "times": "*",
+        "over": "/",
+        "band": "&",
+        "bor": "|",
+        "bxor": "^",
     }
     for yuri_op, hvm_op in YURI_TO_HVM_OP.items():
         pattern = f" {yuri_op} "
@@ -140,12 +139,12 @@ def _hvm_value(raw: str, env: dict[str, str]) -> str:
     if raw.isidentifier():
         return f"@{raw}"
 
-
     return raw
 
 
 class _VarGen:
     """Generates fresh, short HVM2 variable names: a0, a1, b0, …"""
+
     _PREFIXES = "abcdefghijklmnopqrstuvwxyz"
 
     def __init__(self):
@@ -240,17 +239,13 @@ class HVMTranspiler:
         if isinstance(node.value, tuple):
             var_name, raw_val = node.value
         else:
-            raise TranspileError(
-                f"Unexpected assign node value shape: {node.value!r}"
-            )
+            raise TranspileError(f"Unexpected assign node value shape: {node.value!r}")
 
         hvm_val = _hvm_value(raw_val, self._env)
         self._env[var_name] = hvm_val
 
         # Emit a comment in the output for clarity / debugging
-        self._io_actions.append(
-            f"// bind {var_name} = {hvm_val}"
-        )
+        self._io_actions.append(f"// bind {var_name} = {hvm_val}")
 
     def _node_bond_new(self, node) -> None:
         """@bond varname @new Type — struct instantiation stub."""
@@ -290,7 +285,7 @@ class HVMTranspiler:
         for tok in tokens:
             tok = tok.strip()
             if tok in self._env:
-                parts.append(f"__YURI_VAR_{tok}__")   # placeholder
+                parts.append(f"__YURI_VAR_{tok}__")  # placeholder
             else:
                 # literal (strip surrounding quotes if present)
                 if tok.startswith('"') and tok.endswith('"'):
@@ -307,7 +302,6 @@ class HVMTranspiler:
             tok = tok.strip()
             hvm_tree = _hvm_value(tok, self._env)
             self._io_actions.append(f"(@IO.print {hvm_tree})")
-
 
     def _emit(self) -> str:
         """
@@ -402,4 +396,3 @@ if __name__ == "__main__":
     result = transpile_hvm(src, dst)
     print("─" * 60)
     print(result)
-

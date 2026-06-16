@@ -6,15 +6,15 @@ from src.asm.wasm import compile_to_yasm
 from src.vm.compiler import compile_to_bytecode
 from src.vm.bytecode import YuriVM
 from src.vm.serializer import save_yuric, load_yuric
-from glc.python.compile import glc_compile
+from glc.py.compile import glc_compile
 from src.llvm.llvm import llvm_compile
 from src.hvm.hvm import transpile_hvm
-
+from install import uninstall
 
 def main():
     args = sys.argv[1:]
 
-    if "--version" in args:
+    if "--version" in args or "-v" in args:
         print(f"""
     YuriLang v1.7.0
     Yuring Complete since 2026 🧡🤍🩷
@@ -28,25 +28,29 @@ def main():
     Usage: yuri [file] [options]
 
     yuri program.yuri             interpret
-    yuri program.yuri --bytecode  compile to .yuric
-    yuri program.yuric --vm       run bytecode
-    yuri program.yuri --asm       compile to x86-64 ASM
-    yuri program.yuri --wasm      compile to WebAssembly
-    yuri progrwm.yuri --crush     type annotation flag
-    yuri program.yuri --itmye     runs the ITMYE checker 
-    yuri program.yuri --glc       compiles it to binary
-    yuri program.yuri --llvm      compile to LLVM IR (.ll) 
-    yuri program.yuri --llvm-obj  compile to a LLVM object file (.o)
-    yuri                          launch REPL
+    --bytecode                    Compile to .yuric
+    --vm                          Run bytecode
+    --asm                         Compile to x86-64 ASM
+    --wasm                        Compile to WebAssembly
+    --crush                       Type annotation flag
+    --itmye                       Runs the ITMYE checker 
+    --glc                         Compiles it to binary
+    --llvm                        Compile to LLVM IR (.ll) 
+    -llvm-obj                     Compile to a LLVM object file (.o)
+    yuri                          Launch REPL
 
     Options:
-    --version    show version
-    --help       show this message
-    --user       install to user directory
-    --uninstall  remove YuriLang
+    -v --version    show version
+    -h --help       show this message
+    --user          install to user directory
+    --uninstall     remove YuriLang
 
     Yuring Complete since 2026 🍰
     """)
+        return
+    
+    if "--uninstall" in args:
+        uninstall()
         return
 
     if "--crush" in args:

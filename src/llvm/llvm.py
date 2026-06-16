@@ -1,11 +1,13 @@
-# YuriLang → LLVM IR Transpiler
-#
-# v1.3.0 — supports:
-#   @wlw   (entry point)
-#   @bond  (integer + string variables)
-#   @confess (print strings and integers)#
-#
-# Uses llvmlite for IR generation.
+"""
+YuriLang → LLVM IR Transpiler
+
+v1.3.0 — supports:
+   @wlw   (entry point)
+   @bond  (integer + string variables)
+   @confess (print strings and integers)#
+
+Uses llvmlite for IR generation.
+"""
 
 from llvmlite import ir, binding
 from src.parser import parse
@@ -244,7 +246,7 @@ class YuriLLVM:
             f.write(ir_text)
         print(f"🌸 YuriLang LLVM IR → {output_path}")
         print(" |  Compile with:")
-        print(f" |  llc {output_path} -o {output_path.replace('.ll', '.s')}")
+        print(f" |  llc -relocation-model=pic {output_path} -o {output_path.replace('.ll', '.s')}")
         print(f" |  gcc {output_path.replace('.ll', '.s')} -o program")
         print(" |  Or directly:")
         print(f" |  clang {output_path} -o program")
@@ -255,7 +257,7 @@ class YuriLLVM:
         Compile directly to native object file via llvmlite.
         No clang/llc needed >.< !!
         """
-        binding.initialize()
+        # binding.initialize()
         binding.initialize_native_target()
         binding.initialize_native_asmprinter()
 

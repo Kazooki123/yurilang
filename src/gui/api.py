@@ -4,6 +4,7 @@ from src.gui.threedimension import YuriGL3D
 _renderer = None
 _3drenderer = None
 
+
 def get_renderer():
     global _renderer
     if _renderer is None:
@@ -23,33 +24,33 @@ def reset_renderer():
     if _renderer:
         _renderer.exit_stage()
     _renderer = None
-    
+
 
 def stage(width=800, height=600, title="Yuri3D"):
     r = get_renderer()
     r.setup(width, height, title)
-    
+
 
 def scene_running():
     r = get_renderer()
     return r.is_running()
-    
-    
+
+
 def curtain():
     get_renderer().curtain()
-  
+
 
 def actor(shape, *args):
     get_renderer().actor(shape, *args)
-    
-    
+
+
 def spotlight(r_val, g, b):
     get_renderer().spotlight(r_val, g, b)
 
 
 def backdrop(r_val, g, b):
     get_renderer().backdrop(r_val, g, b)
-    
+
 
 def perform():
     return get_renderer().perform()

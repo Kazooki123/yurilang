@@ -1,4 +1,9 @@
-# YuriLangs main lexer
+"""
+Lexer & Tokenizer - Yurilang
+
+Main Tokenizer and Lexer for Yurilang with indentation level.
+"""
+
 import re
 
 

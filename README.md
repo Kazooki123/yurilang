@@ -3,7 +3,7 @@
 <img src="logo.png" alt="logo" width="500">
 
 ![version](https://img.shields.io/github/v/release/Kazooki123/yurilang?color=pink) ![GitHub License](https://img.shields.io/github/license/Kazooki123/yurilang?color=pink) ![GitHub Repo stars](https://img.shields.io/github/stars/Kazooki123/yurilang?logoColor=pink&color=pink) ![Endpoint Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Floc-counter.onrender.com%2F%3Frepo%3DKazooki123%2Fyurilang%26branch%3Dmain%26stat%3Dlines&logo=github&color=pink) ![GitHub contributors](https://img.shields.io/github/contributors/Kazooki123/yurilang?color=pink) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Kazooki123/yurilang/run.yml?branch=main&color=pink) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/Kazooki123/yurilang?logo=github&logoColor=pink&color=pink) [![Telegram](https://img.shields.io/badge/telegram-2CA5E0?style=flat&logo=telegram&logoColor=white&color=pink)](https://t.me/+UQ449T4ApJliNzJl) [![Matrix](https://img.shields.io/badge/matrix-join-pink?style=flat&logo=matrix&logoColor=white)](https://matrix.to/#/!DUcTGkqyDkXQvtVDyU:matrix.org?via=matrix.org) [![Fluxer](https://img.shields.io/badge/join-fluxer?style=flat&logo=apple&logoColor=white&label=fluxer&color=pink)
-![Discord](https://img.shields.io/discord/795393018764591134?logo=discord&logoColor=pink&color=pink)](https://fluxer.gg/CVDSiGmT) ![Bluesky followers](https://img.shields.io/bluesky/followers/starloexoliz123.bsky.social?logo=bluesky&logoColor=pink&color=pink) ![Python](https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=white&label=3.13&color=pink) ![LLVM](https://img.shields.io/badge/llvm-262D3A?style=flat&logo=llvm&logoColor=white&label=22.1.3&color=pink) ![llvmworks](https://img.shields.io/badge/backend-llvm%20toolchain-pink?logo=llvm) ![Target](https://img.shields.io/badge/target-x86--64-pink?logo=amd&style=flat&labelColor=black) ![FutureTargets](https://img.shields.io/badge/future-ARM64%20%7C%20RISC--V-pink?logo=llvm&style=flat&labelColor=black)
+![Discord](https://img.shields.io/discord/1460115593775681539?logo=discord&logoColor=pink&color=pink)](https://fluxer.gg/CVDSiGmT) ![Bluesky followers](https://img.shields.io/bluesky/followers/starloexoliz123.bsky.social?logo=bluesky&logoColor=pink&color=pink) ![Python](https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=white&label=3.13&color=pink) ![LLVM](https://img.shields.io/badge/llvm-262D3A?style=flat&logo=llvm&logoColor=white&label=22.1.3&color=pink) ![llvmworks](https://img.shields.io/badge/backend-llvm%20toolchain-pink?logo=llvm) ![Target](https://img.shields.io/badge/target-x86--64-pink?logo=amd&style=flat&labelColor=black) ![FutureTargets](https://img.shields.io/badge/future-ARM64%20%7C%20RISC--V-pink?logo=llvm&style=flat&labelColor=black)
 
 
 
@@ -11,7 +11,7 @@
 
 YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
 
-**Yuri (/ˈjʊəri/)**
+### **Yuri (/ˈjʊəri/)**
 
 - **Shiny Certificate :3**
 
@@ -177,7 +177,7 @@ A technique to extract a specific portion or "subset" of data from a sequence.
 
 @sappho / @poet — Pattern matching
 
-Used for pattern matching. You can learn what pattern matchings are [here.](https://en.wikipedia.org/wiki/Pattern_matching)
+Used for pattern matching. You can learn what [pattern matching is here](https://en.wikipedia.org/wiki/Pattern_matching).
 
 ```
 @sappho x:
@@ -283,6 +283,7 @@ Repeats an action a number of times.
 @cling "Woosh!" 3
 @cling "yay!" 5
 ```
+
 ---
 
 @fate — While Loops
@@ -371,9 +372,11 @@ Allows users to embed low-level assembly language instructions directly within h
     @bond result = 0
 
     @kumitate:
+        """
         mov rax, {x}
         add rax, {y}
         mov {result}, rax
+        """
 
     @confess result         ? (-> 8)
 ```
@@ -386,10 +389,10 @@ A data type that lets you define a value as one of several possible variants.
 
 ```
 @spectrum Feeling:
-    confused
-    curious
-    nervous
-    inlove
+    confused,
+    curious,
+    nervous,
+    inlove,
     certain
 ```
 
@@ -400,10 +403,10 @@ A data type that lets you define a value as one of several possible variants.
 A custom data type that lets you group related data together under one name
 
 ```
-@persona Character
-    name
-    age
-    hobby
+@persona Character:
+    name,
+    age,
+    hobby,
     crush
 ```
 
@@ -505,9 +508,25 @@ Most contribution is **thanks to** [Angel Miku](https://github.com/iiAngel)
 
 Most modules or libraries of yurilang right now is placed in `store/`, containing story driven code from **Yuri media**, but as the language evolves so as its modular system, later on the module system will import modules, libs, and packages whenever it is placed.
 
+## DLLs (Windows)
+
+Yurilang now has built-in features / libs thanks to the **Dynamic Link Libraries** listed here:
+
+- `libant.dll`
+- `libflac.dll`
+- `libcurl.dll`
+- `ffmpeg.dll`
+- `raylib.dll`
+- `zlib.dll`
+- `glfw3.dll`
+
 ## Codeberg
 
 [Available Here](https://codeberg.org/Kazooki123/yurilang)
+
+## Community
+
+- [Discord](https://discord.gg/BhbZzkPPym)
 
 ## Issues and Bugs
 
@@ -523,4 +542,4 @@ Under the **GNU Public License** <3
 
 ![girlkisser](https://cdn.discordapp.com/emojis/1406933370570801197.png)
 
-<img src="https://cdn.discordapp.com/emojis/915366171262451784.gif" width="32">
+<img alt="heart" src="https://cdn.discordapp.com/emojis/915366171262451784.gif" width="32">

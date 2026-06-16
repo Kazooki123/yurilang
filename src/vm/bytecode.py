@@ -1,4 +1,21 @@
-# Main Bytecode entry of the VM
+"""
+YuriC - Yurilang
+
+Main Bytecode Virtual Machine for Yurilang.
+
+BASICS:
+   ADD
+   SUB
+   PRINT
+   STORE
+   LOAD
+   PRINT_STR
+   JUMP
+   COMPARE
+   CALL
+   
+For more information, check `/docs/virtualmachine.htm`
+"""
 
 from src.vm.stack import Stack
 

@@ -1,9 +1,20 @@
-# Parser for keywords, operators, and more
-# They'll be added slowly later on
+"""
+Parser - Yurilang
+
+Most of the keywords here are for general purposes,
+while others are built-ins for GUI/3D development and more.
+
+Basics:
+   @wlw     - Entry Point
+   @bond    - Variable Declaration
+   @confess - Print
+   @awaken  - Immutable Variable
+
+For more keywords check `/docs/keywords.htm`
+"""
 
 import re
 
-# import ctypes
 from src.lexer import tokenize, get_indent_lvl
 from src.etc.crush import YURI_TYPES
 
@@ -82,7 +93,7 @@ def parse_line(line):
         if "as" in tokens:
             as_idx = tokens.index("as")
             module = tokens[1]
-            alias  = tokens[as_idx + 1]
+            alias = tokens[as_idx + 1]
             return Node("import", (module, alias))
         return Node("import", (tokens[1], None))
 
@@ -130,6 +141,9 @@ def parse_line(line):
             return Node("bloom", (params, body_expr))
         raise SyntaxError("@bloom requires ':' separator — @bloom x: x times 2")
 
+    elif keyword == "@couple":
+        return Node("union")
+
     elif keyword == "@lua":
         rest = " ".join(tokens[1:]).strip()
 
@@ -147,74 +161,74 @@ def parse_line(line):
         return Node("kumitate", None)
 
     elif keyword == "@stage":
-        w     = tokens[1] if len(tokens) > 1 else "800"
-        h     = tokens[2] if len(tokens) > 2 else "600"
+        w = tokens[1] if len(tokens) > 1 else "800"
+        h = tokens[2] if len(tokens) > 2 else "600"
         title = tokens[3] if len(tokens) > 3 else '"YuriGUI"'
-        
+
         return Node("stage", (w, h, title))
-        
+
     elif keyword == "@stage3":
-        w     = tokens[1] if len(tokens) > 1 else "800"
-        h     = tokens[2] if len(tokens) > 2 else "600"
+        w = tokens[1] if len(tokens) > 1 else "800"
+        h = tokens[2] if len(tokens) > 2 else "600"
         title = tokens[3] if len(tokens) > 3 else "Yuri3D"
         return Node("stage3d", (w, h, title))
 
     elif keyword == "@scene":
         return Node("scene", None)
-        
+
     elif keyword == "@curtain":
         return Node("curtain", None)
-        
+
     elif keyword == "@perform":
         return Node("perform", None)
-        
+
     elif keyword == "@extstage":
         return Node("exit_stage", None)
-        
+
     elif keyword == "@actor":
-        shape   = tokens[1] if len(tokens) > 1 else "rect"
-        args    = tokens[2:]
+        shape = tokens[1] if len(tokens) > 1 else "rect"
+        args = tokens[2:]
         return Node("actor", (shape, args))
-        
+
     elif keyword == "@actor3":
-        shape   = tokens[1] if len(tokens) > 1 else "cube"
-        args    = tokens[2:]
+        shape = tokens[1] if len(tokens) > 1 else "cube"
+        args = tokens[2:]
         return Node("actor3d", (shape, args))
-        
+
     elif keyword == "@cam":
         return Node("camera", tokens[1:])
-        
+
     elif keyword == "@color3":
         r = tokens[1] if len(tokens) > 1 else "255"
         g = tokens[2] if len(tokens) > 2 else "192"
         b = tokens[3] if len(tokens) > 3 else "203"
         return Node("color3d", (r, g, b))
-        
+
     elif keyword == "@sound":
         action = tokens[1] if len(tokens) > 1 else "play"
-        args   = tokens[2:]
+        args = tokens[2:]
         return Node("sound", (action, args))
-        
+
     elif keyword == "@music":
         action = tokens[1] if len(tokens) > 1 else "play"
-        args   = tokens[2:]
+        args = tokens[2:]
         return Node("music", (action, args))
-    
+
     elif keyword == "@spotlight":
-        r   = tokens[1] if len(tokens) > 1 else "255"
-        g   = tokens[2] if len(tokens) > 2 else "255"
-        b   = tokens[3] if len(tokens) > 3 else "255"
+        r = tokens[1] if len(tokens) > 1 else "255"
+        g = tokens[2] if len(tokens) > 2 else "255"
+        b = tokens[3] if len(tokens) > 3 else "255"
         return Node("spotlight", (r, g, b))
-        
+
     elif keyword == "@backdrop":
-        r   = tokens[1] if len(tokens) > 1 else "0"
-        g   = tokens[2] if len(tokens) > 2 else "0"
-        b   = tokens[3] if len(tokens) > 3 else "0"
+        r = tokens[1] if len(tokens) > 1 else "0"
+        g = tokens[2] if len(tokens) > 2 else "0"
+        b = tokens[3] if len(tokens) > 3 else "0"
         return Node("backdrop", (r, g, b))
-        
+
     elif keyword == "@fps":
         return Node("fps", tokens[1] if len(tokens) > 1 else "60")
-  
+
     elif keyword == "@keys":
         direction = tokens[1] if len(tokens) > 1 else "up"
         return Node("keys", direction)
@@ -222,7 +236,7 @@ def parse_line(line):
     elif keyword == "@mouse":
         prop = tokens[1] if len(tokens) > 1 else "x"
         return Node("mouse", prop)
-        
+
     elif keyword == "@crush":
         if len(tokens) >= 4 and tokens[2] == "=":
             return Node("crush", (tokens[1], tokens[3]))
@@ -273,7 +287,7 @@ def parse_line(line):
 
     elif keyword == "@note":
         target = tokens[1]
-        val    = " ".join(tokens[3:]) if len(tokens) > 3 else "uncertain"
+        val = " ".join(tokens[3:]) if len(tokens) > 3 else "uncertain"
         return Node("note", (target, val))
 
     elif keyword == "@awaken":
@@ -338,7 +352,94 @@ def parse_line(line):
         func = tokens[2]
         ret = tokens[3] if len(tokens) > 3 else None
         return Node("extern", (lib, func, ret))
+    
+    # LINQ
+    elif keyword == "@filter":
+        return Node("linq_filter", tokens[1:])
 
+    elif keyword == "@weave":
+        # @weave x: x times 2  (reuse @bloom syntax)
+        if ":" in tokens:
+            colon_idx = tokens.index(":")
+            params = tokens[1:colon_idx]
+            body = " ".join(tokens[colon_idx + 1:])
+            return Node("linq_weave", (params, body))
+
+    elif keyword == "@firstlove":
+        return Node("linq_firstlove", tokens[1:])
+
+    elif keyword == "@yearn":
+        return Node("linq_yearn", tokens[1:])
+
+    elif keyword == "@vowing":
+        return Node("linq_vow", tokens[1:])
+
+    elif keyword == "@tally":
+        return Node("linq_tally", tokens[1:])
+
+    elif keyword == "@rank":
+        return Node("linq_rank", tokens[1:])
+
+    elif keyword == "@rankdown":
+        return Node("linq_rankdown", tokens[1:])
+
+    elif keyword == "@ignore":
+        return Node("linq_ignore", (tokens[1], tokens[2]))
+
+    elif keyword == "@cherish":
+        return Node("linq_cherish", (tokens[1], tokens[2]))
+
+    elif keyword == "@pour":
+        return Node("linq_pour", tokens[1:])
+
+    elif keyword == "@spiral":
+        return Node("linq_spiral", tokens[1:])
+
+    elif keyword == "@cluster":
+        return Node("linq_cluster", tokens[1:])
+
+    # FLAC
+    elif keyword == "@aria":
+        wave_type = tokens[1] if len(tokens) > 1 else "sine"
+        args      = tokens[2:]
+        return Node("flac_gen", (wave_type, args))
+    
+    elif keyword == "@compose":
+        op   = tokens[1] if len(tokens) > 1 else "mix" 
+        args = tokens[2:]
+        return Node("flac_compose", (op, args))
+    
+    elif keyword == "@record":
+        return Node("flac_encode", tokens[1:])
+    
+    elif keyword == "@playback":
+        return Node("flac_decode", tokens[1:])
+
+    # SQLITE3
+    elif keyword == "@connect":
+        return Node("sqlconnect", tokens[1:])
+
+    # NOT TO BE CONFUSED WITH @VOWING IN LINQ
+    elif keyword == "@vow":
+        if "with" in tokens:
+            with_idx = tokens.index("with")
+            sql      = " ".join(tokens[1:with_idx])
+            params   = tokens[with_idx + 1:]
+            return Node("sqlvow", (sql, params))
+        return Node("sqlvow", (" ".join(tokens[1:]), None))
+    
+    elif keyword == "@remember":
+        return Node("sqlremember", [])
+    
+    elif keyword == "@glimpse":
+        return Node("sqlglimpse", [])
+    
+    elif keyword == "@seal":
+        return Node("sqlseal", [])
+    
+    elif keyword == "@farewell":
+        return Node("sqlfarewell", [])
+    
     # function call: @name
     elif keyword.startswith("@"):
         return Node("call", (keyword[1:], tokens[1:]))

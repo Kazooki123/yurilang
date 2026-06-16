@@ -1,3 +1,12 @@
+"""
+Module - Yurilang
+
+Modular system of Yurilang using the `@yuri` keyword, can do namespacing for example:
+   `@yuri math as m`
+   
+TODO: Support importing the entire stdlib or store.
+"""
+
 import os
 from src.parser import parse
 
@@ -14,13 +23,13 @@ def normalize(name):
 def get_module_functions(name):
     normalized = normalize(name)
     filename = os.path.join(STORE_PATH, f"{normalized}.yuri")
-    
+
     if not os.path.exists(filename):
         raise Exception(f"Module '{name} not found!'")
-        
+
     with open(filename, "r") as f:
         code = f.read()
-        
+
     tree = parse(code)
     funcs = {}
     extract_functions(tree, funcs)

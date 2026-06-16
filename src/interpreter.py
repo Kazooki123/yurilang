@@ -1,12 +1,16 @@
-# Yurilang Interpreter
-# @ -> Starting points of statements and (or) using a function
-# Built-in functions under `def evaluate()`
-# GUI & 3D Support as well
-# 
-# LICENSE UNDER GPL3
-# 
+"""
+The Yurilang Interpreter
+@ -> Starting points of statements and (or) using a function
+Built-in functions under `def evaluate()`
+GUI & 3D Support as well
 
+AUTHOR: STARLOEXOLIZ
+LICENSE UNDER GPL v3.0
+"""
+
+import os
 import ctypes
+import types
 from src.parser import parse
 from src.modules import load_module
 from src.vm.memory import memory_set, memory_get, memory_forget
@@ -21,19 +25,30 @@ from src.etc.asynchronous import (
     sleep_dream,
     get_event_loop,
 )
+
 # gui
 from src.gui.gui import (
-    stage as gui_stage, curtain as gui_curtain,
-    actor as gui_actor, spotlight as gui_spotlight,
+    stage as gui_stage,
+    curtain as gui_curtain,
+    actor as gui_actor,
+    spotlight as gui_spotlight,
     perform as gui_perform,
-    exit_stage as gui_exit_stage, set_fps as gui_set_fps,
-    get_keys as gui_get_keys, get_mouse as gui_get_mouse, scene_running
+    exit_stage as gui_exit_stage,
+    set_fps as gui_set_fps,
+    get_keys as gui_get_keys,
+    get_mouse as gui_get_mouse,
+    scene_running,
 )
 from src.gui.threedimension import get_gl3d, GL3DError
 from src.gui.audio import get_audio, AudioError
 from src.gui.renderer import RendererError
 from src.etc.crush import register_crush, register_func_hints
 from src.lua.lua import get_lua_runtime, LuaError
+
+# MISC OPS
+from src.misc.linq import LINQ_OPS
+from src.misc.flac import encode_samples, decode_to_samples, FLAC_OPS
+from src.misc.sqlite3 import connect, vow, remember, glimpse, seal, farewell, SQLITE_OPS
 
 variables = {}
 functions = {}
@@ -44,6 +59,8 @@ owned = {}
 shared_ptrs = {}
 namespaces = {}
 notes = {}
+kwargs = {}
+env = {}
 
 glances = {}  # (immutable borrows)
 reaches = {}  # (mutable borrows, max 1 per source)
@@ -394,9 +411,9 @@ def evaluate(expr):
         return parse_array_literal(expr)
 
     if "." in expr and not expr.startswith('"'):
-        parts     = expr.split(".", 1)
-        obj_name  = parts[0].strip()
-        method    = parts[1].strip()
+        parts = expr.split(".", 1)
+        obj_name = parts[0].strip()
+        method = parts[1].strip()
 
         notekey = expr
         if notekey in notes:
@@ -408,12 +425,12 @@ def evaluate(expr):
         obj = variables.get(obj_name)
         if isinstance(obj, dict) and method in obj:
             return obj[method]
-        
+
         if obj_name in namespaces:
             call_parts = method.split()
-            func_name  = call_parts[0]
-            raw_args   = call_parts[1:]
-            ns         = namespaces[obj_name]
+            func_name = call_parts[0]
+            raw_args = call_parts[1:]
+            ns = namespaces[obj_name]
 
             if func_name not in ns:
                 raise YuriRuntimeError(
@@ -464,8 +481,8 @@ def evaluate(expr):
                     return obj.replace(parts2[1], parts2[2])
             raise YuriRuntimeError(
                 f"\n💔 Unknown string method: '{method}'\n"
-                 "Available: upper, lower, length, reverse,\n"
-                 "           strip, title, isdigit, isalpha, split\n"
+                "Available: upper, lower, length, reverse,\n"
+                "           strip, title, isdigit, isalpha, split\n"
             )
 
         if isinstance(obj, list):
@@ -493,10 +510,10 @@ def evaluate(expr):
                 return len(obj) == 0
             raise YuriRuntimeError(
                 f"\n💔 Unknown list method: '{method}'\n"
-                 "  Available: length, reverse, first, last,\n"
-                 "             sum, min, max, sort, unique, empty\n"
+                "  Available: length, reverse, first, last,\n"
+                "             sum, min, max, sort, unique, empty\n"
             )
-            
+
         if isinstance(obj, (int, float)):
             if method == "abs":
                 return abs(obj)
@@ -506,7 +523,7 @@ def evaluate(expr):
                 return float(obj)
             elif method == "int":
                 return int(obj)
-            
+
         if isinstance(obj, dict):
             key = parts[1]
             if key in obj:
@@ -724,7 +741,7 @@ def run_map(array, step):
         bloom_tokens = rest.split()
         colon_idx = bloom_tokens.index(":")
         params = bloom_tokens[1:colon_idx]
-        body_expr = " ".join(bloom_tokens[colon_idx + 1:])
+        body_expr = " ".join(bloom_tokens[colon_idx + 1 :])
         lam = YuriLambda(params, body_expr, variables.copy())
     elif rest in variables and isinstance(variables[rest], YuriLambda):
         lam = variables[rest]
@@ -883,31 +900,31 @@ def interpolate(template, variables):
 def _safe_coerce(val):
     if val is None:
         return 0
-        
+
     if isinstance(val, bool):
         return int(val)
     if isinstance(val, (int, float)):
         return val
-        
+
     if isinstance(val, str):
         val = val.strip()
-        
+
         if val == "love":
             return 1
         if val == "ache":
             return 0
         if val == "uncertain":
             return 0
-        
-        if val.lstrip('-').isdigit():
+
+        if val.lstrip("-").isdigit():
             return int(val)
         try:
             return float(val)
         except ValueError:
             pass
-            
+
         return val
-        
+
     return val
 
 
@@ -924,11 +941,11 @@ def _safe_compare(left, op, right):
 
     if isinstance(left, str) or isinstance(right, str):
         try:
-            left  = float(left)
+            left = float(left)
             right = float(right)
         except (ValueError, TypeError):
             return False
-            
+
     if op == ">":
         return left > right
     if op == "<":
@@ -943,37 +960,69 @@ def _safe_compare(left, op, right):
 def evaluate_condition_operand(expr):
     if not isinstance(expr, str):
         return coerce(expr)
-        
+
     expr = expr.strip()
-    
+
     if expr.startswith("@keys"):
         parts = expr.split()
         direction = parts[1] if len(parts) > 1 else "up"
         key_map = {
-            "up":     "__keys_up",
-            "down":   "__keys_down",
-            "left":   "__keys_left",
-            "right":  "__keys_right",
-            "space":  "__keys_space",
+            "up": "__keys_up",
+            "down": "__keys_down",
+            "left": "__keys_left",
+            "right": "__keys_right",
+            "space": "__keys_space",
             "escape": "__keys_escape",
         }
         var = key_map.get(direction, "__keys_up")
         return variables.get(var, False)
-        
+
     if expr.startswith("@mouse"):
         parts = expr.split()
         prop = parts[1] if len(parts) > 1 else "x"
         prop_map = {
-            "x":     "__mouse_x",
-            "y":     "__mouse_y",
-            "left":  "__mouse_left",
+            "x": "__mouse_x",
+            "y": "__mouse_y",
+            "left": "__mouse_left",
             "right": "__mouse_right",
         }
         var = prop_map.get(prop, "__mouse_x")
         return variables.get(var, 0)
-        
+
     val = evaluate(expr)
     return _safe_coerce(val)
+
+def _run_predicate(item, func_ref):
+    """
+    Runs a @bloom (async func) or @ship (func) predicate against one item.
+    Returns truthy result.
+    """
+    if func_ref in variables and isinstance(variables[func_ref], YuriLambda):
+        lam = variables[func_ref]
+        old_vars = variables.copy()
+        variables.clear()
+        variables.update(lam.closure)
+        if lam.params:
+            variables[lam.params[0]] = item
+        result = evaluate(lam.body_expr)
+        variables.clear()
+        return result
+    elif func_ref in functions:
+        params, body = functions[func_ref]
+        old_vars = variables.copy()
+        if params:
+            variables[params[0]] = item
+        result = None
+        for child in body:
+            ret = run_node(child)
+            if isinstance(ret, ReturnSignal):
+                result = ret.value
+                break
+        variables.clear()
+        variables.update(old_vars)
+        return result
+    else:
+        raise YuriRuntimeError(f"'{func_ref}' is not a @ship or @bloom")
 
 def run_node(node):
     global variables, functions
@@ -1177,7 +1226,7 @@ def run_node(node):
         right = evaluate_condition_operand(node.value[2])
 
         condition = _safe_compare(left, op, right)
-    
+
         if_body, else_body = [], []
         in_else = False
 
@@ -1227,47 +1276,220 @@ def run_node(node):
     elif node.type == "note":
         target, val = node.value
         notes[target] = evaluate(val)
-    
+
+    # LINQ
+    elif node.type == "linq_filter":
+        arr_name, func_ref = node.value
+        arr = evaluate(arr_name)
+        if not isinstance(arr, list):
+            raise YuriRuntimeError("@filter requires an array as first argument")
+
+        results = []
+        for item in arr:
+            if func_ref in variables and isinstance(variables[func_ref], YuriLambda):
+                lam = variables[func_ref]
+                old_vars = variables.copy()
+                variables.clear()
+                variables.update(lam.closure)
+                if lam.params:
+                    variables[lam.params[0]] = item
+                result = evaluate(lam.body_expr)
+                variables.clear()
+                variables.update(old_vars)
+            elif func_ref in functions:
+                params, body = functions[func_ref]
+                old_vars = variables.copy()
+                if params:
+                    variables[params[0]] = item
+                result = None
+                for child in body:
+                    ret = run_node(child)
+                    if isinstance(ret, ReturnSignal):
+                        result = ret.value
+                        break
+                variables.clear()
+                variables.update(old_vars)
+            else:
+                raise YuriRuntimeError(f"@filter — '{func_ref}' is not a @ship or @bloom")
+            if result:
+                results.append(item)
+        variables["_linq"] = results
+        return results
+
+    elif node.type == "linq_weave":
+        arr_name, func_ref = node.value
+        arr = evaluate(arr_name)
+        if not isinstance(arr, list):
+            raise YuriRuntimeError("@weave requires an array as first argument")
+        result = run_map(arr, f"@affect {func_ref}")
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_firstlove":
+        arr_name, func_ref = node.value
+        arr = evaluate(arr_name)
+        for item in arr:
+            if func_ref in variables and isinstance(variables[func_ref], YuriLambda):
+                lam = variables[func_ref]
+                old_vars = variables.copy()
+                variables.clear()
+                variables.update(lam.closure)
+            if lam.params:
+                variables[lam.params[0]] = item
+                result = evaluate(lam.body_expr)
+                variables.clear()
+                variables.update(old_vars)
+            elif func_ref in functions:
+                params, body = functions[func_ref]
+                old_vars = variables.copy()
+                if params:
+                    variables[params[0]] = item
+                result = None
+                for child in body:
+                    ret = run_node(child)
+                    if isinstance(ret, ReturnSignal):
+                        result = ret.value
+                        break
+                variables.clear()
+                variables.update(old_vars)
+            else:
+                raise YuriRuntimeError(f"@firstlove — '{func_ref}' is not a @ship or @bloom")
+            if result:
+                variables["_linq"] = item
+                return item
+        variables["_linq"] = None
+        return None
+
+    elif node.type == "linq_yearn":
+        arr = evaluate(node.value[0])
+        func_ref = node.value[1]
+
+        result = any(
+            _run_predicate(item, func_ref) for item in arr
+        )
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_vow":
+        arr = evaluate(node.value[0])
+        func_ref = node.value[1]
+        result = all(
+            _run_predicate(item, func_ref) for item in arr
+        )
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_tally":
+        arr = evaluate(node.value[0])
+        variables["_linq"] = len(arr)
+        return len(arr)
+
+    elif node.type == "linq_pour":
+        arr = evaluate(node.value[0])
+        if not isinstance(arr, list):
+            raise YuriRuntimeError("@pour requires an array")
+        result = sum(arr)
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_rank":
+        arr = evaluate(node.value[0])
+        result = sorted(arr)
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_rankdown":
+        arr = evaluate(node.value[0])
+        result = sorted(arr, reverse=True)
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_ignore":
+        arr = evaluate(node.value[0])
+        n   = int(evaluate(node.value[1]))
+        result = arr[n:]
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_cherish":
+        arr = evaluate(node.value[0])
+        n   = int(evaluate(node.value[1]))
+        result = arr[:n]
+        variables["_linq"] = result
+        return result
+
+    elif node.type == "linq_spiral":
+        arr      = evaluate(node.value[0])
+        func_ref = node.value[1]
+        result = run_reduce(arr, f"@melt {func_ref}")
+        variables["_linq"] = result
+        return result
+
+    # SQLITE3
+    elif node.type == "sqlconnect":
+        raw  = node.value
+        flat = []
+
+        for a in raw:
+            if isinstance(a, list):
+                flat.extend(str(x) for x in a)
+            elif isinstance(a, str) and " " in a:
+                flat.extend(a.split())
+            else:
+                flat.append(str(a))
+        path = evaluate(flat[0])
+        variables["_db"] = connect(path)
+
+    elif node.type == "sqlvow":
+        sql, param_t = node.value
+        sql = evaluate(sql)
+        params = [evaluate(p) for p in param_t] if param_t else None
+        vow(sql, params)
+
+    elif node.type == "sqlremember":
+        variables["_rows"] = remember()
+        
+    elif node.type == "sqlglimpse":
+        variables["_row"] = glimpse()
+
+    elif node.type == "sqlseal":
+        seal()
+
+    elif node.type == "sqlfarewell":
+        farewell()
+
     # 3D GUI++
     elif node.type == "stage":
         w, h, title = node.value
         try:
-            gui_stage(
-                int(evaluate(w)),
-                int(evaluate(h)),
-                str(evaluate(title))
-            )
+            gui_stage(int(evaluate(w)), int(evaluate(h)), str(evaluate(title)))
         except RendererError as e:
             raise YuriRuntimeError(str(e))
-    
+
     elif node.type == "stage3d":
         w, h, title = node.value
         try:
-            get_gl3d().setup(
-                int(evaluate(w)),
-                int(evaluate(h)),
-                str(evaluate(title))
-            )
+            get_gl3d().setup(int(evaluate(w)), int(evaluate(h)), str(evaluate(title)))
         except GL3DError as e:
             raise YuriRuntimeError(str(e))
-    
+
     elif node.type == "scene":
         try:
             while scene_running():
                 keys = gui_get_keys()
-                variables["__keys_up"]      = keys["up"]
-                variables["__keys_down"]    = keys["down"]
-                variables["__keys_left"]    = keys["left"]
-                variables["__keys_right"]   = keys["right"]
-                variables["__keys_space"]   = keys["space"]
-                variables["__keys_escape"]  = keys["escape"]
-                
+                variables["__keys_up"] = keys["up"]
+                variables["__keys_down"] = keys["down"]
+                variables["__keys_left"] = keys["left"]
+                variables["__keys_right"] = keys["right"]
+                variables["__keys_space"] = keys["space"]
+                variables["__keys_escape"] = keys["escape"]
+
                 mx, my, ml, mr = gui_get_mouse()
-                variables["__mouse_x"]      = mx
-                variables["__mouse_y"]      = my
-                variables["__mouse_left"]   = ml
-                variables["__mouse_right"]  = mr
-                
+                variables["__mouse_x"] = mx
+                variables["__mouse_y"] = my
+                variables["__mouse_left"] = ml
+                variables["__mouse_right"] = mr
+
                 for child in node.children:
                     result = run_node(child)
                     if isinstance(result, ReturnSignal):
@@ -1279,37 +1501,37 @@ def run_node(node):
             raise YuriRuntimeError(str(e))
         finally:
             gui_exit_stage()
-        
+
     elif node.type == "keys":
         direction = node.value
         key_map = {
-            "up":     "__keys_up",
-            "down":   "__keys_down",
-            "left":   "__keys_left",
-            "right":  "__keys_right",
-            "space":  "__keys_space",
+            "up": "__keys_up",
+            "down": "__keys_down",
+            "left": "__keys_left",
+            "right": "__keys_right",
+            "space": "__keys_space",
             "escape": "__keys_escape",
         }
         var = key_map.get(direction, "__keys_up")
         return variables.get(var, False)
-        
+
     elif node.type == "mouse":
         prop = node.value
         prop_map = {
-            "x":     "__mouse_x",
-            "y":     "__mouse_y",
-            "left":  "__mouse_left",
+            "x": "__mouse_x",
+            "y": "__mouse_y",
+            "left": "__mouse_left",
             "right": "__mouse_right",
         }
         var = prop_map.get(prop, "__mouse_x")
         return variables.get(var, 0)
-    
+
     elif node.type == "curtain":
         try:
             gui_curtain()
         except RendererError as e:
             raise YuriRuntimeError(str(e))
-            
+
     elif node.type == "actor":
         shape, args = node.value
         try:
@@ -1317,7 +1539,7 @@ def run_node(node):
             gui_actor(evaluate(shape), *evaled)
         except RendererError as e:
             raise YuriRuntimeError(str(e))
-            
+
     elif node.type == "actor3d":
         shape, args = node.value
         shape = str(evaluate(shape)).lower()
@@ -1329,46 +1551,44 @@ def run_node(node):
             elif shape == "sphere":
                 gl.sphere(*evaled)
             elif shape == "plane":
-               gl.plane(*evaled)
+                gl.plane(*evaled)
         except GL3DError as e:
-           raise YuriRuntimeError(str(e)) 
-            
+            raise YuriRuntimeError(str(e))
+
     elif node.type == "camera":
         args = [evaluate(a) for a in node.value]
         get_gl3d().camera(*args)
-        
+
     elif node.type == "color3d":
         r, g, b = node.value
-        get_gl3d().color3d(
-            evaluate(r), evaluate(g), evaluate(b)
-        )
-            
+        get_gl3d().color3d(evaluate(r), evaluate(g), evaluate(b))
+
     elif node.type == "spotlight":
         r, g, b = node.value
         gui_spotlight(evaluate(r), evaluate(g), evaluate(b))
-        
+
     elif node.type == "backdrop":
         r, g, b = node.value
         gui_spotlight(evaluate(r), evaluate(g), evaluate(b))
-        
+
     elif node.type == "perform":
         try:
             gui_perform()
         except RendererError as e:
             raise YuriRuntimeError(str(e))
-            
+
     elif node.type == "exit_stage":
         gui_exit_stage()
-        
+
     elif node.type == "fps":
         gui_set_fps(evaluate(node.value))
-        
+
     # AUDIO (FOR 3D)
     elif node.type == "sound":
         action, args = node.value
         evaled = [evaluate(a) for a in args]
         audio = get_audio()
-        
+
         try:
             if action == "load":
                 audio.load_sound(str(evaled[0]), str(evaled[1]))
@@ -1380,8 +1600,7 @@ def run_node(node):
                 audio.volume_sound(str(evaled[0]), evaled[1])
         except AudioError as e:
             raise YuriRuntimeError(str(e))
-        
-        
+
     elif node.type == "music":
         action, args = node.value
         evaled = [evaluate(a) for a in args]
@@ -1457,7 +1676,7 @@ def run_node(node):
         op = node.value[1]
         right = evaluate_condition_operand(node.value[2])
 
-        condition = _self_compare(left, op, right)
+        condition = _safe_compare(left, op, right)
 
         if not condition:
             for child in node.children:
@@ -1467,9 +1686,10 @@ def run_node(node):
 
     # WHILE LOOP
     elif node.type == "while":
+
         def check_condition():
-            left  = evaluate_condition_operand(node.value[0])
-            op    = node.value[1]
+            left = evaluate_condition_operand(node.value[0])
+            op = node.value[1]
             right = evaluate_condition_operand(node.value[2])
             return _safe_compare(left, op, right)
             print(f"DEBUG FATE: left={repr(left)} op='{op}' right='{repr(right)}'")
@@ -1586,8 +1806,11 @@ def run_node(node):
         path, val = node.value
         path = evaluate(path)
         content = evaluate(val)
-        with open(path, "w") as f:
-            f.write(str(content))
+        try:
+            with open(path, "w") as f:
+                f.write(str(content))
+        except Exception as e:
+            raise YuriRuntimeError(f"\n💔 Error: '{e}'")
 
     # FUNCTION DEFINE
     elif node.type == "function":
@@ -1718,15 +1941,16 @@ def run_node(node):
 
     # IMPORT
     elif node.type == "import":
-        module_name, alias = node.value \
-            if isinstance(node.value, tuple) \
-            else (node.value, None)
-            
+        module_name, alias = (
+            node.value if isinstance(node.value, tuple) else (node.value, None)
+        )
+
         load_module(module_name, functions)
 
         if alias:
             ns = {}
             from src.modules import get_module_functions
+
             ns = get_module_functions(module_name)
             namespaces[alias] = ns
 
@@ -1905,7 +2129,75 @@ def run_node(node):
                 variants[variant_name] = f"{name}.{variant_name}"
         spectrums[name] = variants
         variables[name] = variants
+    
+    # FLAC
+    elif node.type == "flac_gen":
+        wave_type = node.value[0]
+        raw      = node.value[1:]
 
+        flat = []
+        for a in raw:
+            if isinstance(a, list):
+                flat.extend(str(x) for x in a)
+            elif isinstance(a, str) and " " in a:
+                flat.extend(a.split())
+            else:
+                flat.append(str(a))
+        
+        freq        = float(evaluate(flat[0]))  if len(flat) > 0 else 440.0
+        duration    = float(evaluate(flat[1]))  if len(flat) > 1 else 1.0
+        sample_rate = int(evaluate(flat[2]))    if len(flat) > 2 else 44100
+        
+        fn = FLAC_OPS.get(wave_type)
+        
+        if fn is None:
+            raise YuriRuntimeError(f"@aria - Unknown wave type '{wave_type}'")
+        
+        result = fn(freq=freq, duration=duration, sample_rate=sample_rate)
+
+        if isinstance(result, list) and len(result) > 0 and isinstance(result[0], list):
+            result = [x for sub in result for x in sub]
+        
+        variables["_aria"] = result
+        
+    elif node.type == "flac_encode":
+        tokens      = node.value
+        samples     = evaluate(tokens[0])
+        path        = evaluate(tokens[1])
+        sample_rate = int(evaluate(tokens[2])) if len(tokens) > 2 else 44100
+        channels    = int(evaluate(tokens[3])) if len(tokens) > 3 else 1
+        bits        = int(evaluate(tokens[4])) if len(tokens) > 4 else 16
+        encode_samples(samples, path, sample_rate, channels, bits)
+
+    elif node.type == "flac_decode":
+        path = evaluate(node.value[0])
+        samples, rate, ch, bits = decode_to_samples(path)
+        
+        variables["_samples"]     = samples
+        variables["_sample_rate"] = rate
+        variables["_channels"]    = ch
+        variables["_bits"]        = bits
+        
+    elif node.type == "flac_compose":
+        op        = node.value[0]
+        arr_names = node.value[1:]
+        
+        tracks = []
+        # DEBUGGING TYPES (list type errors)
+        print("track types:", [type(t[0]) for t in tracks])
+        print("first elements:", [t[0] for t in tracks])
+        for name in arr_names:
+            val = evaluate(name)
+            while isinstance(val, list) and len(val) > 0 and isinstance(val[0], list):
+                val = [x for sub in val for x in sub]
+            tracks.append(val)
+            
+        fn = FLAC_OPS.get(op)
+        if fn is None:
+            raise YuriRuntimeError(f"@compose - unknown op '{op}'")
+        
+        variables["_aria"] = fn(*tracks)
+        
     else:
         print("Unknown node:", node.type)
 

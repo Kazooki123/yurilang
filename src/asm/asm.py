@@ -1,3 +1,10 @@
+"""
+Kumitate -  Inline Assembly for Yurilang (coming to v2.x)
+Will be using LASM in the future once it's finished and ready to integrate.
+Uses the RISC-V Architecture for simplicity of course.
+Note to self: Don't confuse this with the assembly transpiler file below T~T
+"""
+
 import ctypes
 import ctypes.util
 import os

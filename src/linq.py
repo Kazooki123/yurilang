@@ -1,3 +1,0 @@
-# Csharp style LINQ
-
-

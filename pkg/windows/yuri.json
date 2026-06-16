@@ -1,0 +1,30 @@
+{
+    "version": "1.7",
+    "description": "Yuri Esoteric Programming Language",
+    "homepage": "https://kazooki123.github.io/yurilang-docs",
+    "license": "GPL-3.0-or-later",
+    "architecture": {
+        "64bit": {
+            "url": "",
+            "hash": ""
+        }
+    },
+    "shortcuts": [
+        [
+            "Yuri.exe",
+            "Yuri"
+        ]
+    ],
+    "checkver": {
+        "github": "https://api.github.com/repos/Kazooki123/yurilang/releases",
+        "jsonpath": "$..tag_name",
+        "regex": ""
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": ""
+            }
+        }
+    }
+}

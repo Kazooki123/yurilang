@@ -6,6 +6,13 @@
 /amy/
 /yuri-js/
 /example/
+/.venv/
+/build/
+/dist/
+/docs/
+/glc/
+/network/
+/lasm/
 
 .gitmodules
 .gitignore

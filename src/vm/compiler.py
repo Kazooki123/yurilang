@@ -1,3 +1,9 @@
+"""
+Bytecode Compiler - Yurilang
+
+Outputs `.yuric` files that you can execute by using the `--vm` flag.
+"""
+
 from src.parser import parse
 
 

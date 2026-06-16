@@ -278,6 +278,11 @@ def shoutouts():
         "@mcl_playz",
         "@thatitaliandude",
         "@geodebreaker",
+        "@everm4iva",
+        "@snarkydev",
+        "@inkchasm_90309",
+        "@officiallymelon",
+        "@__hopeandmiracle (4ever)",
     ]
 
     for i in range(0, len(names), 2):
@@ -286,6 +291,7 @@ def shoutouts():
         print(f"   {left:<30} {right}")
 
     print()
+
 
 def urls():
     urls = [
@@ -300,6 +306,7 @@ def urls():
         print(f"   {left:<50} {right}")
 
     print()
+
 
 def repl():
     print_yuri()
@@ -333,6 +340,10 @@ def repl():
 
             if code == "help":
                 print_help()
+                continue
+
+            if code == "clear":
+                os.system("cls")  # Windows
                 continue
 
             if code == "keywords":

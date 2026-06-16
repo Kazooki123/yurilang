@@ -1,7 +1,9 @@
 # TODOS for Yurilang
 
 - [ ] Macros.
+- [ ] Fix if-else logic conditions.
 - [ ] Expansion of GUI support.
+- [ ] Stabilize asynchronous.
 - [ ] 3D support.
 - [ ] `libdragon` support / integration.
 - [ ] Sandboxing.
@@ -10,3 +12,5 @@
 - [ ] Networking (built-in).
 - [ ] Hashing (built-in).
 - [ ] LINQ (inline SQL).
+- [ ] Fix I/O read & write logic.
+- [ ] Finish and complete `/docs/`

@@ -4,3 +4,10 @@
     @bond x = @div 20 10
     @awaken x
     @confess x
+
+    @aria sine 440 2.0
+    @bond wave1 = _aria
+    @aria square 220 2.0
+    @bond wave2 = _aria
+    @compose mix wave1 wave 2
+    @record _aria "duet.flac" 44100 1 16

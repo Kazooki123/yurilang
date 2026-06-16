@@ -1,0 +1,28 @@
+@wlw:
+    @memory "test" = "20"
+    @recall "test"
+    @confess test
+    
+    ? (use with the --crush flag)
+    @crush name = heart
+    @crush age = int
+    @crush score = float
+    @crush is_inlove = bloom
+    @crush friends = list
+    @crush mystery = uncertain
+
+    ? (LINQ :3)
+    nums @> @filter x: x > 3 @> @weave x: x times x @> @pour
+
+    ? (Sqlite3 Support)
+    @connect "users.sqlite"
+    @vow "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)"
+    @seal
+
+    @vow "INSERT INTO users (name) VALUES (?)" with "Yuri"
+    @seal
+
+    @vow "SELECT * FROM users"
+    @remember
+    @whisper _rows
+    @farewell
