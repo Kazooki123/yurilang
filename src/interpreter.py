@@ -10,9 +10,8 @@ LICENSE UNDER GPL v3.0
 
 import os
 import ctypes
-import types
-from src.parser import parse
-from src.modules import load_module
+from src.parser    import parse
+from src.modules   import load_module
 from src.vm.memory import memory_set, memory_get, memory_forget
 
 # error handling
@@ -40,15 +39,24 @@ from src.gui.gui import (
     scene_running,
 )
 from src.gui.threedimension import get_gl3d, GL3DError
-from src.gui.audio import get_audio, AudioError
-from src.gui.renderer import RendererError
-from src.etc.crush import register_crush, register_func_hints
-from src.lua.lua import get_lua_runtime, LuaError
+from src.gui.audio          import get_audio, AudioError
+from src.gui.renderer       import RendererError
+from src.etc.crush          import register_crush, register_func_hints
+from src.lua.lua            import get_lua_runtime, LuaError
 
-# MISC OPS
-from src.misc.linq import LINQ_OPS
-from src.misc.flac import encode_samples, decode_to_samples, FLAC_OPS
-from src.misc.sqlite3 import connect, vow, remember, glimpse, seal, farewell, SQLITE_OPS
+# VENDOR OPS / FUNCS
+from src.vendor.linq    import LINQ_OPS
+from src.vendor.flac    import encode_samples, decode_to_samples, FLAC_OPS
+from src.vendor.sqlite3 import (
+    connect, 
+    vow, 
+    remember, 
+    glimpse, 
+    seal, 
+    farewell, 
+    SQLITE_OPS
+)
+from src.vendor.raylib  import RAYLIB_OPS
 
 variables = {}
 functions = {}
@@ -2198,6 +2206,17 @@ def run_node(node):
         
         variables["_aria"] = fn(*tracks)
         
+    # RAYLIB
+    elif node.type == "rl_call":
+        op   = node.value[0]
+        args = [evaluate(a) for a in node.value[1:]]
+        fn   = RAYLIB_OPS.get(op)
+        if fn is None:
+            raise YuriRuntimeError(f"@rl - unknown raylib op '{op}'")
+        result = fn(*args)
+        if result is not None:
+            return result            
+
     else:
         print("Unknown node:", node.type)
 

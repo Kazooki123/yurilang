@@ -1,0 +1,21 @@
+@wlw:
+    @yuri raylib
+
+    @overture 800 600 "Yuricraft Alpha"
+    @lens 10 10 10 0 0 0
+    @set_fps 60
+
+    @limelight
+    @backdrop 30 30 46
+
+    @depth
+        @grid 20 1
+        @cube 0 0 0  1 1 1  100 180 100
+        @cube 2 0 0  1 1 1  140 100 80
+        @cube 0 0 2  1 1 1  80  140 160
+    @surface
+
+    @caption "Yuricraft 🌸" 10 10 20 255 255 255
+    @blackout
+
+    @finale

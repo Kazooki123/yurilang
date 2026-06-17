@@ -24,9 +24,6 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 
 ## Setup
 
-> [!NOTE]
-> For Windows, the exe file will be released soon once pyinstaller has done setting up.
-
 Prerequisites:
 
 - Python (3.13)
@@ -37,6 +34,18 @@ Simply type this in your terminal:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/Kazooki123/yurilang/main/install.sh | bash
+```
+
+- 🪟 Windows:
+
+> [!NOTE]
+> Make sure you have `pyinstaller` installed.
+
+```bash
+pyinstaller --onefile --icon=icon.ico main.py
+
+# if you want to include DLL files
+pyinstaller --onefile --icon=icon.ico --add-binary "bin/*.dll;." main.py
 ```
 
 - 🔗 From Source:

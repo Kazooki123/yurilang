@@ -1,1 +1,7 @@
-# Coming in v2
+"""
+Macros - Yurilang
+
+Macro systems of Yurilang, using the `@lesbian` keyword.
+"""
+
+

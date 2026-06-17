@@ -236,6 +236,9 @@ def parse_line(line):
     elif keyword == "@mouse":
         prop = tokens[1] if len(tokens) > 1 else "x"
         return Node("mouse", prop)
+    
+    elif keyword == "@rl":
+        return Node("rl_call", tokens[1:])
 
     elif keyword == "@crush":
         if len(tokens) >= 4 and tokens[2] == "=":

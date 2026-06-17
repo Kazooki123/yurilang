@@ -1,0 +1,60 @@
+? (Yuri X Raylib)
+? (This Yuri module provides enough~ish functions and other parts when using it for raylib :3)
+
+@ship overture w h title:
+    @rl overture w h title
+
+@ship finale:
+    @rl finale
+
+@ship scene_running:
+    @promise @rl scene_running
+
+@ship limelight:
+    @rl limelight
+
+@ship blackout:
+    @rl blackout
+
+@ship backdrop r g b:
+    @rl backdrop r g b
+
+@ship caption text x y size r g b:
+    @rl caption text x y size r g b
+
+@ship rect x y w h r g b:
+    @rl rect x y w h r g b
+
+@ship circle x y radius r g b:
+    @rl circle x y radius r g b
+
+@ship lens ex ey ez tx ty tz:
+    @rl lens ex ey ez tx ty tz
+
+@ship depth:
+    @rl depth
+
+@ship surface:
+    @rl surface
+
+@ship cube x y z w h d r g b:
+    @rl cube x y z w h d r g b
+
+@ship cube_wires x y z w h d:
+    @rl cube_wires x y z w h d
+
+@ship sphere x y z radius r g b:
+    @rl sphere x y z radius r g b
+
+@ship grid slices spacing:
+    @rl grid slices spacing
+
+@ship cue key:
+    @promise @rl cue key
+
+@ship tempo:
+    @promise @rl tempo
+
+@ship set_fps fps:
+    @rl set_fps fps
+    

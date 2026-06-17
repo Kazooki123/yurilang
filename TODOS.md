@@ -2,6 +2,7 @@
 
 - [ ] Macros.
 - [ ] Fix if-else logic conditions.
+- [ ] Fix while-loops (@fate)
 - [ ] Expansion of GUI support.
 - [ ] Stabilize asynchronous.
 - [ ] 3D support.

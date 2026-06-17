@@ -1,7 +1,7 @@
 """
 SQlite3 - Yurilang
 
-Uses python's built-in `sqlite3` module.
+Uses python's built-in `sqlite3` module. DLL support soon.
 """
 
 import sqlite3 as _sqlite3
