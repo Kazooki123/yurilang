@@ -33,7 +33,6 @@
 !**/*.json
 !*.sh
 !*.bat
-!**/*.dll
 !/amy/
 !/extension/vscode/yurilang/
 !/Dockerfile
