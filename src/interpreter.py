@@ -45,9 +45,9 @@ from src.etc.crush          import register_crush, register_func_hints
 from src.lua.lua            import get_lua_runtime, LuaError
 
 # VENDOR OPS / FUNCS
-from vendor.linq    import LINQ_OPS
-from vendor.flac    import encode_samples, decode_to_samples, FLAC_OPS
-from vendor.sqlite3 import (
+from src.vendor.linq    import LINQ_OPS
+from src.vendor.flac    import encode_samples, decode_to_samples, FLAC_OPS
+from src.vendor.sqlite3 import (
     connect, 
     vow, 
     remember, 
@@ -56,12 +56,7 @@ from vendor.sqlite3 import (
     farewell, 
     SQLITE_OPS
 )
-from vendor.raylib  import RAYLIB_OPS
-
-# MISC OPS
-from src.misc.linq import LINQ_OPS
-from src.misc.flac import encode_samples, decode_to_samples, FLAC_OPS
-from src.misc.sqlite3 import connect, vow, remember, glimpse, seal, farewell, SQLITE_OPS
+from src.vendor.raylib  import RAYLIB_OPS
 
 variables = {}
 functions = {}
@@ -2284,7 +2279,7 @@ def run_node(node):
             raise YuriRuntimeError(f"@compose - unknown op '{op}'")
         
         variables["_aria"] = fn(*tracks)
-        
+
     else:
         print("Unknown node:", node.type)
 
