@@ -1,12 +1,17 @@
+/// LASM - Lesbian Assembly Interpreter
+/// A RISC-V based language
+/// AUTHOR: Kazooki123 <mgamerdinge146@gmail.com>
+/// LICENSE: Apache 2.0
+
 const std = @import("std");
 const VM = @import("vm.zig").VM;
 const parser = @import("parser.zig");
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa = std.heap.DebugAllocator(.{}){};
     const allocator = gpa.allocator();
 
-    const args = try std.process.argsAlloc(allocator);
+    const args = try std.process.args(allocator);
     defer std.process.argsFree(allocator, args);
 
     if (args.len < 2) {

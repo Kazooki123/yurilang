@@ -52,6 +52,7 @@
 /.vscode/
 /pkm/test/
 /extension/
+/bin/
 
 # Added by cargo
 

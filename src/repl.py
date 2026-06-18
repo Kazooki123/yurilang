@@ -314,6 +314,7 @@ def urls():
         "https://codeberg.org/Kazooki123/sappho",
         "https://codeberg.org/Kazooki123/6chan",
         "https://codeberg.org/Kazooki123/oakwood",
+        "https://codeberg.org/crabby-lang/crabby"
     ]
 
     for i in range(0, len(urls), 2):
