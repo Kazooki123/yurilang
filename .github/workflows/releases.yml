@@ -76,7 +76,7 @@ jobs:
               @bond x = @add 5 3
               @confess x
           EOF
-          python main.py /tmp/test_basic.yuri
+          python yuri.py /tmp/test_basic.yuri
 
       - name: Run Hello World test
         run: |
@@ -84,7 +84,7 @@ jobs:
           @wlw:
               @confess "Hello, World!"
           EOF
-          python main.py /tmp/test_hello.yuri
+          python yuri.py /tmp/test_hello.yuri
 
       - name: Run boolean test
         run: |
@@ -94,7 +94,7 @@ jobs:
               @jealous feeling == love:
                   @confess "Yuring Complete"
           EOF
-          python main.py /tmp/test_bool.yuri
+          python yuri.py /tmp/test_bool.yuri
 
       - name: Run pattern matching test
         run: |
@@ -107,7 +107,7 @@ jobs:
                   @poet _:
                       @confess "Not yet."
           EOF
-          python main.py /tmp/test_match.yuri
+          python yuri.py /tmp/test_match.yuri
 
   build-fedora:
     name: 📦 Fedora RPM

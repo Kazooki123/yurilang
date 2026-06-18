@@ -1,0 +1,15 @@
+; comment
+
+MOV A, 1
+MOV B, 1
+
+loop:
+    PRT A
+    ADD A, B
+    
+MOV A, 10
+PRT A
+MOV A, 20
+PRT A
+HLT
+PRT A

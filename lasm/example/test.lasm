@@ -1,0 +1,19 @@
+MOV A, 5
+MOV B, 10
+ADD A, B
+PRT A
+
+MOV A, 20
+MOV B, 7
+SUB A, B
+PRT A
+
+MOV A, 8
+MOV B, 4
+MUL A, B
+PRT A
+
+MOV A, 10
+MOV B, 2
+DIV A, B
+PRT A

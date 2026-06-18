@@ -26,7 +26,7 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 
 Prerequisites:
 
-- Python (3.13)
+- Python (3.14+)
 - NASM (if you're using this language with it's assembly feature)
 - wat2wasm (if you're testing it for wasm - experimental)
 
@@ -42,10 +42,10 @@ curl -sSL https://raw.githubusercontent.com/Kazooki123/yurilang/main/install.sh 
 > Make sure you have `pyinstaller` installed.
 
 ```bash
-pyinstaller --onefile --icon=icon.ico main.py
+pyinstaller --onefile --icon=icon.ico yuri.py
 
 # if you want to include DLL files
-pyinstaller --onefile --icon=icon.ico --add-binary "bin/*.dll;." main.py
+pyinstaller --onefile --icon=icon.ico --add-binary "bin/*.dll;." yuri.py
 ```
 
 - 🔗 From Source:
@@ -60,7 +60,7 @@ install.bat                # Windows (double click or run as admin)
 
 ## Syntax
 
-**General Rules**
+### General Rules
 
 - Every statement starts with "@"
 - Code executes only inside "@wlw" (entry point) :3
@@ -77,7 +77,7 @@ install.bat                # Windows (double click or run as admin)
 
 Defines where the program begins.
 
-```
+```yuri
 @wlw:
     @confess "Hello, world!"
 ```
@@ -88,7 +88,7 @@ Defines where the program begins.
 
 Creates and assigns a variable.
 
-```
+```yuri
 @bond x = 10
 @bond name = "Aki"
 ```
@@ -99,7 +99,7 @@ Creates and assigns a variable.
 
 Prints values or text.
 
-```
+```yuri
 @confess "Hello 💖"
 @confess "Value is" x
 ```
@@ -110,7 +110,7 @@ Prints values or text.
 
 Declares a function (also supports parameters :p)
 
-```
+```yuri
 @ship YuuIsGoated:
     @confess "Peak!"
 
@@ -124,7 +124,7 @@ Declares a function (also supports parameters :p)
 
 Returns a value after exiting
 
-```
+```yuri
 @choose nums with x:
     @promise x > 2
 ```
@@ -135,7 +135,7 @@ Returns a value after exiting
 
 Used to break out a loop.
 
-```
+```yuri
 @cling 10:
     @jealous x == 5:
         @jam
@@ -147,7 +147,7 @@ Used to break out a loop.
 
 Returns the provided typed map unchanged.
 
-```
+```yuri
 @wlw:
     @bond feelings = [["distant", "confused", "realizing", "confessing"]]
     feelings @> @affect yuu_reacts
@@ -159,7 +159,7 @@ Returns the provided typed map unchanged.
 
 Extracts an element from a collection (like a list) based on a condition.
 
-```
+```yuri
 @ship is_even x:
     @bond rem = @band x 1
     @jealous rem == 0:
@@ -177,7 +177,7 @@ Extracts an element from a collection (like a list) based on a condition.
 
 A technique to extract a specific portion or "subset" of data from a sequence.
 
-```
+```yuri
 @bond part = @slice nums 2 5
 @confess part
 ```
@@ -188,7 +188,7 @@ A technique to extract a specific portion or "subset" of data from a sequence.
 
 Used for pattern matching. You can learn what [pattern matching is here](https://en.wikipedia.org/wiki/Pattern_matching).
 
-```
+```yuri
 @sappho x:
     @poet 1:
         @confess "one"
@@ -202,7 +202,7 @@ Used for pattern matching. You can learn what [pattern matching is here](https:/
 
 Anonymous functions used for inline.
 
-```
+```yuri
 @wlw:
     @bond double = @luna x: x times 2
     @confess @double 5
@@ -216,7 +216,7 @@ Anonymous functions used for inline.
 
 Allows a program to start a (new) task and then move on to another work before that task finishes.
 
-```
+```yuri
 @wlw:
     ##async
     @ship fetch_feeling url:
@@ -237,7 +237,7 @@ Allows a program to start a (new) task and then move on to another work before t
 
 In Yurilang, variables are mutable by default, so to make them permanent or unchangeable, use the `@awaken` keyword.
 
-```
+```yuri
 @wlw:
     @bond x = 10
     @awaken x
@@ -255,7 +255,7 @@ Error: 'x' has already awakened. It is permanent.
 
 Filters or choose a specific element from a list based on the conditions.
 
-```
+```yuri
 @wlw:
     @bond nums = [[1,2,3,4]]
 
@@ -274,7 +274,7 @@ Checks a condition.
 `@jealous` -> if
 `@forgive` -> else
 
-```
+```yuri
 @wlw:
     @jealous a > 5:
         @confess "Greater than five."
@@ -288,7 +288,7 @@ Checks a condition.
 
 Repeats an action a number of times.
 
-```
+```yuri
 @cling "Woosh!" 3
 @cling "yay!" 5
 ```
@@ -299,7 +299,7 @@ Repeats an action a number of times.
 
 Repeats a block of code over and over again as long as a specific condition remains true.
 
-```
+```yuri
 @fate y < 10:
     @jealous y == 5:
         @jam
@@ -316,7 +316,7 @@ For importing modules.
 > [!NOTE]
 > Modules in yurilang are still unstable and may break in future updates or changes.
 
-```
+```yuri
 @yuri math
 @yuri json
 
@@ -338,7 +338,7 @@ Declares a **type**
 > [!IMPORTANT]
 > Types in this language is **never** enforced.
 
-```
+```yuri
 @wlw:
     @crush name = heart
     @crush age = int
@@ -356,7 +356,7 @@ Declares a **type**
 
 Loads and binds a function from a C shared library, callable like any other `@ship` function.
 
-```
+```yuri
 @sempai libm.so.6 sqrt double
 @bond result = @sqrt 144
 @confess result
@@ -373,7 +373,7 @@ Allows users to embed low-level assembly language instructions directly within h
 > [!WARNING]
 > This feature is very experimental, we'll add a `--experiment` flag later on, but this feature hasn't been fully stabilize *yet*.
 
-```
+```yuri
 @wlw:
     ? (basic arithmetic in assembly)
     @bond x = 5
@@ -396,7 +396,7 @@ Allows users to embed low-level assembly language instructions directly within h
 
 A data type that lets you define a value as one of several possible variants.
 
-```
+```yuri
 @spectrum Feeling:
     confused,
     curious,
@@ -411,7 +411,7 @@ A data type that lets you define a value as one of several possible variants.
 
 A custom data type that lets you group related data together under one name
 
-```
+```yuri
 @persona Character:
     name,
     age,
@@ -426,7 +426,7 @@ A custom data type that lets you group related data together under one name
 > [!WARNING]
 > Some of these operators & **special symbols** are planned meaning they're not implemented *yet*
 
-```
+```bash
 @
 >
 <
@@ -451,7 +451,7 @@ $
 
 ### Example Program
 
-```
+```yuri
 @wlw:
     @bond x = 10
     @bond name = "Aki"
@@ -496,7 +496,7 @@ You can generate a `.wat` file in YuriLang with this command:
 > 🩵 You would need **wat2wasm** for this
 
 ```bash
-python main.py yourfile.yuri --wasm
+python yuri.py yourfile.yuri --wasm
 ```
 
 Then convert it to `.wasm` with **wat2wasm**:
@@ -545,7 +545,7 @@ If you encounter a bug, error, or any issues, please immediately contact me or c
 
 **Everyone is absolutely welcome!** If you're interested, you can freely fork the repository and refer to the [Contribution](CONTRIBUTION.md) guide for contribution information and more 🩷
 
-## LICENSE 
+## LICENSE
 
 Under the **GNU Public License** <3
 

@@ -23,5 +23,5 @@ jobs:
 
       - name: Run and Test YuriLang
         run: |
-          python main.py example/test.yuri
+          python yuri.py example/test.yuri
 

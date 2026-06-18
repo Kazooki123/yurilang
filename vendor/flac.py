@@ -7,7 +7,7 @@ import ctypes
 import os
 import math
 
-_dll_path = os.path.join(os.path.dirname(__file__), "..", "..", "bin", "libflac.dll")
+_dll_path = os.path.join(os.path.dirname(__file__), "..", "bin", "libflac.dll")
 _flac = ctypes.CDLL(_dll_path)
 
 c_uint  = ctypes.c_uint32
@@ -219,7 +219,6 @@ def gen_silence(duration=1.0, sample_rate=44100):
     return [0] * int(sample_rate * duration)
 
 def mix(*tracks):
-    """Mix multiple sample lists together (same length assumed)."""
     flat_tracks = [_flatten_samples(t) for t in tracks]
     length = max(len(t) for t in flat_tracks)
     result = []
@@ -234,7 +233,6 @@ def mix(*tracks):
     return result
 
 def concat(*tracks):
-    """Concatenate sample lists."""
     result = []
     for t in tracks:
         result.extend(_flatten_samples(t))

@@ -45,9 +45,9 @@ from src.etc.crush          import register_crush, register_func_hints
 from src.lua.lua            import get_lua_runtime, LuaError
 
 # VENDOR OPS / FUNCS
-from src.vendor.linq    import LINQ_OPS
-from src.vendor.flac    import encode_samples, decode_to_samples, FLAC_OPS
-from src.vendor.sqlite3 import (
+from vendor.linq    import LINQ_OPS
+from vendor.flac    import encode_samples, decode_to_samples, FLAC_OPS
+from vendor.sqlite3 import (
     connect, 
     vow, 
     remember, 
@@ -56,7 +56,7 @@ from src.vendor.sqlite3 import (
     farewell, 
     SQLITE_OPS
 )
-from src.vendor.raylib  import RAYLIB_OPS
+from vendor.raylib  import RAYLIB_OPS
 
 variables = {}
 functions = {}

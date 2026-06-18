@@ -1,0 +1,10 @@
+MOV A, 1
+MOV B, 10
+MOV C, 100
+
+loop:
+    PRT A
+    ADD A, B
+    CMP A, C
+    JLT loop
+HLT

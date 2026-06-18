@@ -92,7 +92,6 @@ def make_vec(x, y, z):
 _camera = None
 
 def rl_lens(ex, ey, ez, tx, ty, tz):
-    """Set up a 3D camera."""
     global _camera
     
     camera = Camera3D()
@@ -105,7 +104,6 @@ def rl_lens(ex, ey, ez, tx, ty, tz):
     _camera = camera
 
 def rl_depth():
-    """BeginMode3D — requires @lens called first."""
     if _camera is None:
         raise RuntimeError("@depth — no camera set, call @lens first")
     

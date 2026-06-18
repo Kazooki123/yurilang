@@ -32,33 +32,33 @@ jobs:
 
       - name: Test — Hello World
         run: |
-          python main.py tests/hello.yuri
+          python yuri.py tests/hello.yuri
 
       - name: Test — Math
         run: |
-          python main.py tests/math.yuri
+          python yuri.py tests/math.yuri
 
       - name: Test — Pattern matching
         run: |
-          python main.py tests/pattern.yuri
+          python yuri.py tests/pattern.yuri
 
       - name: Test — Loops
         run: |
-          python main.py tests/loops.yuri
+          python yuri.py tests/loops.yuri
 
       - name: Test — Functions
         run: |
-          python main.py tests/functions.yuri
+          python yuri.py tests/functions.yuri
 
       - name: Test — Bytecode VM
         run: |
-          python main.py tests/hello.yuri --bytecode
-          python main.py tests/hello.yuric --vm
+          python yuri.py tests/hello.yuri --bytecode
+          python yuri.py tests/hello.yuric --vm
 
       - name: Test — LLVM IR (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         run: |
-        python main.py tests/hello.yuri --llvm
+        python yuri.py tests/hello.yuri --llvm
 
   lint:
     name: 🔍 Lint

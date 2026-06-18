@@ -1,6 +1,8 @@
 import os
 import time
 import sys
+import random
+import time
 
 from src.interpreter import run
 # from PIL import Image
@@ -251,6 +253,20 @@ def trigger_amy_easter_egg():
     # except Exception as e:
     #    print("Couldn't load amy image:", e)
 
+def trigger_chie():
+    images = [
+        "fav/chie.png",
+        "fav/chie2.png",
+        "fav/chie3.png",
+        "fav/chie4.png",
+        "fav/chie5.png",
+        "fav/chie6.png",
+    ]
+    
+    random.shuffle(images)
+    
+    for img in images:
+        os.system(f"chafa -f iterm {img}")
 
 def shoutouts():
     print("Shout Outs!!")
@@ -368,6 +384,10 @@ def repl():
 
             if code == "amy":
                 trigger_amy_easter_egg()
+                continue
+            
+            if code == "yuki":
+                trigger_chie()
                 continue
 
             run(code)

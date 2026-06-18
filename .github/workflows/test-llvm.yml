@@ -34,7 +34,7 @@ jobs:
 
       - name: Run a Yuri file with the LLVM flag
         run: |
-          python main.py example/helloworld.yuri --llvm
+          python yuri.py example/helloworld.yuri --llvm
 
 
       - name: Compile using llc + gcc

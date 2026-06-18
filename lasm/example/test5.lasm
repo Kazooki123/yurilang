@@ -1,0 +1,14 @@
+MOV A, 10
+MOV B, 4
+MOD A, B
+PRT A
+
+MOV A, 6
+NEG A
+PRT A
+
+MOV A, 6
+MOV B, 7
+AND A, B
+PRT A
+HLT
