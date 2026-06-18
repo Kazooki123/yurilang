@@ -257,7 +257,7 @@ class YuriLLVM:
         Compile directly to native object file via llvmlite.
         No clang/llc needed >.< !!
         """
-
+        
         binding.initialize_native_target()
         binding.initialize_native_asmprinter()
 
