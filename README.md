@@ -9,7 +9,7 @@
 
 
 
-YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic as functions, operators, syntaxes, etc. Written in Python 🌀
+YuriLang (Yuri + Language) is an esoteric programming language with Yuri characteristic (and **aesthetics**) as functions, operators, syntaxes, etc. Written in Python 🌀
 
 ### **Yuri (/ˈjʊəri/)**
 
@@ -42,7 +42,7 @@ curl -sSL https://raw.githubusercontent.com/Kazooki123/yurilang/main/install.sh 
 > Make sure you have `pyinstaller` installed.
 
 ```bash
-pyinstaller --onefile --icon=icon.ico yuri.py
+pyinstaller --onefile --icon=icon.ico --add-data "store/*.yuri;store" yuri.py
 
 # if you want to include DLL files
 pyinstaller --onefile --icon=icon.ico --add-binary "bin/*.dll;." yuri.py
@@ -330,10 +330,10 @@ For importing modules.
 Declares a **type**
 
 - strings -> `heart`
-- numbers -> `int` (type_name may change later)
-- float -> `float` (type_name may change later)
-- boolean -> `bloom/uncertain`
-- lists -> `list` (type_name may change later)
+- numbers -> `int`
+- float -> `float`
+- boolean -> `bloom`
+- lists -> `list`
 
 > [!IMPORTANT]
 > Types in this language is **never** enforced.
@@ -427,7 +427,6 @@ A custom data type that lets you group related data together under one name
 > Some of these operators & **special symbols** are planned meaning they're not implemented *yet*
 
 ```bash
-@
 >
 <
 =>
@@ -440,6 +439,7 @@ A custom data type that lets you group related data together under one name
 |x|
 :
 ^
+^^
 #
 $
 &

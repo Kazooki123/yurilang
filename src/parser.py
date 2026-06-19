@@ -143,6 +143,12 @@ def parse_line(line):
 
     elif keyword == "@couple":
         return Node("union")
+    
+    elif keyword == "@cast":
+        return Node("casting")
+    
+    elif keyword == "@ll":
+        return Node("llvm")
 
     elif keyword == "@lua":
         rest = " ".join(tokens[1:]).strip()
@@ -158,7 +164,7 @@ def parse_line(line):
             return node
 
     elif keyword == "@kumitate":
-        return Node("kumitate", None)
+        return Node("assembly", None)
 
     elif keyword == "@stage":
         w = tokens[1] if len(tokens) > 1 else "800"

@@ -5,6 +5,7 @@ import random
 import time
 
 from src.interpreter import run
+from src.misc.flags import random_flag
 # from PIL import Image
 
 
@@ -20,14 +21,14 @@ def detect_morse(code):
 
 
 COLORS = [
-    "\033[38;5;166m",  # dark orange
-    "\033[38;5;208m",  # orange
-    "\033[38;5;223m",  # cream
-    "\033[38;5;212m",  # pink
-    "\033[38;5;197m",  # dark pink
+    "\x1b[38;2;213;45;0m",  # dark orange
+    "\033[38;2;255;154;86m",  # orange
+    "\033[38;2;255;255;255m",  # cream
+    "\033[38;2;211;98;164m",  # pink
+    "\033[38;2;163;0;97m",  # dark pink
 ]
 
-RESET = "\033[0m"
+RESET = "\x1b[0m"
 
 
 def color_line(text, i):
@@ -369,6 +370,10 @@ def repl():
 
             if code == "world":
                 spin_globe()
+                continue
+            
+            if code == "flag":
+                random_flag()
                 continue
 
             if code == "edit":

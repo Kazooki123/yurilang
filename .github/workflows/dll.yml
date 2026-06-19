@@ -1,0 +1,31 @@
+# .github/workflows/shipdll.yml
+name: Ship Windows DLLs
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  ship-dlls:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Bundle DLLs
+        run: |
+          cd bin || exit 1
+          dir *.dll
+          zip -r ../../${{ github.event.release.tag_name }}-windows-dlls.zip *.dll
+        shell: pwsh  # or bash if preferred
+
+      - name: Upload DLL bundle
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./${{ github.event.release.tag_name }}-windows-dlls.zip
+          asset_name: ${{ github.event.release.tag_name }}-windows-dlls.zip
+          asset_content_type: application/zip

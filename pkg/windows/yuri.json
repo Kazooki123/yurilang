@@ -3,28 +3,26 @@
     "description": "Yuri Esoteric Programming Language",
     "homepage": "https://kazooki123.github.io/yurilang-docs",
     "license": "GPL-3.0-or-later",
-    "architecture": {
-        "64bit": {
-            "url": "",
-            "hash": ""
-        }
+    "url": "https://codeberg.org/Kazooki123/yurilang/archive/v1.7.zip",
+    "hash": "8009BE7C48C9E3F505476904B8575067942E10ABDBA52753C58BD95663FC3134",
+    "extract_dir": "yurilang",
+    "bin": "yuri.cmd",
+    "suggest": {
+        "python": "python"
     },
-    "shortcuts": [
-        [
-            "Yuri.exe",
-            "Yuri"
-        ]
+    "pre_install": [
+        "if (Test-Path \"$dir\\install.bat\") {",
+        "  cmd /c \"$dir\\install.bat\"",
+        "} else {",
+        "  python \"$dir\\install.py\" --user",
+        "}"
     ],
     "checkver": {
-        "github": "https://api.github.com/repos/Kazooki123/yurilang/releases",
-        "jsonpath": "$..tag_name",
-        "regex": ""
+        "url": "https://codeberg.org/api/v1/repos/Kazooki123/yurilang/releases/latest",
+        "regex": "tag/v?([\\d.]+)"
     },
     "autoupdate": {
-        "architecture": {
-            "64bit": {
-                "url": ""
-            }
-        }
+        "url": "https://codeberg.org/Kazooki123/yurilang/archive/v$version.zip",
+        "extract_dir": "yurilang"
     }
 }

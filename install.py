@@ -54,7 +54,7 @@ def check_python():
 
 def check_dependencies():
     p("Checking dependencies...", PURPLE)
-    deps = ["reportlab"]
+    deps = ["reportlab", "raylib"]
     missing = []
     for dep in deps:
         try:
@@ -248,7 +248,7 @@ def uninstall():
 
 def success_message(install_path):
     p(f"""
-{GREEN}{BOLD}  ✅ YuriLang installed successfully! 🪷{RESET}
+{GREEN}{BOLD}  ✅ YuriLang installed successfully!{RESET}
 
 {PURPLE}  Get started:{RESET}
 
@@ -262,17 +262,17 @@ def success_message(install_path):
 {PURPLE}  Write your first program:{RESET}
 
   {PINK}@wlw:{RESET}
-  {PINK}    @confess "Hello, World! 🪷"{RESET}
+  {PINK}    @confess "Hello, World!"{RESET}
 
 {PURPLE}  Documentation:{RESET}
   {YELLOW}  https://codeberg.org/Kazooki123/yurilang{RESET}
 
-{PINK}  "Yuring Complete since 2025" 🪷{RESET}
+{PINK}  "Yuring Complete since 2025"{RESET}
 """)
 
 
 def main():
-    parser = argparse.ArgumentParser(description="YuriLang Installer 🪷")
+    parser = argparse.ArgumentParser(description="YuriLang Installer")
     parser.add_argument(
         "--user",
         action="store_true",
