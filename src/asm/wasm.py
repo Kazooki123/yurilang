@@ -1,4 +1,4 @@
-from src.parser import parse
+from src.core.parser import parse
 
 
 class YASMCompileError(Exception):

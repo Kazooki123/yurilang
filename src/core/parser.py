@@ -15,19 +15,9 @@ For more keywords check `/docs/keywords.htm`
 
 import re
 
-from src.lexer import tokenize, get_indent_lvl
+from src.core.tokenizer import tokenize, get_indent_lvl
 from src.etc.crush import YURI_TYPES
-
-
-class Node:
-    def __init__(self, type_, value=None):
-        self.type = type_
-        self.value = value
-        self.children = []
-        self.decorators = []
-        self.param_hints = {}
-        self.return_hint = None
-
+from src.core.ast import Node
 
 def parse_line(line):
     tokens = tokenize(line)
@@ -142,10 +132,20 @@ def parse_line(line):
         raise SyntaxError("@bloom requires ':' separator — @bloom x: x times 2")
 
     elif keyword == "@couple":
-        return Node("union")
+        name = tokens[1].rstrip(":") if len(tokens) > 1 else None
+        return Node("union", name)
+    
+    elif keyword == "@forbidden":
+        return Node("unsafe", None)
     
     elif keyword == "@cast":
         return Node("casting")
+    
+    elif keyword == "@group":
+        return Node("class")
+    
+    elif keyword == "@stretch":
+        return Node("extend")
     
     elif keyword == "@ll":
         return Node("llvm")
@@ -455,6 +455,16 @@ def parse_line(line):
 
     elif "@>" in line:
         return Node("pipeline", line)
+
+    elif (
+        len(tokens) >= 2
+        and tokens[0].endswith(":")
+        and tokens[0][:-1]
+        and tokens[0][:-1].replace("_", "").isalnum()
+    ):
+        fname = tokens[0][:-1]
+        ftype = " ".join(tokens[1:])
+        return Node("type_field", (fname, ftype))
 
     elif len(tokens) >= 3 and tokens[1] == "=":
         val = " ".join(tokens[2:])

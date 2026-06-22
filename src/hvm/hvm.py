@@ -41,7 +41,7 @@ Wire / variable naming:
 """
 
 from __future__ import annotations
-from src.parser import parse
+from src.core.parser import parse
 
 import sys
 import os

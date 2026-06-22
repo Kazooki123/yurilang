@@ -6,7 +6,7 @@ authors = [
     { name="starloexoliz11" }
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 
 [project.scripts]
 yuri = "yurilang.yuri:main"

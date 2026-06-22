@@ -4,7 +4,7 @@
 
 # TODO: Expansion of the code and keywords implemented.
 
-from src.parser import parse
+from src.core.parser import parse
 
 
 class YuriCompileError(Exception):

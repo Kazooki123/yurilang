@@ -83,7 +83,7 @@ class YuriLuaRuntime:
             params = entry[0]
             body = entry[1]
 
-            from src.interpreter import ReturnSignal
+            from src.core.interpreter import ReturnSignal
 
             old_vars = variables.copy()
 

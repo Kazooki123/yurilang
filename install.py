@@ -46,7 +46,7 @@ def check_python():
     p("Checking Python version...", PURPLE)
     version = sys.version_info
     if version.major < 3 or (version.major == 3 and version.minor < 13):
-        p(f"| 💔 Python 3.13 required. You have {version.major}.{version.minor}", RED)
+        p(f"| 💔 Python 3.14 required. You have {version.major}.{version.minor}", RED)
         p("|> 💡 Hint: https://python.org/downloads", YELLOW)
         sys.exit(1)
     p(f"  ✅ Python {version.major}.{version.minor}.{version.micro}", GREEN)

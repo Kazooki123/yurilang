@@ -34,7 +34,7 @@ def get_event_loop():
 
 def make_async_ship(params, body, functions, variables_ref):
     async def async_wrapper(*args):
-        from src.interpreter import run_node, ReturnSignal
+        from src.core.interpreter import run_node, ReturnSignal
 
         old_vars = variables_ref.copy()
         for i, param in enumerate(params):

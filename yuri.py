@@ -1,5 +1,14 @@
+# \\    //   ||     ||   //-----\\   ||
+#  \\  //	 ||	    ||   ||     ||   ||
+#   \\//	 ||     ||   ||-----//   ||
+#    ||      ||     ||   ||   \\     ||
+#    ||      ||	    ||   ||    \\    ||
+#    ||      \\_____//   ||     \\   ||
+# COPYRIGHT KAZOOKI123 2026
+# GNU PUBLICE LICENSE v3.0
+
 import sys
-from src.interpreter import run
+from src.core.interpreter import run
 from src.repl import repl
 from src.asm.compiler import compile_yuri
 from src.asm.wasm import compile_to_yasm
@@ -11,7 +20,9 @@ from src.llvm.llvm import llvm_compile
 from src.hvm.hvm import transpile_hvm
 from src.misc.flags import random_flag
 from src.misc.verifyiso import verify_iso
+from src.misc.e8s29bb import jinx
 from install import uninstall
+
 
 def main():
     args = sys.argv[1:]
@@ -42,8 +53,9 @@ def main():
     yuri                          Launch REPL
 
     MISC:
-    --flag                        Prints flags from LGBTQ+ to real life flags.
-    [.iso] --verify               Verifies an ISO or CHD format file.
+    --flag                        Prints flags from LGBTQ+ to international flags.
+    <.iso> --verify               Verifies an ISO or CHD format file.
+    <.bin> --b2e                  Bin2Elf Converter
 
     Options:
     -v --version    show version
@@ -84,6 +96,10 @@ def main():
         verify_iso(path, expected) 
         return
 
+    if "--jinx" in args:
+        jinx()
+        return
+
     if "--itmye" in args:
         try:
             filename = next(arg for arg in args if arg.endswith(".yuri"))
@@ -92,7 +108,7 @@ def main():
 
             run(code)
 
-            from src.interpreter import (
+            from src.core.interpreter import (
                 variables,
                 awakened,
                 owned,

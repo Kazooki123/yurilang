@@ -1,0 +1,9 @@
+@wlw:
+    @couple Something:
+        i: int,
+        f: float
+
+    @bond u = Something { f: 1.0 }
+    @forbidden(
+        @echo "The float value is {u.f}"
+    )

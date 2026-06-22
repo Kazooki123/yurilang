@@ -4,9 +4,8 @@ import sys
 import random
 import time
 
-from src.interpreter import run
+from src.core.interpreter import run
 from src.misc.flags import random_flag
-# from PIL import Image
 
 
 def detect_morse(code):
@@ -119,6 +118,10 @@ def print_keywords():
         "persona",
         "read",
         "write",
+        "couple",
+        "forbidden",
+        "glance",
+        "reach"
     ]
 
     for i in range(0, len(keywords), 2):

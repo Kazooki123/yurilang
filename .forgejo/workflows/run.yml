@@ -1,0 +1,26 @@
+name: Run & Test YuriLang
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  run-yurilang:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+     
+      - name: Install llvmlite
+        run: |
+          pip install llvmlite
+
+      - name: Run and Test YuriLang
+        run: |
+          python yuri.py example/test.yuri

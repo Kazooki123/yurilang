@@ -15,3 +15,4 @@
 - [ ] LINQ (inline SQL).
 - [ ] Fix I/O read & write logic.
 - [ ] Finish and complete `/docs/`
+- [ ] Adjust file names and optimize the code (if-else hell)

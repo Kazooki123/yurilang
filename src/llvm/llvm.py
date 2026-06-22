@@ -10,7 +10,7 @@ Uses llvmlite for IR generation.
 """
 
 from llvmlite import ir, binding
-from src.parser import parse
+from src.core.parser import parse
 
 
 class LLVMError(Exception):

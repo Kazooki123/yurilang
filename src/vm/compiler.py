@@ -4,7 +4,7 @@ Bytecode Compiler - Yurilang
 Outputs `.yuric` files that you can execute by using the `--vm` flag.
 """
 
-from src.parser import parse
+from src.core.parser import parse
 
 
 class BytecodeCompiler:
@@ -170,7 +170,7 @@ class BytecodeCompiler:
             self.emit("RETURN")
 
         else:
-            pass  # silently skip unsupported nodes
+            pass
 
     def compile(self, code):
         tree = parse(code)

@@ -1,9 +1,0 @@
-MOV T0, 10
-MOV T1, 5
-
-ADD T0, T1
-PRT T0
-
-MOV R, 42
-PRT R
-HLT

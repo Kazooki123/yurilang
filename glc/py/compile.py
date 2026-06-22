@@ -6,7 +6,7 @@ Produces Linux ELF x86-64 binaries directly
 
 import struct
 import os
-from src.parser import parse
+from src.core.parser import parse
 from glc.py.emit import Emitter, GlcError
 
 # Load the address

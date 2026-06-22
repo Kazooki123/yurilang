@@ -15,7 +15,7 @@ echo.
 python --version >nul 2>&1
 if errorlevel 1 (
     echo   [ERROR] Python not found!
-    echo   Please install Python 3.13+ from https://python.org
+    echo   Please install Python 3.14+ from https://python.org
     pause
     exit /b 1
 )
