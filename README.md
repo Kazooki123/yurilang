@@ -541,7 +541,7 @@ If you encounter a bug, error, or any issues, please immediately contact me or c
 
 ## Contribution
 
-**Everyone is absolutely welcome!** If you're interested, you can freely fork the repository and refer to the [Contribution](CONTRIBUTION.md) guide for contribution information and more 🩷
+**Everyone is absolutely welcome!** If you're interested, you can freely fork the repository and refer to the [Contribution](CONTRIBUTING.md) guide for contribution information and more 🩷
 
 ## LICENSE
 
