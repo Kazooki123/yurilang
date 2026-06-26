@@ -2,6 +2,7 @@ name: Run & Test YuriLang
 
 on:
   push:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -17,28 +18,39 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Install SYS Dependencies
+      - name: Install system dependencies
         run: |
-            sudo apt-get update
-            sudo apt-get install -y \
-              libasound2-dev \
-              mesa-common-dev \
-              libx11-dev \
-              libxrandr-dev \
-              libxi-dev \
-              libgl1-mesa-dev \
-              libglu1-mesa-dev \
-              pkg-config \
-              libsdl2-dev \
-              libfreetype6-dev \
-              libportmidi-dev \
-              python3-dev
-     
-      - name: Install Python Packages
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2-dev \
+            mesa-common-dev \
+            libx11-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libgl1-mesa-dev \
+            libglu1-mesa-dev \
+            pkg-config \
+            libsdl2-dev \
+            libfreetype6-dev \
+            libportmidi-dev \
+            python3-dev \
+            xvfb \
+            libflac-dev
+
+      - name: Install Python packages
         run: |
           pip install --upgrade pip
-          pip install llvmlite raylib pygame-ce
+          pip install llvmlite
+          pip install pygame-ce
+
+      - name: Prepare vendor libraries for Linux
+        run: |
+          mkdir -p bin
+          # Symlink the system libflac to the name your code expects
+          ln -sf /usr/lib/x86_64-linux-gnu/libflac.so.* bin/libflac.so 2>/dev/null || \
+          ln -sf /usr/lib/x86_64-linux-gnu/libflac.so.8 bin/libflac.so || \
+          echo "Warning: Could not find libflac.so"
 
       - name: Run and Test YuriLang
         run: |
-          python yuri.py example/test.yuri
+          xvfb-run -a python yuri.py example/test.yuri
