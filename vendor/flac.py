@@ -5,9 +5,28 @@ Uses the libFLAC.dll C API via `ctypes`
 
 import ctypes
 import os
+import sys
 import math
 
-_dll_path = os.path.join(os.path.dirname(__file__), "..", "bin", "libflac.dll")
+if sys.platform == "win32":
+    lib_name = "libflac.dll"
+    lib_dir = "bin"
+elif sys.platform == "linux":
+    lib_name = "libflac.so"
+    lib_dir = "bin"
+elif sys.platform == "darwin":
+    lib_name = "libflac.dylib"
+    lib_dir = "bin"
+else:
+    raise OSError(f"Unsupported platform: {sys.platform}")
+
+_dll_path = os.path.join(
+    os.path.dirname(__file__), 
+    "..", 
+    lib_dir, 
+    lib_name
+)
+
 _flac = ctypes.CDLL(_dll_path)
 
 c_uint  = ctypes.c_uint32
