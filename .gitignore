@@ -3,8 +3,12 @@
 
 !/**/*.gitignore
 !/.dockerignore
+!/.containerignore
 !/.editorconfig
 !/.gitmodules
+!/Dockerfile
+!/Containerfile
+!/AUTHORS
 
 # and then whitelist specific things
 !/**/
@@ -32,10 +36,8 @@
 !*.bat
 !/amy/
 !/extension/vscode/yurilang/
-!/Dockerfile
-!/AUTHORS
 !/pkg/**
-!/bin/
+!/bin/libflac.dll
 
 !/.github/
 !/**/LICENSE
