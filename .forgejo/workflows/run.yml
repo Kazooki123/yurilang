@@ -37,6 +37,30 @@ jobs:
             xvfb \
             libflac-dev
 
+      - name: Prepare vendor libraries for Linux
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing root contents:"
+          ls -la
+
+          mkdir -p bin
+
+          LIBFLAC=$(find /usr/lib -name 'libflac.so*' | head -n 1)
+          if [ -n "$LIBFLAC" ]; then
+            echo "Found libflac at: $LIBFLAC"
+            ln -sf "$LIBFLAC" bin/libflac.so
+            echo "Created symlink:"
+            ls -la bin/libflac.so
+          else
+            echo "ERROR: libflac.so not found in system"
+            exit 1
+          fi
+
+      - name: Run and Test YuriLang
+        run: |
+          ls -la bin/   # debug: confirm the symlink exists
+          xvfb-run -a python yuri.py example/test.yuri
+          
       - name: Install Python packages
         run: |
           pip install --upgrade pip
