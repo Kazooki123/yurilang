@@ -17,7 +17,6 @@ from src.vm.bytecode import YuriVM
 from src.vm.serializer import save_yuric, load_yuric
 from glc.py.compile import glc_compile
 from src.llvm.llvm import llvm_compile
-from src.hvm.hvm import transpile_hvm
 from src.misc.flags import random_flag
 from src.misc.verifyiso import verify_iso
 from src.misc.e8s29bb import jinx
@@ -56,6 +55,7 @@ def main():
     --flag                        Prints flags from LGBTQ+ to international flags.
     <.iso> --verify               Verifies an ISO or CHD format file.
     <.bin> --b2e                  Bin2Elf Converter
+    --pnatch <game>               Generate a game-specific PS2 patch file.
 
     Options:
     -v --version    show version
@@ -98,6 +98,10 @@ def main():
 
     if "--jinx" in args:
         jinx()
+        return
+    
+    if "--pnatch" in args:
+        # ... WIP
         return
 
     if "--itmye" in args:
@@ -188,22 +192,22 @@ def main():
             print("No .yuri file provided.")
         return
         
-    if "--hvm" in args:
-        try:
-            filename = next(arg for arg in args if arg.endswith(".yuri"))
-            with open(filename) as f:
-                code = f.read()
+    # if "--hvm" in args:
+    #    try:
+    #        filename = next(arg for arg in args if arg.endswith(".yuri"))
+    #        with open(filename) as f:
+    #            code = f.read()
 
-            hvm = transpile_hvm(code)
-            out = filename.replace(".yuri", ".hvm")
-            with open(out, "w") as f:
-                f.write(hvm)
+    #        hvm = transpile_hvm(code)
+    #       out = filename.replace(".yuri", ".hvm")
+    #        with open(out, "w") as f:
+    #            f.write(hvm)
                 
-        except StopIteration as e:
-            print(f"No .yuri file provided: {e}")
-        except FileNotFoundError as e2:
-            print(f"File not found! {e2}\n")
-        return
+    #    except StopIteration as e:
+    #        print(f"No .yuri file provided: {e}")
+    #    except FileNotFoundError as e2:
+    #        print(f"File not found! {e2}\n")
+    #    return
 
     if "--bytecode" in args:
         try:

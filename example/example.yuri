@@ -1,0 +1,18 @@
+? (Nim style macros - design draft)
+@wlw:
+    @yuri macros
+
+    ? (UnCrush = untype)
+    ? (novel - nim style macro)
+    @novel timesTwo(stmt: UnCrush):
+        result = statements
+        @jealous s in statements:
+        @fate node in s:
+            @jealous node.kind == NodeKIntLit:
+                node.intVal = node.intVal * 2
+
+    @timesTwo:
+        @confess 2
+        @confess 4
+        @confess 6
+        @confess 8

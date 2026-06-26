@@ -1,3 +1,0 @@
-@wlw:
-    @bond x = "Hello, World!"
-    @confess x

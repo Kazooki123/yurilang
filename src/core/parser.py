@@ -163,9 +163,6 @@ def parse_line(line):
             node.children = [Node("lua_line", code)]
             return node
 
-    elif keyword == "@kumitate":
-        return Node("assembly", None)
-
     elif keyword == "@stage":
         w = tokens[1] if len(tokens) > 1 else "800"
         h = tokens[2] if len(tokens) > 2 else "600"

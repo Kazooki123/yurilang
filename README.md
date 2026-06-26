@@ -1,6 +1,6 @@
 # YuriLang ❤️🧡🤍
 
-<img src="logo.png" alt="logo" width="500">
+<img src="icons/logo.png" alt="logo" width="500">
 
 ![version](https://img.shields.io/github/v/release/Kazooki123/yurilang?color=pink) ![GitHub License](https://img.shields.io/github/license/Kazooki123/yurilang?color=pink) ![GitHub Repo stars](https://img.shields.io/github/stars/Kazooki123/yurilang?logoColor=pink&color=pink) ![Endpoint Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Floc-counter.onrender.com%2F%3Frepo%3DKazooki123%2Fyurilang%26branch%3Dmain%26stat%3Dlines&logo=github&color=pink) ![GitHub contributors](https://img.shields.io/github/contributors/Kazooki123/yurilang?color=pink) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Kazooki123/yurilang/run.yml?branch=main&color=pink) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/Kazooki123/yurilang?logo=github&logoColor=pink&color=pink) [![Telegram](https://img.shields.io/badge/telegram-2CA5E0?style=flat&logo=telegram&logoColor=white&color=pink)](https://t.me/+UQ449T4ApJliNzJl) [![Matrix](https://img.shields.io/badge/matrix-join-pink?style=flat&logo=matrix&logoColor=white)](https://matrix.to/#/!DUcTGkqyDkXQvtVDyU:matrix.org?via=matrix.org) [![Fluxer](https://img.shields.io/badge/join-fluxer?style=flat&logo=apple&logoColor=white&label=fluxer&color=pink)
 ![Discord](https://img.shields.io/discord/1460115593775681539?logo=discord&logoColor=pink&color=pink)](https://fluxer.gg/CVDSiGmT) ![Bluesky followers](https://img.shields.io/bluesky/followers/starloexoliz123.bsky.social?logo=bluesky&logoColor=pink&color=pink) ![Python](https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=white&label=3.14&color=pink) ![LLVM](https://img.shields.io/badge/llvm-262D3A?style=flat&logo=llvm&logoColor=white&label=22.1.3&color=pink) ![llvmworks](https://img.shields.io/badge/backend-llvm%20toolchain-pink?logo=llvm) ![Target](https://img.shields.io/badge/target-x86--64-pink?logo=amd&style=flat&labelColor=black) ![FutureTargets](https://img.shields.io/badge/future-ARM64%20%7C%20RISC--V-pink?logo=llvm&style=flat&labelColor=black)
@@ -39,10 +39,10 @@ curl -sSL https://raw.githubusercontent.com/Kazooki123/yurilang/main/install.sh 
 > Make sure you have `pyinstaller` installed.
 
 ```bash
-pyinstaller --onefile --icon=icon.ico --add-data "store/*.yuri;store" yuri.py
+pyinstaller --onefile --icon='icons/icon.ico' --add-data "store/*.yuri;store" yuri.py
 
 # if you want to include DLL files
-pyinstaller --onefile --icon=icon.ico --add-binary "bin/*.dll;." yuri.py
+pyinstaller --onefile --icon='icons/icon.ico' --add-binary "bin/*.dll;." yuri.py
 ```
 
 - 🔗 From Source:
@@ -369,6 +369,7 @@ Allows users to embed low-level assembly language instructions directly within h
 
 > [!WARNING]
 > This feature is very experimental, we'll add a `--experiment` flag later on, but this feature hasn't been fully stabilize *yet*.
+> Status: `HALTED` - Compile feature only.
 
 ```yuri
 @wlw:
@@ -504,7 +505,7 @@ wat2wasm yourfile.wat -o program.wasm
 
 ## Amy
 
-A `TUI`-based editor primarily written in **Go**.
+[Amy](https://codeberg.org/Kazooki123/amy) is a  `TUI`-based editor primarily written in **Go**.
 
 Named after **Amy** from **I Love Amy**, a South Korean yuri manhwa story.
 

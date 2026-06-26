@@ -15,7 +15,6 @@ Help identify vulnerabilities, bugs, and potential exploits in Yurilang.
 - Yurilang interpreter
 - YuriVM (.yuric execution)
 - Compiler backends (ASM, LLVM, WASM)
-- Inline assembly ("@kumitate")
 - Memory system ("@memory", "@recall")
 
 **Out of Scope:**

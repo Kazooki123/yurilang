@@ -1,6 +1,6 @@
 """
 The Yurilang Interpreter
-@ -> Starting points of statements and (or) using a function
+@ -> Starting point of statements and functions
 Built-in functions under `def evaluate()`
 GUI & 3D Support as well
 

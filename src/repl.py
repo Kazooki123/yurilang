@@ -237,8 +237,8 @@ def trigger_amy_easter_egg():
     print("\n🥞 Amy mode activated...\n")
 
     # install chafa first so it can work
-    os.system("chafa fav/amy.png")
-    os.system("chafa fav/amy2.png")
+    os.system("chafa -f iterm fav/amy.png")
+    os.system("chafa -f iterm fav/amy2.png")
 
     # try:
     #    img = Image.open("amy.png")

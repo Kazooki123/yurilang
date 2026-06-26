@@ -12,7 +12,7 @@ Usage:
 import sys
 import os
 import platform
-import shutil
+# import shutil
 import subprocess
 import argparse
 from pathlib import Path
@@ -70,13 +70,13 @@ def check_dependencies():
         p("  Dependencies installed", GREEN)
 
 
-def check_nasm():
-    p("Checking NASM (optional — needed for @kumitate)...", PURPLE)
-    if shutil.which("nasm"):
-        p("  NASM found!", GREEN)
-    else:
-        p("  ⚠️  NASM not found — @kumitate inline assembly won't work", YELLOW)
-        p("  Hint: sudo apt install nasm  /  pkg install nasm (Termux)", YELLOW)
+# def check_nasm():
+#    p("Checking NASM (optional — needed for @kumitate)...", PURPLE)
+#    if shutil.which("nasm"):
+#        p("  NASM found!", GREEN)
+#    else:
+#        p("  ⚠️  NASM not found — @kumitate inline assembly won't work", YELLOW)
+#        p("  Hint: sudo apt install nasm  /  pkg install nasm (Termux)", YELLOW)
 
 
 def get_yurilang_root():
@@ -295,7 +295,6 @@ def main():
 
     check_python()
     check_dependencies()
-    check_nasm()
 
     p(f"\nDetected OS: {system}", PURPLE)
     if is_termux:
