@@ -6,7 +6,7 @@ on:
 
 jobs:
   run-yurilang:
-    runs-on: docker
+    runs-on: codeberg-medium
 
     steps:
       - name: Checkout repo
