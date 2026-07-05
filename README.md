@@ -529,7 +529,9 @@ Yurilang now has built-in features / libs thanks to the **Dynamic Link Libraries
 
 ## Codeberg
 
-[Available Here](https://codeberg.org/Kazooki123/yurilang)
+<a href="https://codeberg.org/Kazooki123/yurilang">
+    <img alt="Get it on Codeberg" src="https://get-it-on.codeberg.org/get-it-on-white-on-black.png" height="60">
+</a>
 
 ## Community
 
