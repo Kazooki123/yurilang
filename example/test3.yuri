@@ -9,11 +9,10 @@
         @rebond i = i plus 1
 
     @confess "--- @jam pass ---"
-    @cling 5:
-        @bond r = @band i 1
-        @jealous r == 0:
-            @jam pass
-        @confess "odd iteration"
+    @bond r = @band i 1
+    @jealous r == 0:
+        @jam pass
+    @confess "odd iteration"
 
     ? (--- @spectrum tests ---)
     @confess "--- @spectrum ---"

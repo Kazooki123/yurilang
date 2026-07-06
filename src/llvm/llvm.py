@@ -36,9 +36,9 @@ class YuriLLVM:
         self.module = ir.Module(name="yuri")
         self.module.triple = binding.get_default_triple()
 
-        self.builder = None
-        self.variables = {}  # name → alloca ptr
-        self.strings = {}  # content → global constant
+        self.builder   = None
+        self.variables = {}    # name = alloca ptr
+        self.strings   = {}    # content = global constant
         self.str_count = 0
 
         self._declare_externals()

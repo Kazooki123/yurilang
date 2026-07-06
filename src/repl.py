@@ -20,11 +20,11 @@ def detect_morse(code):
 
 
 COLORS = [
-    "\x1b[38;2;213;45;0m",  # dark orange
-    "\033[38;2;255;154;86m",  # orange
+    "\x1b[38;2;213;45;0m",     # dark orange
+    "\033[38;2;255;154;86m",   # orange
     "\033[38;2;255;255;255m",  # cream
-    "\033[38;2;211;98;164m",  # pink
-    "\033[38;2;163;0;97m",  # dark pink
+    "\033[38;2;211;98;164m",   # pink
+    "\033[38;2;163;0;97m",     # dark pink
 ]
 
 RESET = "\x1b[0m"
@@ -143,11 +143,14 @@ def show_license():
         return
 
     index = 0
-    page_size = 20  # lines per page
+    page_size = 20
 
     while True:
-        os.system("clear")  # use "cls" if Windows later
-
+        if os.name == "nt":
+            os.system("cls")
+        else:
+            os.system("clear")
+        
         print("LICENSE (press 'q' to exit)\n")
 
         for line in lines[index : index + page_size]:
@@ -341,8 +344,8 @@ def repl():
         try:
             code = input(yuri_prompt()).strip()
 
-            if code in ("exit", "quit", "!"):
-                print("bye bye! :<")
+            if code in ("exit", "quit", "!", "q"):
+                print("bye bye :< Thanks for supporting!")
                 break
 
             if detect_morse(code):
@@ -364,7 +367,10 @@ def repl():
                 continue
 
             if code == "clear":
-                os.system("cls")  # Windows
+                if os.name == "nt":
+                    os.system("cls")  # Windows
+                else:
+                    os.system("clear") # Posix
                 continue
 
             if code == "keywords":

@@ -1167,7 +1167,7 @@ def run_node(node):
         for child in node.children:
             run_node(child)
 
-    # ASSIGN
+    # ASSIGN (BOND)
     elif node.type == "assign":
         name, val = node.value
 

@@ -33,9 +33,9 @@ c_uint  = ctypes.c_uint32
 c_int32 = ctypes.c_int32
 c_bool  = ctypes.c_int   # FLAC__bool is int under the hood
 
-# ─────────────────────────────────────────────
+# ────────────────────────────
 #  Encoder function signatures
-# ─────────────────────────────────────────────
+# ────────────────────────────
 _flac.FLAC__stream_encoder_new.restype                       = ctypes.c_void_p
 _flac.FLAC__stream_encoder_delete.argtypes                   = [ctypes.c_void_p]
 _flac.FLAC__stream_encoder_set_channels.argtypes             = [ctypes.c_void_p, c_uint]
@@ -57,9 +57,9 @@ _flac.FLAC__stream_encoder_process_interleaved.restype       = c_bool
 _flac.FLAC__stream_encoder_finish.argtypes                   = [ctypes.c_void_p]
 _flac.FLAC__stream_encoder_finish.restype                    = c_bool
 
-# ─────────────────────────────────────────────
+# ────────────────────────────
 #  Decoder function signatures
-# ─────────────────────────────────────────────
+# ────────────────────────────
 _flac.FLAC__stream_decoder_new.restype                       = ctypes.c_void_p
 _flac.FLAC__stream_decoder_delete.argtypes                   = [ctypes.c_void_p]
 _flac.FLAC__stream_decoder_init_file.argtypes                = [ctypes.c_void_p, ctypes.c_char_p,
