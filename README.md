@@ -19,6 +19,13 @@ YuriLang (Yuri + Language) is an esoteric programming language with Yuri charact
 > [!IMPORTANT]
 > 💜 Still in development, new keywords and features will be added one by one, and the language isn't stabilize *yet*.
 
+### Shoutouts
+
+Shoutout to these language projects from my fellow friends!!
+
+- [Yaoilang](https://github.com/caelondev/garrote)
+- [bbodu](https://codeberg.org/qofqoflop/bbodu)
+
 ## Setup
 
 Prerequisites:
