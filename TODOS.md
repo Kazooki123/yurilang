@@ -16,3 +16,9 @@
 - [ ] Fix I/O read & write logic.
 - [ ] Finish and complete `/docs/`
 - [ ] Adjust file names and optimize the code (if-else hell)
+- [ ] Add unions and `unsafe` blocks
+
+## Compiler
+
+- [ ] Inline Assembly
+- [ ] Comp-time specific keywords

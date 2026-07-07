@@ -390,6 +390,35 @@ Allows users to embed low-level assembly language instructions directly within h
 
 ---
 
+@lua - **Inline Lua**
+
+> Inline Lua is a feature where you write lua code and the program runs it on the fly without needing a `.lua` file, though it may still uses the lua VM, but in later versions it'll execute without needing one (hopefully)
+
+```yuri
+@wlw:
+    @yuri bloomintoyou
+
+    @lua:
+        confess("Hello From Lua!!")
+
+    @bond chapter = 7
+
+    @lua:
+        -- LUA
+        local chapter = yuri.chapter
+        if chapter < 5 then
+            yuri.touko_state = "performing"
+        elseif chapter < 10 then
+            yuri.touko_state = "inlove"
+        else
+            yuri.touko_state = "certain"
+        end
+
+    @touk_reacts touko_state
+```
+
+---
+
 @spectrum — Enums
 
 A data type that lets you define a value as one of several possible variants.
@@ -475,7 +504,7 @@ $
 
 **glc** - Girls Love to Compile
 
-An Odin written compiler made for YuriLang, it will be released soon and if it does expect bugs or errors at it's first released.
+A Rust written compiler made for YuriLang, it will be released soon and if it does expect bugs or errors at it's first released.
 
 **Note:** The compiler is currently implemented in Python.
 

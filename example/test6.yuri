@@ -71,7 +71,7 @@
     @bond pi = @lua "return math.pi"
     @confess pi.int             ? (→ 3)
 
-    ? (━━━ Narrative usage ━━━)
+    ? (=== Narrative usage ===)
     @bond chapter_title = "the day she realized"
     @confess chapter_title.title    ? (→ The Day She Realized)
     @confess chapter_title.upper    ? (→ THE DAY SHE REALIZED)
