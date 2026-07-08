@@ -509,11 +509,9 @@ $
 
 ## Compiler
 
-**glc** - Girls Love to Compile
+**glc** - [Girls Love to Compile](https://codeberg.org/Kazooki123/glc)
 
 A Rust written compiler made for YuriLang, it will be released soon and if it does expect bugs or errors at it's first released.
-
-**Note:** The compiler is currently implemented in Python.
 
 ## LLVM
 
