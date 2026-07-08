@@ -70,7 +70,6 @@ Flags:
   yuri file --bytecode     → compile to bytecode
   yuri file.yuric --vm     → runs the VM
   yuri file --wasm         → compile to a .wat file
-  yuri file --glc          → compiles to an executable file
 
 Tips:
   Use @confess to print 🩷

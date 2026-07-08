@@ -46,14 +46,13 @@ def main():
     --crush                       Type annotation flag
     --itmye                       Runs the ITMYE checker
     --llvm                        Compile to LLVM IR (.ll) 
-    -llvm-obj                     Compile to a LLVM object file (.o)
+    --llvm-obj                    Compile to a LLVM object file (.o)
     yuri                          Launch REPL
 
     MISC:
     --flag                        Prints flags from LGBTQ+ to international flags.
     <.iso> --verify               Verifies an ISO or CHD format file.
-    <.bin> --b2e                  Bin2Elf Converter
-    --pnatch <game>               Generate a game-specific PS2 patch file.
+    <.bin> --b2e                  Bin2Elf Converter (Not implemented yet)
 
     Options:
     -v --version    show version
@@ -96,10 +95,6 @@ def main():
 
     if "--jinx" in args:
         jinx()
-        return
-    
-    if "--pnatch" in args:
-        # ... WIP
         return
 
     if "--itmye" in args:

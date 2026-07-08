@@ -288,13 +288,21 @@ Checks a condition.
 
 ---
 
-@cling — Loop (Basic)
+@cling — Loop
 
 Repeats an action a number of times.
 
+> [!NOTE]
+> as of `v1.8`, @cling has a different rule in the compiler (glc)
+
 ```yuri
+? (Interpreter)
 @cling "Woosh!" 3
 @cling "yay!" 5
+
+? (Compiler)
+@cling 10:
+    "Hello!"
 ```
 
 ---
