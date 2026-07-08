@@ -1,0 +1,43 @@
+// Yuri grammar (v0.2)
+//
+// Source is preprocessed by `indent.rs` before reaching here: indentation
+// is converted into explicit `{` / `}` tokens, and `?` comments are
+// stripped there too. So this grammar only ever sees clean, brace-
+// delimited, comment-free source, and can treat newlines as ordinary
+// whitespace.
+
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+
+program = { SOI ~ entry_block ~ EOI }
+
+entry_block = { "@wlw" ~ ":" ~ block }
+
+block = { "{" ~ statement* ~ "}" }
+
+statement = { bond_stmt | confess_stmt | if_stmt | cling_stmt }
+
+bond_stmt    = { "@bond" ~ ident ~ "=" ~ expr }
+confess_stmt = { "@confess" ~ expr ~ ("," ~ expr)* }
+if_stmt      = { "@jealous" ~ expr ~ ":" ~ block ~ ("@forgive" ~ ":" ~ block)? }
+cling_stmt   = { "@cling" ~ expr ~ ":" ~ block }
+
+expr = { comparison }
+
+comparison = { arith ~ (cmp_op ~ arith)? }
+cmp_op     = { ">=" | "<=" | "==" | "!=" | ">" | "<" }
+
+arith  = { term ~ (add_op ~ term)* }
+add_op = { "plus" | "minus" }
+
+term   = { atom ~ (mul_op ~ atom)* }
+mul_op = { "times" | "divide" }
+
+atom = { float_lit | int_lit | string_lit | ident }
+
+float_lit  = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+int_lit    = @{ ASCII_DIGIT+ }
+string_lit = @{ "\"" ~ inner_str ~ "\"" }
+inner_str  = @{ (escape | !("\"" | "\\") ~ ANY)* }
+escape     = @{ "\\" ~ ANY }
+
+ident = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }

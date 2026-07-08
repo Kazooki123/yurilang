@@ -1,0 +1,28 @@
+[package]
+name = "glc"
+version = "0.1.0"
+edition = "2024"
+authors = ["Kazooki123"]
+description = "Compiler for Yurilang"
+license = "GPL-3.0"
+readme = "README.md"
+
+[[bin]]
+name = "glc"
+path = "src/main.rs"
+
+[dependencies]
+pest = "2.7"
+pest_derive = "2.7"
+anyhow = "1.0"
+target-lexicon = "0.12"
+
+cranelift-codegen = "0.116"
+cranelift-frontend = "0.116"
+cranelift-module = "0.116"
+cranelift-object = "0.116"
+cranelift-native = "0.116"
+cranelift-entity = "0.116"
+
+[profile.release]
+panic = "abort"

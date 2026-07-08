@@ -15,7 +15,6 @@ from src.asm.wasm import compile_to_yasm
 from src.vm.compiler import compile_to_bytecode
 from src.vm.bytecode import YuriVM
 from src.vm.serializer import save_yuric, load_yuric
-from glc.py.compile import glc_compile
 from src.llvm.llvm import llvm_compile
 from src.misc.flags import random_flag
 from src.misc.verifyiso import verify_iso
@@ -45,8 +44,7 @@ def main():
     --asm                         Compile to x86-64 ASM
     --wasm                        Compile to WebAssembly
     --crush                       Type annotation flag
-    --itmye                       Runs the ITMYE checker 
-    --glc                         Compiles it to binary
+    --itmye                       Runs the ITMYE checker
     --llvm                        Compile to LLVM IR (.ll) 
     -llvm-obj                     Compile to a LLVM object file (.o)
     yuri                          Launch REPL
@@ -149,18 +147,6 @@ def main():
             print("No .yuri file provided.")
         except FileNotFoundError:
             print("File not found.")
-        return
-
-    if "--glc" in args:
-        try:
-            filename = next(arg for arg in args if arg.endswith(".yuri"))
-            with open(filename) as f:
-                code = f.read()
-            out = filename.replace(".yuri", "")
-            glc_compile(code, out)
-            print(f"Run with: ./{out}")
-        except StopIteration:
-            print("No .yuri file provided.")
         return
 
     if "--llvm" in args:
