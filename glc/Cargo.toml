@@ -1,6 +1,6 @@
 [package]
 name = "glc"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2024"
 authors = ["Kazooki123"]
 description = "Compiler for Yurilang"
@@ -23,6 +23,8 @@ cranelift-module = "0.116"
 cranelift-object = "0.116"
 cranelift-native = "0.116"
 cranelift-entity = "0.116"
+
+inkwell = { version = "0.8.0", features = ["llvm22-1"] }
 
 [profile.release]
 panic = "abort"

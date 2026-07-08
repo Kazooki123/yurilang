@@ -2,9 +2,6 @@
 
 A real native compiler for the Yurilang v0.1.
 
-> [!NOTE]
-> For now the compiler is recently implemented in **Python**, but once the Rust version is finished, it'll be the primarily compiler for yurilang.
-
 ## Example (0.1)
 
 ```yuri
@@ -26,7 +23,7 @@ A real native compiler for the Yurilang v0.1.
 
 ## Build
 
-You need a Rust toolchain (`rustup`) and a C compiler (`cc`/`gcc`/`clang`)
+You need a Rust toolchain (`rustup`) and a C compiler/toolchain (`cc`/`gcc`/`clang`)
 on `$PATH` for linking.
 
 ```sh

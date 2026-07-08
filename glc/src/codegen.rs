@@ -18,7 +18,7 @@
 //! wherever `DataDescription`/`FuncId`/`Variable` are constructed
 //! directly. The overall approach (declare data -> global_value,
 //! Variable-based SSA construction for control flow) is stable; it's
-//! just exact method/type names that drift.
+//! just the exact method/type names that drift.
 
 use std::collections::HashMap;
 
