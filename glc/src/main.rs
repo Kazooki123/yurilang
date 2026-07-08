@@ -44,6 +44,9 @@ fn main() -> Result<()> {
     fs::write(&obj_path, &object_bytes)
         .with_context(|| format!("failed to write object file: {}", obj_path.display()))?;
 
+    // The print runtime is small enough to just embed in the compiler
+    // binary and write out fresh each build, rather than shipping a
+    // separate .c file alongside yuric.
     let runtime_c_path = output_path.with_extension("runtime.c");
     let runtime_o_path = output_path.with_extension("runtime.o");
     fs::write(&runtime_c_path, RUNTIME_C)

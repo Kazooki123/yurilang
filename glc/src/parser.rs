@@ -9,7 +9,7 @@ use pest::iterators::Pair;
 use pest::Parser;
 use pest_derive::Parser;
 
-use crate::ast::{BinOp, CmpOp, Expr, Program, Stmt};
+use crate::ast::{BinOp, CmpOp, Expr, Program, ShipDef, Stmt};
 use crate::indent;
 
 #[derive(Parser)]
@@ -25,22 +25,55 @@ pub fn parse_program(source: &str) -> Result<Program> {
         .next()
         .expect("grammar guarantees a `program` pair on success");
 
-    let mut entry = Vec::new();
-    for pair in program_pair.into_inner() {
-        match pair.as_rule() {
-            Rule::entry_block => {
-                let block_pair = pair
+    let mut functions = Vec::new();
+    let mut entry: Option<Vec<Stmt>> = None;
+
+    for item_or_eoi in program_pair.into_inner() {
+        match item_or_eoi.as_rule() {
+            Rule::item => {
+                let inner = item_or_eoi
                     .into_inner()
-                    .find(|p| p.as_rule() == Rule::block)
-                    .expect("entry_block always contains a block");
-                entry = parse_block(block_pair)?;
+                    .next()
+                    .expect("item always wraps ship_def or entry_block");
+                match inner.as_rule() {
+                    Rule::ship_def => functions.push(parse_ship_def(inner)?),
+                    Rule::entry_block => {
+                        let block_pair = inner
+                            .into_inner()
+                            .find(|p| p.as_rule() == Rule::block)
+                            .expect("entry_block always contains a block");
+                        if entry.is_some() {
+                            bail!("only one @wlw entry point is allowed");
+                        }
+                        entry = Some(parse_block(block_pair)?);
+                    }
+                    other => bail!("unexpected item rule: {:?}", other),
+                }
             }
             Rule::EOI => {}
             other => bail!("unexpected top-level rule: {:?}", other),
         }
     }
 
-    Ok(Program { entry })
+    let entry = entry.ok_or_else(|| anyhow!("no @wlw entry point found"))?;
+    Ok(Program { functions, entry })
+}
+
+fn parse_ship_def(pair: Pair<Rule>) -> Result<ShipDef> {
+    let mut parts = pair.into_inner();
+    let name = parts
+        .next()
+        .expect("ship_def always has a name")
+        .as_str()
+        .to_string();
+    let param_list = parts.next().expect("ship_def always has a param_list");
+    let params: Vec<String> = param_list
+        .into_inner()
+        .map(|p| p.as_str().to_string())
+        .collect();
+    let block_pair = parts.next().expect("ship_def always has a block");
+    let body = parse_block(block_pair)?;
+    Ok(ShipDef { name, params, body })
 }
 
 fn parse_block(pair: Pair<Rule>) -> Result<Vec<Stmt>> {
@@ -99,8 +132,51 @@ fn parse_statement(pair: Pair<Rule>) -> Result<Stmt> {
             let body = parse_block(body_block)?;
             Ok(Stmt::Cling { count, body })
         }
+        Rule::awaken_stmt => {
+            let name = inner
+                .into_inner()
+                .next()
+                .expect("awaken_stmt always has an ident")
+                .as_str()
+                .to_string();
+            Ok(Stmt::Awaken(name))
+        }
+        Rule::promise_stmt => {
+            let value = parse_expr(
+                inner
+                    .into_inner()
+                    .next()
+                    .expect("promise_stmt always has an expr"),
+            )?;
+            Ok(Stmt::Promise(value))
+        }
+        Rule::call_stmt => {
+            let call = inner
+                .into_inner()
+                .next()
+                .expect("call_stmt always wraps a call_expr");
+            let (name, args) = parse_call(call)?;
+            Ok(Stmt::CallStmt { name, args })
+        }
         other => bail!("unexpected statement rule: {:?}", other),
     }
+}
+
+fn parse_call(pair: Pair<Rule>) -> Result<(String, Vec<Expr>)> {
+    let mut parts = pair.into_inner();
+    let name = parts
+        .next()
+        .expect("call_expr always has a function name")
+        .as_str()
+        .to_string();
+    let args = match parts.next() {
+        Some(arg_list) => arg_list
+            .into_inner()
+            .map(parse_expr)
+            .collect::<Result<Vec<_>>>()?,
+        None => Vec::new(),
+    };
+    Ok((name, args))
 }
 
 fn parse_expr(pair: Pair<Rule>) -> Result<Expr> {
@@ -172,9 +248,13 @@ fn parse_atom(pair: Pair<Rule>) -> Result<Expr> {
     let inner = pair
         .into_inner()
         .next()
-        .expect("atom always wraps exactly one literal/ident");
+        .expect("atom always wraps exactly one literal/ident/call");
 
     match inner.as_rule() {
+        Rule::call_expr => {
+            let (name, args) = parse_call(inner)?;
+            Ok(Expr::Call { name, args })
+        }
         Rule::float_lit => Ok(Expr::Float(inner.as_str().parse()?)),
         Rule::int_lit => Ok(Expr::Int(inner.as_str().parse()?)),
         Rule::string_lit => {

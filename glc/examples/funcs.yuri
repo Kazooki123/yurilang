@@ -1,0 +1,17 @@
+? (Functions, returns, and immutability)
+
+@ship YuuIsGoated:
+    @confess "Peak!"
+
+@ship add a b:
+    @promise a plus b
+
+@wlw:
+    @YuuIsGoated()
+
+    @bond total = @add(3, 4)
+    @confess total ? (Result: 7)
+
+    @bond x = "I know myself now"
+    @awaken x
+    @confess x

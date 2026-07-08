@@ -26,6 +26,7 @@ pub enum Expr {
     Var(String),
     Bin(BinOp, Box<Expr>, Box<Expr>),
     Cmp(CmpOp, Box<Expr>, Box<Expr>),
+    Call { name: String, args: Vec<Expr> },
 }
 
 #[derive(Debug, Clone)]
@@ -38,9 +39,20 @@ pub enum Stmt {
         else_body: Option<Vec<Stmt>>,
     },
     Cling { count: Expr, body: Vec<Stmt> },
+    Awaken(String),
+    Promise(Expr),
+    CallStmt { name: String, args: Vec<Expr> },
+}
+
+#[derive(Debug, Clone)]
+pub struct ShipDef {
+    pub name: String,
+    pub params: Vec<String>,
+    pub body: Vec<Stmt>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Program {
+    pub functions: Vec<ShipDef>,
     pub entry: Vec<Stmt>,
 }
