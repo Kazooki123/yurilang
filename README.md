@@ -440,8 +440,13 @@ Allows users to embed low-level assembly language instructions directly within h
 Macros are a way for a code, to write more code. It is a part of **Metaprogramming**.
 
 ```yuri
-@novel:
-    
+@novel repeatThree(block):
+    block
+    block
+    block
+
+@repeatThree:
+    @print "Hi!"
 ```
 
 ---
