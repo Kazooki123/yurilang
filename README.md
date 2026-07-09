@@ -383,8 +383,7 @@ Supported return types: `int`, `double`, `float`, `string`. If omitted, defaults
 Allows users to embed low-level assembly language instructions directly within high-level code.
 
 > [!WARNING]
-> This feature is very experimental, we'll add a `--experiment` flag later on, but this feature hasn't been fully stabilize *yet*.
-> Status: `HALTED` - Compile feature only.
+> This feature is compiler-only.
 
 ```yuri
 @wlw:
@@ -402,6 +401,8 @@ Allows users to embed low-level assembly language instructions directly within h
 
     @confess result         ? (-> 8)
 ```
+
+> Kumitate (組み立て) means **assembly** in Japanese.
 
 ---
 
@@ -434,17 +435,28 @@ Allows users to embed low-level assembly language instructions directly within h
 
 ---
 
+@novel - Macros
+
+Macros are a way for a code, to write more code. It is a part of **Metaprogramming**.
+
+```yuri
+@novel:
+    
+```
+
+---
+
 @spectrum — Enums
 
 A data type that lets you define a value as one of several possible variants.
 
 ```yuri
 @spectrum Feeling:
-    confused,
-    curious,
-    nervous,
-    inlove,
-    certain
+    Confused,
+    Curious,
+    Nervous,
+    Love,
+    Certain
 ```
 
 ---

@@ -150,6 +150,9 @@ def parse_line(line):
     elif keyword == "@ll":
         return Node("llvm")
 
+    elif keyword == "@novel":
+        return Node("macros")
+
     elif keyword == "@lua":
         rest = " ".join(tokens[1:]).strip()
 

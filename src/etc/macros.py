@@ -2,6 +2,8 @@
 Macros - Yurilang
 
 Macro systems of Yurilang, using the `@novel` keyword.
+
+TODO: Expand & Work on this later on.
 """
 
 from src.core.interpreter import run_node, variables
