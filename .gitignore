@@ -39,6 +39,7 @@
 !/extension/vscode/yurilang/
 !/pkg/**
 !/bin/libflac.dll
+!/extension/**
 
 !/.github/
 !/**/LICENSE

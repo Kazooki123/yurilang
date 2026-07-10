@@ -1,0 +1,25 @@
+{
+  "name": "yurilang",
+  "displayName": "yurilang",
+  "description": "Yuri Language Support and Syntax Highlighting",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.54.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "",
+      "aliases": ["yuri", ""],
+      "extensions": ["yuri"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "",
+      "scopeName": "",
+      "path": "./syntaxes/.tmLanguage.json"
+    }]
+  }
+}

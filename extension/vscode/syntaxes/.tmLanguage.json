@@ -1,0 +1,32 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "yuri",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.",
+				"match": "\\b(wlw|confess|bond|ship|jealous|forgive|yuri|promise|cling|fate|jam|sappho|poet|bloom|dream|wake|awaken|autoviv|rebond)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": ""
+}
