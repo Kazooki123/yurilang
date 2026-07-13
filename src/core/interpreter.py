@@ -48,7 +48,7 @@ from src.lua.lua            import get_lua_runtime, LuaError
 
 # VENDOR OPS / FUNCS
 from vendor.linq    import LINQ_OPS
-from vendor.flac    import encode_samples, decode_to_samples, FLAC_OPS
+# from vendor.flac    import encode_samples, decode_to_samples, FLAC_OPS
 from vendor.sqlite3 import (
     connect, 
     vow, 
@@ -2293,73 +2293,111 @@ def run_node(node):
             unsafe_depth -= 1
  
     # FLAC
-    elif node.type == "flac_gen":
-        wave_type = node.value[0]
-        raw      = node.value[1:]
+    # elif node.type == "flac_gen":
+    #    wave_type = node.value[0]
+    #    raw      = node.value[1:]
 
-        flat = []
-        for a in raw:
-            if isinstance(a, list):
-                flat.extend(str(x) for x in a)
-            elif isinstance(a, str) and " " in a:
-                flat.extend(a.split())
-            else:
-                flat.append(str(a))
+    #    flat = []
+    #    for a in raw:
+    #        if isinstance(a, list):
+    #            flat.extend(str(x) for x in a)
+    #        elif isinstance(a, str) and " " in a:
+    #            flat.extend(a.split())
+    #        else:
+    #            flat.append(str(a))
+    #    
+    #    freq        = float(evaluate(flat[0]))  if len(flat) > 0 else 440.0
+    #    duration    = float(evaluate(flat[1]))  if len(flat) > 1 else 1.0
+    #    sample_rate = int(evaluate(flat[2]))    if len(flat) > 2 else 44100
+    #    
+    #    fn = FLAC_OPS.get(wave_type)
+    
+    #    if fn is None:
+    #        raise YuriRuntimeError(f"@aria - Unknown wave type '{wave_type}'")
         
-        freq        = float(evaluate(flat[0]))  if len(flat) > 0 else 440.0
-        duration    = float(evaluate(flat[1]))  if len(flat) > 1 else 1.0
-        sample_rate = int(evaluate(flat[2]))    if len(flat) > 2 else 44100
-        
-        fn = FLAC_OPS.get(wave_type)
-        
-        if fn is None:
-            raise YuriRuntimeError(f"@aria - Unknown wave type '{wave_type}'")
-        
-        result = fn(freq=freq, duration=duration, sample_rate=sample_rate)
+    #    result = fn(freq=freq, duration=duration, sample_rate=sample_rate)
 
-        if isinstance(result, list) and len(result) > 0 and isinstance(result[0], list):
-            result = [x for sub in result for x in sub]
+    #    if isinstance(result, list) and len(result) > 0 and isinstance(result[0], list):
+    #        result = [x for sub in result for x in sub]
         
-        variables["_aria"] = result
+    #    variables["_aria"] = result
         
-    elif node.type == "flac_encode":
-        tokens      = node.value
-        samples     = evaluate(tokens[0])
-        path        = evaluate(tokens[1])
-        sample_rate = int(evaluate(tokens[2])) if len(tokens) > 2 else 44100
-        channels    = int(evaluate(tokens[3])) if len(tokens) > 3 else 1
-        bits        = int(evaluate(tokens[4])) if len(tokens) > 4 else 16
-        encode_samples(samples, path, sample_rate, channels, bits)
+    # elif node.type == "flac_encode":
+    #    tokens      = node.value
+    #    samples     = evaluate(tokens[0])
+    #    path        = evaluate(tokens[1])
+    #    sample_rate = int(evaluate(tokens[2])) if len(tokens) > 2 else 44100
+    #    channels    = int(evaluate(tokens[3])) if len(tokens) > 3 else 1
+    #    bits        = int(evaluate(tokens[4])) if len(tokens) > 4 else 16
+    #    encode_samples(samples, path, sample_rate, channels, bits)
 
-    elif node.type == "flac_decode":
-        path = evaluate(node.value[0])
-        samples, rate, ch, bits = decode_to_samples(path)
+    # elif node.type == "flac_decode":
+    #    path = evaluate(node.value[0])
+    #    samples, rate, ch, bits = decode_to_samples(path)
         
-        variables["_samples"]     = samples
-        variables["_sample_rate"] = rate
-        variables["_channels"]    = ch
-        variables["_bits"]        = bits
+    #    variables["_samples"]     = samples
+    #    variables["_sample_rate"] = rate
+    #    variables["_channels"]    = ch
+    #    variables["_bits"]        = bits
         
-    elif node.type == "flac_compose":
-        op        = node.value[0]
-        arr_names = node.value[1:]
+    # elif node.type == "flac_compose":
+    #    op        = node.value[0]
+    #    arr_names = node.value[1:]
         
-        tracks = []
+    #    tracks = []
         # DEBUGGING TYPES (list type errors)
-        print("track types:", [type(t[0]) for t in tracks])
-        print("first elements:", [t[0] for t in tracks])
-        for name in arr_names:
-            val = evaluate(name)
-            while isinstance(val, list) and len(val) > 0 and isinstance(val[0], list):
-                val = [x for sub in val for x in sub]
-            tracks.append(val)
+    #    print("track types:", [type(t[0]) for t in tracks])
+    #    print("first elements:", [t[0] for t in tracks])
+    #    for name in arr_names:
+    #        val = evaluate(name)
+    #        while isinstance(val, list) and len(val) > 0 and isinstance(val[0], list):
+    #            val = [x for sub in val for x in sub]
+    #        tracks.append(val)
             
-        fn = FLAC_OPS.get(op)
-        if fn is None:
-            raise YuriRuntimeError(f"@compose - unknown op '{op}'")
+    #    fn = FLAC_OPS.get(op)
+    #    if fn is None:
+    #        raise YuriRuntimeError(f"@compose - unknown op '{op}'")
         
-        variables["_aria"] = fn(*tracks)
+    #    variables["_aria"] = fn(*tracks)
         
+    # elif node.type == "flac_encode":
+    #    tokens      = node.value
+    #    samples     = evaluate(tokens[0])
+    #    path        = evaluate(tokens[1])
+    #    sample_rate = int(evaluate(tokens[2])) if len(tokens) > 2 else 44100
+    #    channels    = int(evaluate(tokens[3])) if len(tokens) > 3 else 1
+    #    bits        = int(evaluate(tokens[4])) if len(tokens) > 4 else 16
+    #    encode_samples(samples, path, sample_rate, channels, bits)
+
+    # elif node.type == "flac_decode":
+    #    path = evaluate(node.value[0])
+    #    samples, rate, ch, bits = decode_to_samples(path)
+        
+    #    variables["_samples"]     = samples
+    #    variables["_sample_rate"] = rate
+    #    variables["_channels"]    = ch
+    #    variables["_bits"]        = bits
+        
+    # elif node.type == "flac_compose":
+    #    op        = node.value[0]
+    #    arr_names = node.value[1:]
+        
+    #    tracks = []
+        # DEBUGGING TYPES (list type errors)
+    #    print("track types:", [type(t[0]) for t in tracks])
+    #    print("first elements:", [t[0] for t in tracks])
+    #    for name in arr_names:
+    #        val = evaluate(name)
+    #        while isinstance(val, list) and len(val) > 0 and isinstance(val[0], list):
+    #            val = [x for sub in val for x in sub]
+    #        tracks.append(val)
+    #        
+    #    fn = FLAC_OPS.get(op)
+    #    if fn is None:
+    #        raise YuriRuntimeError(f"@compose - unknown op '{op}'")
+        
+    #    variables["_aria"] = fn(*tracks)
+
     # RAYLIB
     elif node.type == "rl_call":
         op   = node.value[0]
@@ -2395,44 +2433,6 @@ def run_node(node):
             result = [x for sub in result for x in sub]
         
         variables["_aria"] = result
-        
-    elif node.type == "flac_encode":
-        tokens      = node.value
-        samples     = evaluate(tokens[0])
-        path        = evaluate(tokens[1])
-        sample_rate = int(evaluate(tokens[2])) if len(tokens) > 2 else 44100
-        channels    = int(evaluate(tokens[3])) if len(tokens) > 3 else 1
-        bits        = int(evaluate(tokens[4])) if len(tokens) > 4 else 16
-        encode_samples(samples, path, sample_rate, channels, bits)
-
-    elif node.type == "flac_decode":
-        path = evaluate(node.value[0])
-        samples, rate, ch, bits = decode_to_samples(path)
-        
-        variables["_samples"]     = samples
-        variables["_sample_rate"] = rate
-        variables["_channels"]    = ch
-        variables["_bits"]        = bits
-        
-    elif node.type == "flac_compose":
-        op        = node.value[0]
-        arr_names = node.value[1:]
-        
-        tracks = []
-        # DEBUGGING TYPES (list type errors)
-        print("track types:", [type(t[0]) for t in tracks])
-        print("first elements:", [t[0] for t in tracks])
-        for name in arr_names:
-            val = evaluate(name)
-            while isinstance(val, list) and len(val) > 0 and isinstance(val[0], list):
-                val = [x for sub in val for x in sub]
-            tracks.append(val)
-            
-        fn = FLAC_OPS.get(op)
-        if fn is None:
-            raise YuriRuntimeError(f"@compose - unknown op '{op}'")
-        
-        variables["_aria"] = fn(*tracks)
 
     else:
         print("Unknown node:", node.type)

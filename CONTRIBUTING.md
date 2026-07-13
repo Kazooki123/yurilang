@@ -1,17 +1,41 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
+We'd appreciate your contribution for **Yuri**lang and the time and effort you've committed! <3
+
+Here's how you can contribute to this very Yurifull esolang:
+
+0. Fork & Clone
+
+Fork this repo and clone it in your machine.
+
+```bash
+git clone https://github.com/Kazooki123/yurilang
+
+OR
+
+git clone https://codeberg.org/Kazooki123/yurilang
+```
 
 > [!NOTE]
-> Please note we have a Code of Conduct (CoC), please follow it in all your interactions with the project.
+> I'd recommend choosing codeberg since this is where Yurilang is mainly maintained now.
 
-## Pull Request Process
+1. Create Branch
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
+Create a branch and name it on whatever feature you want to name, example:
 
-2. Update the README.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
+- `branch-add-new-keyword`
+- `branch-fixed-this`
+- `branch-X`
 
-3. You may merge the Pull Request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
+and git switch to it:
+
+```bash
+git checkout -b branch-your-branch
+```
+
+2. Commit & PR
+
+After doing your **wonderful work** and commiting it, create a **Pull Request** to the repo and explain what you've created or changed to the interpreter or [compiler](https://codeberg.org/Kazooki123/glc), after that just wait for a few hours or days since the maintainer (me) has chores to do IRL :/ But thanks!!
 
 ## Code of Conduct
 
