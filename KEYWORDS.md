@@ -393,7 +393,7 @@ Macros are a way for a code, to write more code. It is a part of **Metaprogrammi
     block
     block
 
-@repeatThree:
+@repeatThree():
     @confess "Hi!"
 ```
 
