@@ -2,7 +2,7 @@
 
 pkgs.python3Packages.buildPythonPackage {
   pname = "yurilang";
-  version = "1.7.0";
+  version = "1.8.0";
 
   src = pkgs.fetchFromGitHub {
     owner = "Kazooki123";
@@ -17,4 +17,3 @@ pkgs.python3Packages.buildPythonPackage {
 
   doCheck = false;
 }
-

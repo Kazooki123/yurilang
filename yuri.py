@@ -27,7 +27,7 @@ def main():
 
     if "--version" in args or "-v" in args:
         print(f"""
-    YuriLang v1.7.0
+    YuriLang v1.8.0
     Yuring Complete since 2026 🧡🤍🩷
     Python {sys.version.split()[0]}
     GPL-3.0 License

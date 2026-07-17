@@ -6,13 +6,27 @@
 /amy/
 /yuri-js/
 /example/
+/extension/
+/bin/
 /.venv/
+/pkg/
 /build/
+/llvm/
 /dist/
 /docs/
 /glc/
 /network/
+/dump/
 /lasm/
+/target/
+
+/.github/
+/.forgejo/
+
+/__pycache__/
+
+/.zed/
+/.vscode/
 
 .gitmodules
 .gitignore

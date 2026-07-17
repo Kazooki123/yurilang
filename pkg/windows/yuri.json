@@ -1,10 +1,10 @@
 {
-    "version": "1.7",
+    "version": "1.8",
     "description": "Yuri Esoteric Programming Language",
     "homepage": "https://kazooki123.github.io/yurilang-docs",
     "license": "GPL-3.0-or-later",
-    "url": "https://codeberg.org/Kazooki123/yurilang/archive/v1.7.zip",
-    "hash": "8009BE7C48C9E3F505476904B8575067942E10ABDBA52753C58BD95663FC3134",
+    "url": "https://codeberg.org/Kazooki123/yurilang/archive/v1.8.zip",
+    "hash": "EB90697347ECF59CA142CB56D33D386D62000AA30B63C2DAF1F9A9CFF5E609E4",
     "extract_dir": "yurilang",
     "bin": "yuri.cmd",
     "suggest": {

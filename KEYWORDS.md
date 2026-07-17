@@ -13,6 +13,8 @@ Here you'll learn how keywords and statements work in Yurilang!
 
 ---
 
+## Keywords
+
 @wlw — Entry Point
 
 Defines where the program begins.
@@ -180,12 +182,6 @@ In Yurilang, variables are mutable by default, so to make them permanent or unch
     @awaken x
 ```
 
-Trying to modify an already **awakened** variable throws an Runtime Error:
-
-```bash
-Error: 'x' has already awakened. It is permanent.
-```
-
 ---
 
 @choose — Filtering
@@ -320,6 +316,11 @@ Loads and binds a function from a C shared library, callable like any other `@sh
 @sempai libm.so.6 sqrt double
 @bond result = @sqrt 144
 @confess result
+
+? (Works with DLL files, so hey ¯\\_(ツ)_/¯)
+@sempai demo.dll add
+@bond result = @add 20 30
+@confess result
 ```
 
 Supported return types: `int`, `double`, `float`, `string`. If omitted, defaults to `int`.
@@ -394,7 +395,7 @@ Macros are a way for a code, to write more code. It is a part of **Metaprogrammi
     block
 
 @repeatThree:
-    @print "Hi!"
+    @confess "Hi!"
 ```
 
 ---
@@ -428,28 +429,38 @@ A custom data type that lets you group related data together under one name
 
 ---
 
-### Operators
+## Operators
 
 > [!WARNING]
 > Some of these operators & **special symbols** are planned meaning they're not implemented *yet*
 
 ```bash
->
-<
-=>
-<-
-->
-()
-{}
+@>
+<@
 ~
 ~>
 |x|
-:
+||
 ^
 ^^
 #
 $
 &
-!
-?
+&&
+```
+
+---
+
+@> - Pipe Operator
+
+Takes result and passes it as the first argument. Check [example](https://codeberg.org/Kazooki123/yurilang/src/branch/main/example/test11.yuri)
+
+```yuri
+@bond result = 5 @> @double @> @add_three
+    @confess result
+
+    10
+        @> @double
+        @> @add_three
+        @> @show_it  ? (prints 23)
 ```

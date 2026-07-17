@@ -1,0 +1,22 @@
+@ship double x:
+    @promise x times 2
+
+@ship add_three x:
+    @promise x plus 3
+
+@ship show_it x:
+    @confess x
+    @promise x
+
+@wlw:
+    @bond result = 5 @> @double @> @add_three
+    @confess result
+
+    10
+        @> @double
+        @> @add_three
+        @> @show_it  ? (prints 23)
+
+    @bond triple = @bloom x: x times 3
+    @bond r2 = 4 @> @triple
+    @confess r2 ? (12)

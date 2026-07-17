@@ -55,14 +55,14 @@ def print_help():
 YuriLang REPL Help ☀️
 
 Commands:
-  help        → show this message
-  exit        → exit REPL
-  edit        → enters an editor
-  credits     → show credits
-  license     → show license
-  keywords    → show list of available keywords
-  amy         → ??? 👀
-  morse       → try something mysterious...
+  :help        → show this message
+  :exit        → exit REPL
+  :edit        → enters an editor
+  :credits     → show credits
+  :license     → show license
+  :keywords    → show list of available keywords
+  amy          → ??? 👀
+  morse        → try something mysterious...
 
 Flags:
   yuri file.yuri           → runs the file at runtime
@@ -343,7 +343,7 @@ def repl():
         try:
             code = input(yuri_prompt()).strip()
 
-            if code in ("exit", "quit", "!", "q"):
+            if code in (":exit", "quit", "!", "q"):
                 print("bye bye :< Thanks for supporting!")
                 break
 
@@ -361,7 +361,7 @@ def repl():
                 print("The password is: 8mgS5erYEL")
                 continue
 
-            if code == "help":
+            if code == ":help":
                 print_help()
                 continue
 
@@ -372,31 +372,31 @@ def repl():
                     os.system("clear") # Posix
                 continue
 
-            if code == "keywords":
+            if code == ":keywords":
                 print_keywords()
                 continue
 
-            if code == "world":
+            if code == ":world":
                 spin_globe()
                 continue
             
-            if code == "flag":
+            if code == ":flag":
                 random_flag()
                 continue
 
-            if code == "edit":
+            if code == ":edit":
                 yuri_editor()
                 continue
 
-            if code == "credits":
+            if code == ":credits":
                 show_credits()
                 continue
 
-            if code == "license":
+            if code == ":license":
                 show_license()
                 continue
 
-            if code == "amy":
+            if code == ":amy":
                 trigger_amy_easter_egg()
                 continue
             

@@ -2,7 +2,7 @@
 __title__       = "yurilang"
 __description__ = "YuriLang Esoteric Programming Language >.<" 
 __url__         = "https://codeberg.org/Kazooki123/yurilang"
-__version__     = "1.7.0"
+__version__     = "1.8.0"
 __author__      = "Kazooki123"
 __author_email__ = "mgamerdinge146@gmail.com"
 __license__     = "GPL-3.0"
