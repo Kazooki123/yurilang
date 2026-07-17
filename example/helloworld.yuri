@@ -1,2 +1,3 @@
 @wlw:
-    @confess "Hello World!"
+    @bond x = "Hello World!"
+    @confess x
